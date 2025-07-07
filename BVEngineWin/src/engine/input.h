@@ -18,6 +18,8 @@ namespace bulka {
 		static int key_repeat_scancode;
 		static double mouseX;
 		static double mouseY;
+		static double previousMouseX;
+		static double previousMouseY;
 		static double mouseDeltaX;
 		static double mouseDeltaY;
 		static double scrollX;
@@ -40,5 +42,11 @@ namespace bulka {
 		static bool isKeyRepeated(int key);
 		static int getKeyRepeat();
 		static int getKeyRepeatScancode();
+		static double getMouseX();
+		static double getMouseY();
+		static double getMouseDeltaX();
+		static double getMouseDeltaY();
+		static double getScrollX();
+		static double getScrollY();
 	};
 }

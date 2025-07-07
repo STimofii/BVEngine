@@ -18,6 +18,7 @@ namespace bulka {
 		static float aspect;
 		static bool fullscreen;
 		static bool inWindow;
+		static bool cursorHided;
 		static std::string title;
 
 		static void windowSizeCallback(GLFWwindow* window, int width, int height);
@@ -30,8 +31,17 @@ namespace bulka {
 		static void resize();
 		static void resize(int width, int height);
 		static bool isShouldClose();
+		static void preUpdate();
+		static void inputUpdate();
+		static void update();
+		static void postUpdate();
+		static void preRender();
+		static void render();
+		static void postRender();
 		static void finalization();
 		static void setVSync(bool vsync);
+		static void hideCursor();
+		static void showCursor();
 		static int getWidth();
 		static int getHeight();
 		static int getXPos();
@@ -43,6 +53,7 @@ namespace bulka {
 		static float getAspect();
 		static bool isFullScreen();
 		static bool isInWindow();
+		static bool isCursorHided();
 		static std::string getTitle();
 		static void setWidth(int width);
 		static void setHeight(int height);

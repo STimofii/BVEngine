@@ -1,4 +1,5 @@
 #include "input.h"
+#include "engine.h"
 
 
 namespace bulka {
@@ -10,6 +11,8 @@ namespace bulka {
 	int Input::key_repeat_scancode = 0;
 	double Input::mouseX = 0;
 	double Input::mouseY = 0;
+	double Input::previousMouseX = 0;
+	double Input::previousMouseY = 0;
 	double Input::mouseDeltaX = 0;
 	double Input::mouseDeltaY = 0;
 	double Input::scrollX = 0;
@@ -41,15 +44,38 @@ namespace bulka {
 
 	void Input::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 	{
+		int key = GLFW_KEY_LAST + button + 1;
+		switch (action) {
+		case GLFW_PRESS: {
+			keys[key] = true;
+			keys_typed[key] = true;
+			break;
+		}
+		case GLFW_REPEAT: {
+			key_repeat = key;
+			break;
+		}
+		case GLFW_RELEASE: {
+			keys[key] = false;
+			keys_released[key] = true;
+			break;
+		}
+		default: {
 
+		}
+		}
 	}
 
 	void Input::cursorPosCallback(GLFWwindow* window, double xpos, double ypos)
 	{
+		mouseX = xpos;
+		mouseY = ypos;
 	}
 
 	void Input::scrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 	{
+		scrollX = xoffset;
+		scrollY = yoffset;
 	}
 
 	void Input::init() {
@@ -64,14 +90,6 @@ namespace bulka {
 	}
 	void Input::preUpdate()
 	{
-
-	}
-	void Input::update()
-	{
-
-	}
-	void Input::postUpdate()
-	{
 		key_repeat = 0;
 		for (size_t i = 0; i <= GLFW_KEY_LAST; i++)
 		{
@@ -82,7 +100,21 @@ namespace bulka {
 				keys_released[i] = false;
 			}
 		}
+		previousMouseX = mouseX;
+		previousMouseY = mouseY;
+		mouseDeltaX = previousMouseX - mouseX;
+		mouseDeltaY = previousMouseY - mouseY;
 	}
+	void Input::update()
+	{
+
+	}
+	void Input::postUpdate()
+	{
+
+	}
+
+
 	void Input::finalization() {
 
 	}
@@ -109,5 +141,29 @@ namespace bulka {
 	int Input::getKeyRepeatScancode()
 	{
 		return key_repeat_scancode;
+	}
+	double Input::getMouseX()
+	{
+		return mouseX;
+	}
+	double Input::getMouseY()
+	{
+		return mouseY;
+	}
+	double Input::getMouseDeltaX()
+	{
+		return mouseDeltaX;
+	}
+	double Input::getMouseDeltaY()
+	{
+		return mouseDeltaY;
+	}
+	double Input::getScrollX()
+	{
+		return scrollX;
+	}
+	double Input::getScrollY()
+	{
+		return scrollY;
 	}
 }
