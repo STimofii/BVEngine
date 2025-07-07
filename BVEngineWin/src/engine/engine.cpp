@@ -73,8 +73,8 @@ namespace bulka {
 			throw new std::exception("GLFW CAN'T INIT!!!");
 		}
 
-		Window::setWidth(1280);
-		Window::setHeight(720);
+		Window::setRealWidth(1280);
+		Window::setRealHeight(720);
 		Window::setTitle(new char[10] {"BVEngine!"});
 		Window::create();
 
@@ -99,7 +99,14 @@ namespace bulka {
 			else {
 				Window::hideCursor();
 			}
-			
+		}
+		if (Input::isKeyTyped(GLFW_KEY_F11)) {
+			if (Window::isFullScreen()) {
+				Window::disableFullScrean();
+			}
+			else {
+				Window::enableFullScrean();
+			}
 		}
 	}
 	void Engine::update()

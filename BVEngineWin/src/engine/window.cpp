@@ -1,12 +1,16 @@
 #include "window.h"
 
 namespace bulka {
-	int Window::width = 1280;
-	int Window::height = 720;
-	int Window::realWidth = width;
-	int Window::realHeight = height;
+	int Window::memWidth = 1280;
+	int Window::memHeight = 720;
+	int Window::realWidth = 1280;
+	int Window::realHeight = 720;
 	int Window::screenWidth = 0;
 	int Window::screenHeight = 0;
+	int Window::xPos = 0;
+	int Window::yPos = 0;
+	int Window::memXPos = 0;
+	int Window::memYPos = 0;
 	float Window::aspect = 0.0;
 	bool Window::fullscreen = false;
 	bool Window::inWindow = false;
@@ -15,12 +19,10 @@ namespace bulka {
 	GLFWwindow* Window::window = nullptr;
 
 	void Window::windowSizeCallback(GLFWwindow* window, int width, int height) {
-		Window::width = width;
-		Window::height = height;
 		Window::realWidth = width;
 		Window::realHeight = height;
 		aspect = static_cast<float>(realWidth) / static_cast<float>(realHeight);
-		glViewport(0, 0, width, height);
+		glViewport(0, 0, realWidth, realHeight);
 	}
 	void Window::windowPosCallback(GLFWwindow* window, int xpos, int ypos)
 	{
@@ -36,17 +38,15 @@ namespace bulka {
 	{
 		inWindow = false;
 		fullscreen = false;
-		const GLFWvidmode* mode = glfwGetVideoMode(glfwGetWindowMonitor(window));
+		const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 		screenWidth = mode->width;
 		screenHeight = mode->height;
-		if (width > screenWidth) {
-			width = screenWidth;
+		if (realWidth > screenWidth) {
+			realWidth = screenWidth;
 		}
-		if (height > screenHeight) {
-			height = screenHeight;
+		if (realHeight > screenHeight) {
+			realHeight = screenHeight;
 		}
-		Window::realWidth = width;
-		Window::realHeight = height;
 		aspect = static_cast<float>(realWidth) / static_cast<float>(realHeight);
 		glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 		glfwWindowHint(GLFW_FOCUSED, GLFW_TRUE);
@@ -64,7 +64,9 @@ namespace bulka {
 		glfwSetWindowSizeCallback(window, windowSizeCallback);
 		glfwSetWindowPosCallback(window, windowPosCallback);
 		glfwSetWindowFocusCallback(window, windowFocusedCallback);
-		glfwSetWindowPos(window, screenWidth / 2 - realWidth / 2, screenHeight / 2 - realHeight / 2);
+		xPos = screenWidth / 2 - realWidth / 2;
+		yPos = screenHeight / 2 - realHeight / 2;
+		glfwSetWindowPos(window, xPos, yPos);
 
 		glfwMakeContextCurrent(window);
 		setVSync(false);
@@ -74,30 +76,34 @@ namespace bulka {
 	}
 	void Window::resize()
 	{
-		realWidth = width;
-		realHeight = height;
 		aspect = static_cast<float>(realWidth) / static_cast<float>(realHeight);
-		glfwSetWindowSize(window, width, height);
-		glViewport(0, 0, width, height);
+		glfwSetWindowSize(window, realWidth, realHeight);
+		glViewport(0, 0, realWidth, realHeight);
 	}
 	void Window::resize(int width, int height)
 	{
-		Window::width = width;
-		Window::height = height;
+		Window::realWidth = width;
+		Window::realHeight = height;
 		resize();
 	}
 
 	void Window::enableFullScrean() {
 		Window::fullscreen = true;
+		memWidth = realWidth;
+		memHeight = realHeight;
 		realWidth = screenWidth;
 		realHeight = screenHeight;
-		glfwSetWindowMonitor(window, glfwGetWindowMonitor(window), 0, 0, screenWidth, screenHeight, GLFW_DONT_CARE);
+		memXPos = xPos;
+		memYPos = yPos;
+		glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, screenWidth, screenHeight, GLFW_DONT_CARE);
+		glViewport(0, 0, realWidth, realHeight);
 	}
 	void Window::disableFullScrean() {
 		Window::fullscreen = false;
-		realWidth = width;
-		realHeight = height;
-		glfwSetWindowMonitor(window, glfwGetWindowMonitor(window), xPos, yPos, width, height, GLFW_DONT_CARE);
+		realWidth = memWidth;
+		realHeight = memHeight;
+		glfwSetWindowMonitor(window, nullptr, memXPos, memYPos, memWidth, memHeight, GLFW_DONT_CARE);
+		glViewport(0, 0, realWidth, realHeight);
 	}
 
 	bool Window::isShouldClose()
@@ -158,12 +164,6 @@ namespace bulka {
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	}
 
-	int Window::getWidth() {
-		return width;
-	}
-	int Window::getHeight() {
-		return height;
-	}
 	int Window::getXPos() {
 		return xPos;
 	}
@@ -201,11 +201,11 @@ namespace bulka {
 	std::string Window::getTitle() {
 		return title;
 	}
-	void Window::setWidth(int width) {
-		Window::width = width;
+	void Window::setRealWidth(int width) {
+		Window::realWidth = width;
 	}
-	void Window::setHeight(int height) {
-		Window::height = height;
+	void Window::setRealHeight(int height) {
+		Window::realHeight = height;
 	}
 	void Window::setTitle(std::string title) {
 		Window::title = title;

@@ -7,10 +7,12 @@
 namespace bulka {
 	class Window {
 	private:
-		static int width;
-		static int height;
+		static int memWidth;
+		static int memHeight;
 		static int xPos;
 		static int yPos;
+		static int memXPos;
+		static int memYPos;
 		static int screenWidth;
 		static int screenHeight;
 		static int realWidth;
@@ -42,8 +44,6 @@ namespace bulka {
 		static void setVSync(bool vsync);
 		static void hideCursor();
 		static void showCursor();
-		static int getWidth();
-		static int getHeight();
 		static int getXPos();
 		static int getYPos();
 		static int getScreenWidth();
@@ -55,8 +55,8 @@ namespace bulka {
 		static bool isInWindow();
 		static bool isCursorHided();
 		static std::string getTitle();
-		static void setWidth(int width);
-		static void setHeight(int height);
+		static void setRealWidth(int width);
+		static void setRealHeight(int height);
 		static void setTitle(std::string title);
 		static void enableFullScrean();
 		static void disableFullScrean();
