@@ -23,6 +23,13 @@ namespace bulka {
 		static void init();
 		static void preInit();
 		static void postInit();
+		static void preUpdate();
+		static void inputUpdate();
+		static void update();
+		static void postUpdate();
+		static void preRender();
+		static void render();
+		static void postRender();
 		static void stop(int statusCode = 0);
 		static void onExit();
 		static int getExitCode();

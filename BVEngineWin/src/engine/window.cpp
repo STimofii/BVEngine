@@ -10,6 +10,7 @@ namespace bulka {
 	float Window::aspect = 0.0;
 	bool Window::fullscrean = false;
 	bool Window::inWindow = false;
+	bool Window::cursorHided = false;
 	std::string Window::title = "BVEngine";
 	GLFWwindow* Window::window = nullptr;
 
@@ -83,6 +84,34 @@ namespace bulka {
 	{
 		return glfwWindowShouldClose(Window::window);
 	}
+
+	void Window::preUpdate()
+	{
+
+	}
+	void Window::update()
+	{
+		if (cursorHided) {
+			glfwSetCursorPos(window, realWidth / 2, realHeight / 2);
+		}
+	}
+	void Window::postUpdate()
+	{
+
+	}
+	void Window::preRender()
+	{
+
+	}
+	void Window::render()
+	{
+
+	}
+	void Window::postRender()
+	{
+
+	}
+
 	void Window::finalization()
 	{
 
@@ -96,6 +125,17 @@ namespace bulka {
 		else {
 			glfwSwapInterval(0);
 		}
+	}
+
+	void Window::hideCursor()
+	{
+		cursorHided = true;
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+	}
+	void Window::showCursor()
+	{
+		cursorHided = false;
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	}
 
 	int Window::getWidth() {
@@ -127,6 +167,10 @@ namespace bulka {
 	bool Window::isInWindow()
 	{
 		return inWindow;
+	}
+	bool Window::isCursorHided()
+	{
+		return cursorHided;
 	}
 	std::string Window::getTitle() {
 		return title;
