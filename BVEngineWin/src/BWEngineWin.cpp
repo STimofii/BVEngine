@@ -4,16 +4,15 @@
 
 int main()
 {
-	bcppul::SimpleTimer timer;
+	//bcppul::SimpleTimer timer;
 
-	int code = 0;
+	
 	try {
-		code = bulka::Engine::run();
-		return code;
+		return bulka::Engine::run();;
 	}
 	catch (std::exception exception) {
 		std::cerr << "Error in engine!!!: " << exception.what() << std::endl;
-		return code;
+		return bulka::Engine::getExitCode();
 	}
 	
 	return 0;

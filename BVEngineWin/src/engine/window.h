@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <string>
 #include <GLFW/glfw3.h>
 
 namespace bulka {
@@ -12,23 +13,35 @@ namespace bulka {
 		static int screenHeight;
 		static int realWidth;
 		static int realHeight;
-		static const char* title;
+		static float aspect;
+		static bool fullscrean;
+		static bool inWindow;
+		static std::string title;
+
+		static void windowSizeCallback(GLFWwindow* window, int width, int height);
+		static void windowFocusedCallback(GLFWwindow* window, int entered);
 	protected:
 	public:
 		static GLFWwindow* window;
-		static int create();
-		static void destroy();
+		static void create();
+		static void resize();
+		static void resize(int width, int height);
+		static bool isShouldClose();
+		static void finalization();
+		static void setVSync(bool vsync);
 		static int getWidth();
 		static int getHeight();
 		static int getScreenWidth();
 		static int getScreenHeight();
 		static int getRealWidth();
 		static int getRealHeight();
-		static const char* getTitle();
+		static float getAspect();
+		static bool isFullScrean();
+		static bool isInWindow();
+		static std::string getTitle();
 		static void setWidth(int width);
 		static void setHeight(int height);
-		static void setRealWidth(int width);
-		static void setRealHeight(int height);
-		static void setTitle(const char* title);
+		static void setTitle(std::string title);
+		static void setFullScrean(bool fullscrean);
 	};
 }
