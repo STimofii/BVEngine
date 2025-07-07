@@ -25,24 +25,24 @@ namespace bulka {
 		long long frames = 0;
 		while (running) {
 			timeFrameStart = unixTime();
-			Input::preUpdate();
+			preUpdate();
 			glfwPollEvents();
 			if (Window::isShouldClose() || Input::isKeyPressed(GLFW_KEY_ESCAPE)) {
 				std::cout << "Window should close... Or ESC is pressed" << std::endl;
 				exitCode = 0;
 				running = false;
 			}
-			Input::update();
-
+			inputUpdate();
+			update();
+			postUpdate();
+			preRender();
+			render();
 
 			glClearColor(135.0f/256, 206.0f/256, 235.0f/256, 1);
-			
-
 			glClear(GL_COLOR_BUFFER_BIT);
-
 			glfwSwapBuffers(Window::window);
-			Input::postUpdate();
-
+			
+			postRender();
 			do {
 				timeFrameElapsed = unixTime() - timeFrameStart;
 				deltaTime = timeFrameElapsed / 1000000000.0;
@@ -82,6 +82,47 @@ namespace bulka {
 	}
 	void Engine::postInit()
 	{
+
+	}
+
+	void Engine::preUpdate()
+	{
+		Input::preUpdate();
+		Window::preUpdate();
+	}
+	void Engine::inputUpdate()
+	{
+		if (Input::isKeyTyped(GLFW_KEY_TAB)) {
+			if (Window::isCursorHided()) {
+				Window::showCursor();
+			}
+			else {
+				Window::hideCursor();
+			}
+			
+		}
+	}
+	void Engine::update()
+	{
+		Input::update();
+		Window::update();
+	}
+	void Engine::postUpdate()
+	{
+		Input::postUpdate();
+		Window::postUpdate();
+	}
+	void Engine::preRender()
+	{
+		Window::preRender();
+	}
+	void Engine::render()
+	{
+		Window::render();
+	}
+	void Engine::postRender()
+	{
+		Window::postRender();
 	}
 
 	void Engine::stop(int statusCode)
