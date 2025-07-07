@@ -9,16 +9,19 @@ namespace bulka {
 	private:
 		static int width;
 		static int height;
+		static int xPos;
+		static int yPos;
 		static int screenWidth;
 		static int screenHeight;
 		static int realWidth;
 		static int realHeight;
 		static float aspect;
-		static bool fullscrean;
+		static bool fullscreen;
 		static bool inWindow;
 		static std::string title;
 
 		static void windowSizeCallback(GLFWwindow* window, int width, int height);
+		static void windowPosCallback(GLFWwindow* window, int xpos, int ypos);
 		static void windowFocusedCallback(GLFWwindow* window, int entered);
 	protected:
 	public:
@@ -31,17 +34,20 @@ namespace bulka {
 		static void setVSync(bool vsync);
 		static int getWidth();
 		static int getHeight();
+		static int getXPos();
+		static int getYPos();
 		static int getScreenWidth();
 		static int getScreenHeight();
 		static int getRealWidth();
 		static int getRealHeight();
 		static float getAspect();
-		static bool isFullScrean();
+		static bool isFullScreen();
 		static bool isInWindow();
 		static std::string getTitle();
 		static void setWidth(int width);
 		static void setHeight(int height);
 		static void setTitle(std::string title);
-		static void setFullScrean(bool fullscrean);
+		static void enableFullScrean();
+		static void disableFullScrean();
 	};
 }

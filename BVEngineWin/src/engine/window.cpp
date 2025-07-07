@@ -8,7 +8,7 @@ namespace bulka {
 	int Window::screenWidth = 0;
 	int Window::screenHeight = 0;
 	float Window::aspect = 0.0;
-	bool Window::fullscrean = false;
+	bool Window::fullscreen = false;
 	bool Window::inWindow = false;
 	std::string Window::title = "BVEngine";
 	GLFWwindow* Window::window = nullptr;
@@ -21,6 +21,11 @@ namespace bulka {
 		aspect = static_cast<float>(realWidth) / static_cast<float>(realHeight);
 		glViewport(0, 0, width, height);
 	}
+	void Window::windowPosCallback(GLFWwindow* window, int xpos, int ypos)
+	{
+		xPos = xpos;
+		yPos = ypos;
+	}
 	void Window::windowFocusedCallback(GLFWwindow* window, int focused)
 	{
 		inWindow = focused;
@@ -29,8 +34,8 @@ namespace bulka {
 	void Window::create()
 	{
 		inWindow = false;
-		fullscrean = false;
-		const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+		fullscreen = false;
+		const GLFWvidmode* mode = glfwGetVideoMode(glfwGetWindowMonitor(window));
 		screenWidth = mode->width;
 		screenHeight = mode->height;
 		if (width > screenWidth) {
@@ -56,6 +61,7 @@ namespace bulka {
 		glfwWindowHint(GLFW_VERSION_MINOR, 3);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		glfwSetWindowSizeCallback(window, windowSizeCallback);
+		glfwSetWindowPosCallback(window, windowPosCallback);
 		glfwSetWindowFocusCallback(window, windowFocusedCallback);
 		glfwSetWindowPos(window, screenWidth / 2 - realWidth / 2, screenHeight / 2 - realHeight / 2);
 
@@ -79,6 +85,20 @@ namespace bulka {
 		Window::height = height;
 		resize();
 	}
+
+	void Window::enableFullScrean() {
+		Window::fullscreen = true;
+		realWidth = screenWidth;
+		realHeight = screenHeight;
+		glfwSetWindowMonitor(window, glfwGetWindowMonitor(window), 0, 0, screenWidth, screenHeight, GLFW_DONT_CARE);
+	}
+	void Window::disableFullScrean() {
+		Window::fullscreen = false;
+		realWidth = width;
+		realHeight = height;
+		glfwSetWindowMonitor(window, glfwGetWindowMonitor(window), xPos, yPos, width, height, GLFW_DONT_CARE);
+	}
+
 	bool Window::isShouldClose()
 	{
 		return glfwWindowShouldClose(Window::window);
@@ -104,6 +124,12 @@ namespace bulka {
 	int Window::getHeight() {
 		return height;
 	}
+	int Window::getXPos() {
+		return xPos;
+	}
+	int Window::getYPos() {
+		return yPos;
+	}
 	int Window::getScreenWidth() {
 		return screenWidth;
 	}
@@ -120,9 +146,9 @@ namespace bulka {
 	{
 		return aspect;
 	}
-	bool Window::isFullScrean()
+	bool Window::isFullScreen()
 	{
-		return fullscrean;
+		return fullscreen;
 	}
 	bool Window::isInWindow()
 	{
@@ -142,9 +168,5 @@ namespace bulka {
 		if(window != nullptr){
 			glfwSetWindowTitle(window, title.c_str());
 		}
-	}
-	void Window::setFullScrean(bool fullscrean) {
-		Window::fullscrean = fullscrean;
-
 	}
 }
