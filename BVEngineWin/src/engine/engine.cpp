@@ -8,7 +8,7 @@ namespace bulka {
 	long long Engine::fpsLimit = 0;
 	double Engine::fpsLimitDelta = 0;
 
-	SimpleVertex3fMesh simpleMesh;
+	TexturedMesh simpleMesh;
 
 	int Engine::run() {
 		bcppul::Timer timer("engine", false);
@@ -19,11 +19,11 @@ namespace bulka {
 		init();
 		postInit();
 
-		simpleMesh.setVertices(new Vertex3f[4]{
-			Vertex3f(-1, -1, 0),
-			Vertex3f(1, -1, 0),
-			Vertex3f(1, 1, 0),
-			Vertex3f(-1, 1, 0)
+		simpleMesh.setVertices(new Vertex5f[4]{
+			Vertex5f(-1, -1, 0, 0, 1),
+			Vertex5f(1, -1, 0, 1, 1),
+			Vertex5f(1, 1, 0, 1, 0),
+			Vertex5f(-1, 1, 0, 0, 0)
 		}, 4);
 		simpleMesh.setIndices(new GLuint[6]{
 			0, 1, 2,
@@ -111,6 +111,7 @@ namespace bulka {
 
 		Input::init();
 		ShaderManager::init();
+		Renderer::init();
 	}
 	void Engine::postInit()
 	{
@@ -160,18 +161,7 @@ namespace bulka {
 	void Engine::render()
 	{
 		ShaderManager::mainShader.bind();
-		glBindVertexArray(simpleMesh.VAO);
-		if (simpleMesh.IBO != 0) {
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, simpleMesh.IBO);
-			glDrawElements(GL_TRIANGLES, simpleMesh.getIndicesLength(), GL_UNSIGNED_INT, 0);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-		}
-		else {
-			glDrawArrays(GL_TRIANGLES, 0, simpleMesh.getPositionsLength()/3);
-		}
-		
-
-		glBindVertexArray(0);
+		Renderer::render(simpleMesh);
 		ShaderManager::mainShader.unbind();
 		Window::render();
 	}
@@ -187,6 +177,7 @@ namespace bulka {
 	}
 	void Engine::onExit()
 	{
+		Renderer::finalization();
 		ShaderManager::finalization();
 		Input::finalization();
 		Window::finalization();

@@ -141,8 +141,9 @@
   <ItemGroup>
     <ClCompile Include="src\BWEngineWin.cpp" />
     <ClCompile Include="src\engine\engine.cpp" />
-    <ClCompile Include="src\engine\graphics\mesh\simple_mesh.cpp" />
+    <ClCompile Include="src\engine\graphics\mesh\textured_mesh.cpp" />
     <ClCompile Include="src\engine\graphics\mesh\vertex\vertex3f.cpp" />
+    <ClCompile Include="src\engine\graphics\renderer.cpp" />
     <ClCompile Include="src\engine\graphics\shader_manager.cpp" />
     <ClCompile Include="src\engine\input.cpp" />
     <ClCompile Include="src\engine\settings.cpp" />
@@ -150,8 +151,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\engine\engine.h" />
-    <ClInclude Include="src\engine\graphics\mesh\simple_mesh.h" />
+    <ClInclude Include="src\engine\graphics\mesh\textured_mesh.h" />
     <ClInclude Include="src\engine\graphics\mesh\vertex\vertex3f.h" />
+    <ClInclude Include="src\engine\graphics\renderer.h" />
     <ClInclude Include="src\engine\graphics\shader_manager.h" />
     <ClInclude Include="src\engine\input.h" />
     <ClInclude Include="src\engine\settings.h" />

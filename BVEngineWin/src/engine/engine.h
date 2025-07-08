@@ -9,8 +9,9 @@
 #include "window.h"
 #include "input.h"
 #include "settings.h"
-#include "graphics/mesh/simple_mesh.h"
+#include "graphics/mesh/textured_mesh.h"
 #include "graphics/shader_manager.h"
+#include "graphics/renderer.h"
 
 namespace bulka {
 	class Engine {
