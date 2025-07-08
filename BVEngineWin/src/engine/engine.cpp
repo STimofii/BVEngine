@@ -163,6 +163,7 @@ namespace bulka {
 	void Engine::render()
 	{
 		ShaderManager::mainShader.bind();
+		//glUniform1f(ShaderManager::mainShader.getUniformLocation("time"), glfwGetTime());
 		Renderer::render(simpleMesh);
 		ShaderManager::mainShader.unbind();
 		Window::render();

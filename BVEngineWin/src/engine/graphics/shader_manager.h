@@ -22,6 +22,7 @@ namespace bulka {
 			unsigned int load(std::string vertexPath, std::string fragmentPath);
 			void bind();
 			void unbind();
+			int getUniformLocation(const char* name);
 		};
 
 

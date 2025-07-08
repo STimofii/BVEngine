@@ -107,4 +107,8 @@ namespace bulka {
 	{
 		glUseProgram(0);
 	}
+	int ShaderManager::ShaderProgram::getUniformLocation(const char* name)
+	{
+		return glGetUniformLocation(programID, name);
+	}
 }
