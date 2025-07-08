@@ -19,11 +19,16 @@ namespace bulka {
 		init();
 		postInit();
 
-		simpleMesh.setVertices(new Vertex3f[3]{
-			Vertex3f(0, 0, 0),
-			Vertex3f(1, 0, 0),
-			Vertex3f(0, 1, 0)
-		}, 3);
+		simpleMesh.setVertices(new Vertex3f[4]{
+			Vertex3f(-1, -1, 0),
+			Vertex3f(1, -1, 0),
+			Vertex3f(1, 1, 0),
+			Vertex3f(-1, 1, 0)
+		}, 4);
+		simpleMesh.setIndices(new GLuint[6]{
+			0, 1, 2,
+			2, 3, 0
+		}, 6);
 		simpleMesh.update();
 
 		std::cout << "Initialized! Time for initializing - " << timer.getTimeSeconds() << std::endl;
