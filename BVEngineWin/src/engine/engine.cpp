@@ -26,22 +26,27 @@ namespace bulka {
 		while (running) {
 			timeFrameStart = unixTime();
 			preUpdate();
-			glfwPollEvents();
 			if (Window::isShouldClose() || Input::isKeyPressed(GLFW_KEY_ESCAPE)) {
 				std::cout << "Window should close... Or ESC is pressed" << std::endl;
 				exitCode = 0;
 				running = false;
 			}
+
+
 			inputUpdate();
 			update();
 			postUpdate();
+			glClearColor(135.0f / 256, 206.0f / 256, 235.0f / 256, 1);
+			glClear(GL_COLOR_BUFFER_BIT);
 			preRender();
+
+
 			render();
 
-			glClearColor(135.0f/256, 206.0f/256, 235.0f/256, 1);
-			glClear(GL_COLOR_BUFFER_BIT);
 			glfwSwapBuffers(Window::window);
-			
+			Input::pollEvents();
+			glfwPollEvents();
+
 			postRender();
 			do {
 				timeFrameElapsed = unixTime() - timeFrameStart;
@@ -74,16 +79,25 @@ namespace bulka {
 			throw new std::exception("GLFW CAN'T INIT!!!");
 		}
 
+
 		Window::setRealWidth(1280);
 		Window::setRealHeight(720);
 		Window::setTitle(new char[10] {"BVEngine!"});
 		Window::create();
 
+		if (glewInit() != GLEW_OK) {
+			std::cerr << "GLEW CAN'T INIT!!!" << std::endl;
+			throw new std::exception("GLEW CAN'T INIT!!!");
+		}
+
 		Input::init();
+		ShaderManager::init();
 	}
 	void Engine::postInit()
 	{
-
+		glEnable(GL_CULL_FACE);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
 	void Engine::preUpdate()
@@ -140,8 +154,9 @@ namespace bulka {
 	}
 	void Engine::onExit()
 	{
-		Window::finalization();
+		ShaderManager::finalization();
 		Input::finalization();
+		Window::finalization();
 		Settings::finalization();
 	}
 	int Engine::getExitCode()

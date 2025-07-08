@@ -30,6 +30,9 @@
     <ClCompile Include="src\engine\settings.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="src\engine\graphics\shader_manager.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\engine\engine.h">
@@ -44,5 +47,12 @@
     <ClInclude Include="src\engine\settings.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="src\engine\graphics\shader_manager.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\shaders\test.vert" />
+    <None Include="res\shaders\test.frag" />
   </ItemGroup>
 </Project>

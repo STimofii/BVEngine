@@ -1,10 +1,10 @@
 #include "window.h"
 
 namespace bulka {
-	int Window::memWidth = 1280;
-	int Window::memHeight = 720;
 	int Window::realWidth = 1280;
 	int Window::realHeight = 720;
+	int Window::memWidth = realWidth;
+	int Window::memHeight = realHeight;
 	int Window::screenWidth = 0;
 	int Window::screenHeight = 0;
 	int Window::xPos = 0;

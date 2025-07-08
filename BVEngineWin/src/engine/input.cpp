@@ -90,6 +90,18 @@ namespace bulka {
 	}
 	void Input::preUpdate()
 	{
+
+	}
+	void Input::update()
+	{
+
+	}
+	void Input::postUpdate()
+	{
+
+	}
+	void Input::pollEvents()
+	{
 		key_repeat = 0;
 		for (size_t i = 0; i <= GLFW_KEY_LAST; i++)
 		{
@@ -104,14 +116,6 @@ namespace bulka {
 		previousMouseY = mouseY;
 		mouseDeltaX = previousMouseX - mouseX;
 		mouseDeltaY = previousMouseY - mouseY;
-	}
-	void Input::update()
-	{
-
-	}
-	void Input::postUpdate()
-	{
-
 	}
 
 

@@ -4,10 +4,12 @@
 #include <algorithm>
 #include <chrono>
 #include <bcppul/timer.h>
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include "window.h"
 #include "input.h"
 #include "settings.h"
+#include "graphics/shader_manager.h"
 
 namespace bulka {
 	class Engine {

@@ -2,7 +2,9 @@
 
 #include <array>
 #include <algorithm>
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
 
 #include "window.h"
 
@@ -35,6 +37,7 @@ namespace bulka {
 		static void preUpdate();
 		static void update();
 		static void postUpdate();
+		static void pollEvents();
 		static void finalization();
 		static bool isKeyPressed(int key);
 		static bool isKeyTyped(int key);
