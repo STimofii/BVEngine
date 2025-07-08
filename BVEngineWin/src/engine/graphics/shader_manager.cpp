@@ -1,10 +1,10 @@
 #include "shader_manager.h"
 
 namespace bulka {
-	ShaderManager::ShaderProgram ShaderManager::testShader;
+	ShaderManager::ShaderProgram ShaderManager::mainShader;
 	void ShaderManager::init() {
-		if (testShader.load("res/shaders/test.vert", "res/shaders/test.frag") == 0) {
-			throw std::exception("Can't load shaders: res/shaders/test.frag, res/shaders/test.vert");
+		if (mainShader.load("res/shaders/main.vert", "res/shaders/main.frag") == 0) {
+			throw std::exception("Can't load shaders: res/shaders/main.frag, res/shaders/main.vert");
 		}
 	}
 	void ShaderManager::finalization() {

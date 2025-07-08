@@ -20,12 +20,12 @@ namespace bulka {
 			ShaderProgram();
 			~ShaderProgram();
 			unsigned int load(std::string vertexPath, std::string fragmentPath);
-			inline void bind();
-			inline void unbind();
+			void bind();
+			void unbind();
 		};
 
 
-		static ShaderProgram testShader;
+		static ShaderProgram mainShader;
 
 		static void init();
 		static void finalization();

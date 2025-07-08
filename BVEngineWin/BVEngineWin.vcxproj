@@ -141,6 +141,8 @@
   <ItemGroup>
     <ClCompile Include="src\BWEngineWin.cpp" />
     <ClCompile Include="src\engine\engine.cpp" />
+    <ClCompile Include="src\engine\graphics\mesh\simple_mesh.cpp" />
+    <ClCompile Include="src\engine\graphics\mesh\vertex\vertex3f.cpp" />
     <ClCompile Include="src\engine\graphics\shader_manager.cpp" />
     <ClCompile Include="src\engine\input.cpp" />
     <ClCompile Include="src\engine\settings.cpp" />
@@ -148,14 +150,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\engine\engine.h" />
+    <ClInclude Include="src\engine\graphics\mesh\simple_mesh.h" />
+    <ClInclude Include="src\engine\graphics\mesh\vertex\vertex3f.h" />
     <ClInclude Include="src\engine\graphics\shader_manager.h" />
     <ClInclude Include="src\engine\input.h" />
     <ClInclude Include="src\engine\settings.h" />
     <ClInclude Include="src\engine\window.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\shaders\test.frag" />
-    <None Include="res\shaders\test.vert" />
+    <None Include="res\shaders\main.frag" />
+    <None Include="res\shaders\main.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

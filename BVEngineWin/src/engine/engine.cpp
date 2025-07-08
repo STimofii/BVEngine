@@ -7,6 +7,9 @@ namespace bulka {
 	double Engine::deltaTime = 0;
 	long long Engine::fpsLimit = 0;
 	double Engine::fpsLimitDelta = 0;
+
+	SimpleVertex3fMesh simpleMesh;
+
 	int Engine::run() {
 		bcppul::Timer timer("engine", false);
 		timer.start();
@@ -15,6 +18,14 @@ namespace bulka {
 		preInit();
 		init();
 		postInit();
+
+		simpleMesh.setVertices(new Vertex3f[3]{
+			Vertex3f(0, 0, 0),
+			Vertex3f(1, 0, 0),
+			Vertex3f(0, 1, 0)
+		}, 3);
+		simpleMesh.update();
+
 		std::cout << "Initialized! Time for initializing - " << timer.getTimeSeconds() << std::endl;
 		
 		running = true;
@@ -40,7 +51,6 @@ namespace bulka {
 			glClear(GL_COLOR_BUFFER_BIT);
 			preRender();
 
-
 			render();
 
 			glfwSwapBuffers(Window::window);
@@ -48,6 +58,10 @@ namespace bulka {
 			glfwPollEvents();
 
 			postRender();
+
+			if (glGetError() != GL_NO_ERROR) {
+				std::cerr << "GL_ERROR: " << glGetError() << std::endl;
+			}
 			do {
 				timeFrameElapsed = unixTime() - timeFrameStart;
 				deltaTime = timeFrameElapsed / 1000000000.0;
@@ -140,6 +154,20 @@ namespace bulka {
 	}
 	void Engine::render()
 	{
+		ShaderManager::mainShader.bind();
+		glBindVertexArray(simpleMesh.VAO);
+		if (simpleMesh.IBO != 0) {
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, simpleMesh.IBO);
+			glDrawElements(GL_TRIANGLES, simpleMesh.getIndicesLength(), GL_UNSIGNED_INT, 0);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		}
+		else {
+			glDrawArrays(GL_TRIANGLES, 0, simpleMesh.getPositionsLength()/3);
+		}
+		
+
+		glBindVertexArray(0);
+		ShaderManager::mainShader.unbind();
 		Window::render();
 	}
 	void Engine::postRender()
