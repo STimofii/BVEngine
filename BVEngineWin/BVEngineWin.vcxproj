@@ -142,11 +142,13 @@
     <ClCompile Include="src\BWEngineWin.cpp" />
     <ClCompile Include="src\engine\engine.cpp" />
     <ClCompile Include="src\engine\input.cpp" />
+    <ClCompile Include="src\engine\settings.cpp" />
     <ClCompile Include="src\engine\window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\engine\engine.h" />
     <ClInclude Include="src\engine\input.h" />
+    <ClInclude Include="src\engine\settings.h" />
     <ClInclude Include="src\engine\window.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

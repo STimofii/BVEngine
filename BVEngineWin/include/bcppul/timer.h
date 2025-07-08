@@ -33,7 +33,7 @@ namespace bcppul {
 		friend bool operator< (Timer& f, Timer& s);
 		friend bool operator>= (Timer& f, Timer& s);
 		friend bool operator<= (Timer& f, Timer& s);
-		friend BCPPUL_API std::ostream& operator<< (std::ostream& out, Timer& timer);
+		friend std::ostream& operator<< (std::ostream& out, Timer& timer);
 
 		virtual unsigned long long start();
 		virtual unsigned long long stop();

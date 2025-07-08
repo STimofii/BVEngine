@@ -7,6 +7,7 @@
 #include <GLFW/glfw3.h>
 #include "window.h"
 #include "input.h"
+#include "settings.h"
 
 namespace bulka {
 	class Engine {

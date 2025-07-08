@@ -15,13 +15,17 @@
 #include "bcppul/file_utils.h"
 
 namespace bcppul {
-	BCPPUL_API const std::map<char, char> simple_escapes = {
+	const std::map<char, char> simple_escapes = {
 {'n', '\n'}, {'t', '\t'}, {'r', '\r'}, {'a', '\a'},
 {'b', '\b'}, {'f', '\f'}, {'v', '\v'}, {'\\', '\\'},
 {'\'', '\''}, {'\"', '\"'}, {'?', '\?'}
 	};
 	BCPPUL_API std::string parseEscapeSequences(const std::string& input_str);
 	BCPPUL_API std::string replaceEscapesWithRaw(const std::string& input_str);
+	BCPPUL_API size_t findXOf(std::string& str, char c, size_t x);
+	BCPPUL_API std::string& ltrim(std::string& s);
+	BCPPUL_API std::string& rtrim(std::string& s);
+    BCPPUL_API std::string& trim(std::string& s);
 } // namespace bcppul
 
 #endif

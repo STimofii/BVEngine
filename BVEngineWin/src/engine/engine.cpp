@@ -52,7 +52,7 @@ namespace bulka {
 				timeFPS = unixTime();
 				frames = 0;
 				std::cout << "FPS: " << fps << std::endl;
-				Window::setTitle("BVEngine! FPS: " + std::to_string(fps));
+				Window::setTitle(Settings::GAME_NAME + "! FPS: " + std::to_string(fps));
 			}
 			++frames;
 		}
@@ -65,6 +65,7 @@ namespace bulka {
 
 	void Engine::preInit()
 	{
+		Settings::init();
 	}
 	void Engine::init()
 	{
@@ -141,6 +142,7 @@ namespace bulka {
 	{
 		Window::finalization();
 		Input::finalization();
+		Settings::finalization();
 	}
 	int Engine::getExitCode()
 	{
