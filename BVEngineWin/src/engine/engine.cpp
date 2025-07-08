@@ -30,6 +30,8 @@ namespace bulka {
 			2, 3, 0
 		}, 6);
 		simpleMesh.update();
+		Texture bulka = Texture("res/textures/bulka.png");
+		simpleMesh.setTexture(&bulka);
 
 		std::cout << "Initialized! Time for initializing - " << timer.getTimeSeconds() << std::endl;
 		

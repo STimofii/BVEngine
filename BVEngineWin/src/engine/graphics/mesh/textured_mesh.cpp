@@ -1,8 +1,8 @@
 #include "textured_mesh.h"
 
 namespace bulka {
-	TexturedMesh::TexturedMesh(Vertex5f* vertices, size_t vertices_length, GLuint* indices, size_t indices_length) : 
-		indices(indices), indices_length(indices_length)
+	TexturedMesh::TexturedMesh(Vertex5f* vertices, size_t vertices_length, GLuint* indices, size_t indices_length, Texture* texture) : 
+		indices(indices), indices_length(indices_length), texture(texture)
 	{
 		setVertices(vertices, vertices_length);
 	}
@@ -10,6 +10,9 @@ namespace bulka {
 	{
 		delete[] positions;
 		delete[] indices;
+		glDeleteBuffers(1, &PBO);
+		glDeleteBuffers(1, &IBO);
+		glDeleteVertexArrays(1, &VAO);
 	}
 
 	void TexturedMesh::update() {
@@ -80,5 +83,13 @@ namespace bulka {
 		indices_length = length;
 		delete[] this->indices;
 		this->indices = indices;
+	}
+	Texture* TexturedMesh::getTexture()
+	{
+		return texture;
+	}
+	void TexturedMesh::setTexture(Texture* texture)
+	{
+		this->texture = texture;
 	}
 }

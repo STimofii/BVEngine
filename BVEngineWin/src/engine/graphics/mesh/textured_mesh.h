@@ -2,8 +2,10 @@
 
 #include <vector>
 #include <iostream>
+#include <exception>
 #include <GL/glew.h>
 #include "vertex/vertex3f.h"
+#include "texture.h"
 
 namespace bulka {
 	class TexturedMesh {
@@ -17,10 +19,12 @@ namespace bulka {
 		GLuint* indices = nullptr;
 		size_t positions_length = 0;
 		size_t indices_length = 0;
-		TexturedMesh(Vertex5f* vertices = nullptr, size_t vertices_length = 0, GLuint* indices = nullptr, size_t indices_length = 0);
+		Texture* texture;
+		TexturedMesh(Vertex5f* vertices = nullptr, size_t vertices_length = 0, GLuint* indices = nullptr, size_t indices_length = 0, Texture* texture = nullptr);
 		~TexturedMesh();
 
 		void update();
+		//void loadTexture(std::string path);
 
 		size_t getPositionsLength();
 		size_t getIndicesLength();
@@ -29,6 +33,7 @@ namespace bulka {
 		void setPositions(GLfloat* positions, size_t length);
 		GLuint* getIndices();
 		void setIndices(GLuint* indices, size_t indices_length);
-
+		Texture* getTexture();
+		void setTexture(Texture* texture);
 	};
 }
