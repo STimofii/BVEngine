@@ -3,7 +3,9 @@
 namespace bulka {
 	Texture::Texture(const char* path)
 	{
-		loadTexture(path);
+		if(path != nullptr){
+			loadTexture(path);
+		}
 	}
 
 	Texture::~Texture()
@@ -30,19 +32,24 @@ namespace bulka {
 			default:
 				alpha = GL_RED;
 			}
-			glGenTextures(1, &texture);
-			glBindTexture(GL_TEXTURE_2D, texture);
-			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, alpha, GL_UNSIGNED_BYTE, (GLvoid*) data);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-			glBindTexture(GL_TEXTURE_2D, 0);
+			loadTexture(data, width, height, alpha);
 			stbi_image_free(data);
 		}
 		else
 		{
 			throw std::exception((std::string("Can't load texture ") + std::string(path)).c_str());
 		}
+	}
+
+	void Texture::loadTexture(unsigned char* data, int width, int height, int alpha)
+	{
+		glGenTextures(1, &texture);
+		glBindTexture(GL_TEXTURE_2D, texture);
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, alpha, GL_UNSIGNED_BYTE, (GLvoid*)data);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 	void Texture::bind() {

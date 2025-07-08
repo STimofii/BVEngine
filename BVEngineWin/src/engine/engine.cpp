@@ -30,8 +30,7 @@ namespace bulka {
 			2, 3, 0
 		}, 6);
 		simpleMesh.update();
-		Texture bulka = Texture("res/textures/bulka.png");
-		simpleMesh.setTexture(&bulka);
+		simpleMesh.setTexture(TextureManager::getTexture("res/textures/apple.png"));
 
 		std::cout << "Initialized! Time for initializing - " << timer.getTimeSeconds() << std::endl;
 		
@@ -113,6 +112,7 @@ namespace bulka {
 
 		Input::init();
 		ShaderManager::init();
+		TextureManager::init();
 		Renderer::init();
 	}
 	void Engine::postInit()
@@ -180,6 +180,7 @@ namespace bulka {
 	void Engine::onExit()
 	{
 		Renderer::finalization();
+		TextureManager::finalization();
 		ShaderManager::finalization();
 		Input::finalization();
 		Window::finalization();

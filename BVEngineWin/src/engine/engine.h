@@ -12,6 +12,7 @@
 #include "graphics/mesh/textured_mesh.h"
 #include "graphics/shader_manager.h"
 #include "graphics/renderer.h"
+#include "graphics/texture_manager.h"
 
 namespace bulka {
 	class Engine {

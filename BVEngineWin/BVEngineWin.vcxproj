@@ -146,6 +146,7 @@
     <ClCompile Include="src\engine\graphics\renderer.cpp" />
     <ClCompile Include="src\engine\graphics\shader_manager.cpp" />
     <ClCompile Include="src\engine\graphics\mesh\texture.cpp" />
+    <ClCompile Include="src\engine\graphics\tetxure_manager.cpp" />
     <ClCompile Include="src\engine\input.cpp" />
     <ClCompile Include="src\engine\settings.cpp" />
     <ClCompile Include="src\engine\window.cpp" />
@@ -158,6 +159,7 @@
     <ClInclude Include="src\engine\graphics\renderer.h" />
     <ClInclude Include="src\engine\graphics\shader_manager.h" />
     <ClInclude Include="src\engine\graphics\mesh\texture.h" />
+    <ClInclude Include="src\engine\graphics\texture_manager.h" />
     <ClInclude Include="src\engine\input.h" />
     <ClInclude Include="src\engine\settings.h" />
     <ClInclude Include="src\engine\window.h" />
