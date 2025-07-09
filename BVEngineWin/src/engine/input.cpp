@@ -112,10 +112,22 @@ namespace bulka {
 				keys_released[i] = false;
 			}
 		}
-		previousMouseX = mouseX;
-		previousMouseY = mouseY;
-		mouseDeltaX = previousMouseX - mouseX;
-		mouseDeltaY = previousMouseY - mouseY;
+	}
+
+	void Input::postPollEvents()
+	{
+		if (Window::isCursorHided()) {
+			mouseDeltaX = previousMouseX - mouseX;
+			mouseDeltaY = previousMouseY - mouseY;
+			Window::setCursorInCenter();
+			previousMouseX = mouseX;
+			previousMouseY = mouseY;
+		}
+		else {
+			mouseDeltaX = 0;
+			mouseDeltaY = 0;
+		}
+
 	}
 
 
@@ -153,6 +165,14 @@ namespace bulka {
 	double Input::getMouseY()
 	{
 		return mouseY;
+	}
+	void Input::setMouseX(double mouseX)
+	{
+		Input::mouseX = mouseX;
+	}
+	void Input::setMouseY(double mouseY)
+	{
+		Input::mouseY = mouseY;
 	}
 	double Input::getMouseDeltaX()
 	{

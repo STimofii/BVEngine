@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\BWEngineWin.cpp" />
+    <ClCompile Include="src\engine\camera.cpp" />
     <ClCompile Include="src\engine\engine.cpp" />
     <ClCompile Include="src\engine\graphics\mesh\textured_mesh.cpp" />
     <ClCompile Include="src\engine\graphics\mesh\vertex\vertex3f.cpp" />
@@ -153,6 +154,7 @@
     <ClCompile Include="src\engine\stb_image_impl.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\engine\camera.h" />
     <ClInclude Include="src\engine\engine.h" />
     <ClInclude Include="src\engine\graphics\mesh\textured_mesh.h" />
     <ClInclude Include="src\engine\graphics\mesh\vertex\vertex3f.h" />

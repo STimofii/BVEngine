@@ -8,7 +8,8 @@ namespace bulka {
 	long long Engine::fpsLimit = 0;
 	double Engine::fpsLimitDelta = 0;
 
-	TexturedMesh simpleMesh;
+	Camera Engine::camera;
+	TexturedMesh Engine::simpleMesh;
 
 	int Engine::run() {
 		bcppul::Timer timer("engine", false);
@@ -18,6 +19,12 @@ namespace bulka {
 		preInit();
 		init();
 		postInit();
+
+		//setFPSLimit(30);
+
+		camera.setPosition(0, 0, 10);
+		camera.updateViewMatrix();
+		camera.updateProjViewMatrix();
 
 		simpleMesh.setVertices(new Vertex5f[4]{
 			Vertex5f(-1, -1, 0, 0, 1),
@@ -62,6 +69,7 @@ namespace bulka {
 			glfwSwapBuffers(Window::window);
 			Input::pollEvents();
 			glfwPollEvents();
+			Input::postPollEvents();
 
 			postRender();
 
@@ -110,9 +118,10 @@ namespace bulka {
 			throw new std::exception("GLEW CAN'T INIT!!!");
 		}
 
-		Input::init();
 		ShaderManager::init();
+		Input::init();
 		TextureManager::init();
+		camera.init();
 		Renderer::init();
 	}
 	void Engine::postInit()
@@ -120,6 +129,7 @@ namespace bulka {
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		camera.postInit();
 	}
 
 	void Engine::preUpdate()
@@ -145,6 +155,8 @@ namespace bulka {
 				Window::enableFullScrean();
 			}
 		}
+
+		camera.inputUpdate();
 	}
 	void Engine::update()
 	{
@@ -163,7 +175,6 @@ namespace bulka {
 	void Engine::render()
 	{
 		ShaderManager::mainShader.bind();
-		//glUniform1f(ShaderManager::mainShader.getUniformLocation("time"), glfwGetTime());
 		Renderer::render(simpleMesh);
 		ShaderManager::mainShader.unbind();
 		Window::render();
@@ -181,6 +192,7 @@ namespace bulka {
 	void Engine::onExit()
 	{
 		Renderer::finalization();
+		camera.finalization();
 		TextureManager::finalization();
 		ShaderManager::finalization();
 		Input::finalization();
@@ -190,6 +202,10 @@ namespace bulka {
 	int Engine::getExitCode()
 	{
 		return exitCode;
+	}
+	Camera& Engine::getCamera()
+	{
+		return camera;
 	}
 	long long Engine::unixTime()
 	{

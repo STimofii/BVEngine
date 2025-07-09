@@ -38,6 +38,7 @@ namespace bulka {
 		static void update();
 		static void postUpdate();
 		static void pollEvents();
+		static void postPollEvents();
 		static void finalization();
 		static bool isKeyPressed(int key);
 		static bool isKeyTyped(int key);
@@ -47,6 +48,8 @@ namespace bulka {
 		static int getKeyRepeatScancode();
 		static double getMouseX();
 		static double getMouseY();
+		static void setMouseX(double mouseX);
+		static void setMouseY(double mouseY);
 		static double getMouseDeltaX();
 		static double getMouseDeltaY();
 		static double getScrollX();

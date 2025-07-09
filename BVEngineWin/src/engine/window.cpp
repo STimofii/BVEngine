@@ -21,8 +21,7 @@ namespace bulka {
 	void Window::windowSizeCallback(GLFWwindow* window, int width, int height) {
 		Window::realWidth = width;
 		Window::realHeight = height;
-		aspect = static_cast<float>(realWidth) / static_cast<float>(realHeight);
-		glViewport(0, 0, realWidth, realHeight);
+		onResize();
 	}
 	void Window::windowPosCallback(GLFWwindow* window, int xpos, int ypos)
 	{
@@ -70,9 +69,16 @@ namespace bulka {
 
 		glfwMakeContextCurrent(window);
 		setVSync(false);
-		glViewport(0, 0, realWidth, realHeight);
+		onResize();
 		
 		glfwShowWindow(window);
+	}
+	void Window::onResize() {
+		aspect = static_cast<float>(realWidth) / static_cast<float>(realHeight);
+		glViewport(0, 0, realWidth, realHeight);
+		Engine::getCamera().updateOrthoMatrix();
+		Engine::getCamera().updateProjectionMatrix();
+		Engine::getCamera().updateProjViewMatrix();
 	}
 	void Window::resize()
 	{
@@ -117,9 +123,7 @@ namespace bulka {
 	}
 	void Window::update()
 	{
-		if (cursorHided) {
-			glfwSetCursorPos(window, realWidth / 2, realHeight / 2);
-		}
+
 	}
 	void Window::postUpdate()
 	{
@@ -136,6 +140,13 @@ namespace bulka {
 	void Window::postRender()
 	{
 
+	}
+
+	void Window::setCursorInCenter()
+	{
+		glfwSetCursorPos(window, realWidth / 2, realHeight / 2);
+		Input::setMouseX(realWidth / 2);
+		Input::setMouseY(realHeight / 2);
 	}
 
 	void Window::finalization()

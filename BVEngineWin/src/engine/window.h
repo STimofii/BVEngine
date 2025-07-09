@@ -4,6 +4,8 @@
 #include <string>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include "camera.h"
+#include "engine.h"
 
 namespace bulka {
 	class Window {
@@ -32,6 +34,7 @@ namespace bulka {
 		static GLFWwindow* window;
 		static void create();
 		static void resize();
+		static void onResize();
 		static void resize(int width, int height);
 		static bool isShouldClose();
 		static void preUpdate();
@@ -41,6 +44,7 @@ namespace bulka {
 		static void preRender();
 		static void render();
 		static void postRender();
+		static void setCursorInCenter();
 		static void finalization();
 		static void setVSync(bool vsync);
 		static void hideCursor();
