@@ -44,12 +44,18 @@ namespace bulka {
 		static bool isKeyTyped(int key);
 		static bool isKeyReleased(int key);
 		static bool isKeyRepeated(int key);
+		static bool isMouseButtonPressed(int key);
+		static bool isMouseButtonTyped(int key);
+		static bool isMouseButtonReleased(int key);
+		static bool isMouseButtonRepeated(int key);
 		static int getKeyRepeat();
 		static int getKeyRepeatScancode();
 		static double getMouseX();
 		static double getMouseY();
 		static void setMouseX(double mouseX);
 		static void setMouseY(double mouseY);
+		static void setPreviousMouseX(double mouseX);
+		static void setPreviousMouseY(double mouseY);
 		static double getMouseDeltaX();
 		static double getMouseDeltaY();
 		static double getScrollX();

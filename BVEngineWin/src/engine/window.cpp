@@ -1,4 +1,5 @@
 #include "window.h"
+#include "hero.h"
 
 namespace bulka {
 	int Window::realWidth = 1280;
@@ -15,6 +16,7 @@ namespace bulka {
 	bool Window::fullscreen = false;
 	bool Window::inWindow = false;
 	bool Window::cursorHided = false;
+	bool Window::cursorJustHided = false;
 	std::string Window::title = "BVEngine";
 	GLFWwindow* Window::window = nullptr;
 
@@ -76,9 +78,9 @@ namespace bulka {
 	void Window::onResize() {
 		aspect = static_cast<float>(realWidth) / static_cast<float>(realHeight);
 		glViewport(0, 0, realWidth, realHeight);
-		Engine::getCamera().updateOrthoMatrix();
-		Engine::getCamera().updateProjectionMatrix();
-		Engine::getCamera().updateProjViewMatrix();
+		Engine::getHero().getCamera().updateOrthoMatrix();
+		Engine::getHero().getCamera().updateProjectionMatrix();
+		Engine::getHero().getCamera().updateProjViewMatrix();
 	}
 	void Window::resize()
 	{
@@ -93,7 +95,7 @@ namespace bulka {
 		resize();
 	}
 
-	void Window::enableFullScrean() {
+	void Window::enableFullScreen() {
 		Window::fullscreen = true;
 		memWidth = realWidth;
 		memHeight = realHeight;
@@ -104,7 +106,7 @@ namespace bulka {
 		glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, screenWidth, screenHeight, GLFW_DONT_CARE);
 		glViewport(0, 0, realWidth, realHeight);
 	}
-	void Window::disableFullScrean() {
+	void Window::disableFullScreen() {
 		Window::fullscreen = false;
 		realWidth = memWidth;
 		realHeight = memHeight;
@@ -127,7 +129,7 @@ namespace bulka {
 	}
 	void Window::postUpdate()
 	{
-
+		cursorJustHided = false;
 	}
 	void Window::preRender()
 	{
@@ -147,6 +149,8 @@ namespace bulka {
 		glfwSetCursorPos(window, realWidth / 2, realHeight / 2);
 		Input::setMouseX(realWidth / 2);
 		Input::setMouseY(realHeight / 2);
+		Input::setPreviousMouseX(realWidth / 2);
+		Input::setPreviousMouseY(realHeight / 2);
 	}
 
 	void Window::finalization()
@@ -167,6 +171,7 @@ namespace bulka {
 	void Window::hideCursor()
 	{
 		cursorHided = true;
+		cursorJustHided = true;
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 	}
 	void Window::showCursor()
@@ -208,6 +213,10 @@ namespace bulka {
 	bool Window::isCursorHided()
 	{
 		return cursorHided;
+	}
+	bool Window::isCursorJustHided()
+	{
+		return cursorJustHided;
 	}
 	std::string Window::getTitle() {
 		return title;

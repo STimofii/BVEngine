@@ -35,52 +35,7 @@ namespace bulka {
 	}
 	void Camera::inputUpdate()
 	{
-		bool moved = false;
-		bool rotated = false;
-		float x = 0;
-		float y = 0;
-		float z = 0;
-		float addRotX = 0;
-		float addRotY = 0;
-		if (Input::isKeyPressed(GLFW_KEY_W)) {
-			z = -1;
-			moved = true;
-		}
-		if (Input::isKeyPressed(GLFW_KEY_A)) {
-			x = -1;
-			moved = true;
-		}
-		if (Input::isKeyPressed(GLFW_KEY_S)) {
-			z = 1;
-			moved = true;
-		}
-		if (Input::isKeyPressed(GLFW_KEY_D)) {
-			x = 1;
-			moved = true;
-		}
-		if (Input::isKeyPressed(GLFW_KEY_SPACE)) {
-			y = 1;
-			moved = true;
-		}
-		if (Input::isKeyPressed(GLFW_KEY_LEFT_SHIFT)) {
-			y = -1;
-			moved = true;
-		}
-		if (Input::getMouseDeltaX != 0) {
-			addRotX = -sensitivity * Input::getMouseDeltaX();
-			rotated = true;
-		}
-		if (Input::getMouseDeltaY != 0) {
-			addRotY = -sensitivity * Input::getMouseDeltaY();
-			rotated = true;
-		}
-		float moveSpeed = Engine::getDeltaTime() * speed;
-		addRotation(addRotY, addRotX, 0);
-		moveInDirection(moveSpeed * x, moveSpeed * y, moveSpeed * z);
-		if (moved || rotated) {
-			updateViewMatrix();
-			updateProjViewMatrix();
-		}
+
 	}
 	void Camera::addPosition(float x, float y, float z)
 	{
@@ -121,7 +76,24 @@ namespace bulka {
 		else if (rotation.x > 90) {
 			rotation.x = 90;
 		}
-		
+	}
+	glm::vec3& Camera::getPosition()
+	{
+		return position;
+	}
+	glm::vec3& Camera::getRotation()
+	{
+		return rotation;
+	}
+	float Camera::getFOV()
+	{
+		return fov;
+	}
+	void Camera::setFOV(float fov)
+	{
+		this->fov = fov;
+		updateProjectionMatrix();
+		updateProjViewMatrix();
 	}
 	void Camera::updateVectors()
 	{
@@ -129,16 +101,11 @@ namespace bulka {
 	}
 	void Camera::updateDirection()
 	{
-		float pitch = rotation.x * (bcppul::PI / 180);
-		float yaw = rotation.y * (bcppul::PI / 180);
-		float roll = rotation.z * (bcppul::PI / 180);
-		direction.x = std::sin(pitch) * std::cos(yaw);
-		direction.y = -std::sin(pitch);
-		direction.z = -(std::cos(pitch) * std::cos(yaw));
+
 	}
 	void Camera::updateProjectionMatrix()
 	{
-		projectionMatrix = glm::perspective(fov, Window::getAspect(), 0.01f, 100.0f);
+		projectionMatrix = glm::perspective(fov, Window::getAspect(), 0.01f, 1000.0f);
 	}
 	void Camera::updateViewMatrix()
 	{

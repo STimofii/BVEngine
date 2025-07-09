@@ -15,7 +15,7 @@
 #include "graphics/texture_manager.h"
 
 namespace bulka {
-	class Camera;
+	class Hero;
 	class Engine {
 	private:
 		static bool running;
@@ -24,7 +24,7 @@ namespace bulka {
 		static double deltaTime;
 		static long long fpsLimit;
 		static double fpsLimitDelta;
-		static Camera camera;
+		static Hero hero;
 		static TexturedMesh simpleMesh;
 	protected:
 	public:
@@ -50,6 +50,6 @@ namespace bulka {
 		static long long getFPSLimit();
 		static void setFPSLimit(long long fpsLimit);
 
-		static Camera& getCamera();
+		static Hero& getHero();
 	};
 }

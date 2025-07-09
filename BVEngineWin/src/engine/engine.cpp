@@ -1,4 +1,5 @@
 #include "engine.h"
+#include "hero.h"
 
 namespace bulka {
 	bool Engine::running = false;
@@ -8,7 +9,7 @@ namespace bulka {
 	long long Engine::fpsLimit = 0;
 	double Engine::fpsLimitDelta = 0;
 
-	Camera Engine::camera;
+	Hero Engine::hero;
 	TexturedMesh Engine::simpleMesh;
 
 	int Engine::run() {
@@ -20,11 +21,9 @@ namespace bulka {
 		init();
 		postInit();
 
-		//setFPSLimit(30);
+		setFPSLimit(0);
 
-		camera.setPosition(0, 0, 10);
-		camera.updateViewMatrix();
-		camera.updateProjViewMatrix();
+		hero.setPosition(0, 0, 10);
 
 		simpleMesh.setVertices(new Vertex5f[4]{
 			Vertex5f(-1, -1, 0, 0, 1),
@@ -121,7 +120,7 @@ namespace bulka {
 		ShaderManager::init();
 		Input::init();
 		TextureManager::init();
-		camera.init();
+		hero.init();
 		Renderer::init();
 	}
 	void Engine::postInit()
@@ -129,7 +128,7 @@ namespace bulka {
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		camera.postInit();
+		hero.postInit();
 	}
 
 	void Engine::preUpdate()
@@ -149,14 +148,14 @@ namespace bulka {
 		}
 		if (Input::isKeyTyped(GLFW_KEY_F11)) {
 			if (Window::isFullScreen()) {
-				Window::disableFullScrean();
+				Window::disableFullScreen();
 			}
 			else {
-				Window::enableFullScrean();
+				Window::enableFullScreen();
 			}
 		}
 
-		camera.inputUpdate();
+		hero.inputUpdate();
 	}
 	void Engine::update()
 	{
@@ -192,7 +191,7 @@ namespace bulka {
 	void Engine::onExit()
 	{
 		Renderer::finalization();
-		camera.finalization();
+		hero.finalization();
 		TextureManager::finalization();
 		ShaderManager::finalization();
 		Input::finalization();
@@ -203,9 +202,9 @@ namespace bulka {
 	{
 		return exitCode;
 	}
-	Camera& Engine::getCamera()
+	Hero& Engine::getHero()
 	{
-		return camera;
+		return hero;
 	}
 	long long Engine::unixTime()
 	{

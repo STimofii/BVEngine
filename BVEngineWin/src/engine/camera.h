@@ -11,19 +11,16 @@
 namespace bulka {
 	class Camera {
 	private:
+		float fov = 67 * (bcppul::PI / 180);
 	protected:
 	public:
 		glm::vec3 position;
 		glm::vec3 rotation;
-		glm::vec3 direction;
-		float fov = 67 * (bcppul::PI / 180);
 		glm::mat4 projectionMatrix = 1.0f;
 		glm::mat4 orthoMatrix = 1.0f;
 		glm::mat4 normalizedOrthoMatrix = 1.0f;
 		glm::mat4 viewMatrix = 1.0f;
 		glm::mat4 projViewMatrix = 1.0f;
-		float speed = 30.0f;
-		float sensitivity = 0.2f;
 
 		Camera();
 		Camera(glm::vec3 position);
@@ -38,6 +35,10 @@ namespace bulka {
 		void moveInDirection(float x, float y, float z);
 		void setRotation(float x, float y, float z);
 		void addRotation(float x, float y, float z);
+		glm::vec3& getPosition();
+		glm::vec3& getRotation();
+		float getFOV();
+		void setFOV(float fov);
 		void updateVectors();
 		void updateDirection();
 		void updateProjectionMatrix();

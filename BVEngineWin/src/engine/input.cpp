@@ -124,6 +124,8 @@ namespace bulka {
 			previousMouseY = mouseY;
 		}
 		else {
+			previousMouseX = mouseX;
+			previousMouseY = mouseY;
 			mouseDeltaX = 0;
 			mouseDeltaY = 0;
 		}
@@ -148,8 +150,26 @@ namespace bulka {
 	}
 	bool Input::isKeyRepeated(int key)
 	{
-		return key_repeat = key;
+		return key_repeat == key;
 	}
+
+	bool Input::isMouseButtonPressed(int key)
+	{
+		return keys[GLFW_KEY_LAST + key + 1];
+	}
+	bool Input::isMouseButtonTyped(int key)
+	{
+		return keys_typed[GLFW_KEY_LAST + key + 1];
+	}
+	bool Input::isMouseButtonReleased(int key)
+	{
+		return keys_released[GLFW_KEY_LAST + key + 1];
+	}
+	bool Input::isMouseButtonRepeated(int key)
+	{
+		return key_repeat == GLFW_KEY_LAST + key + 1;
+	}
+
 	int Input::getKeyRepeat()
 	{
 		return key_repeat;
@@ -173,6 +193,14 @@ namespace bulka {
 	void Input::setMouseY(double mouseY)
 	{
 		Input::mouseY = mouseY;
+	}
+	void Input::setPreviousMouseX(double mouseX)
+	{
+		previousMouseX = mouseX;
+	}
+	void Input::setPreviousMouseY(double mouseY)
+	{
+		previousMouseY = mouseY;
 	}
 	double Input::getMouseDeltaX()
 	{

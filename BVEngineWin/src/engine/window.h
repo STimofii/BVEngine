@@ -7,7 +7,9 @@
 #include "camera.h"
 #include "engine.h"
 
+
 namespace bulka {
+	class Hero;
 	class Window {
 	private:
 		static int memWidth;
@@ -24,6 +26,7 @@ namespace bulka {
 		static bool fullscreen;
 		static bool inWindow;
 		static bool cursorHided;
+		static bool cursorJustHided;
 		static std::string title;
 
 		static void windowSizeCallback(GLFWwindow* window, int width, int height);
@@ -59,11 +62,12 @@ namespace bulka {
 		static bool isFullScreen();
 		static bool isInWindow();
 		static bool isCursorHided();
+		static bool isCursorJustHided();
 		static std::string getTitle();
 		static void setRealWidth(int width);
 		static void setRealHeight(int height);
 		static void setTitle(std::string title);
-		static void enableFullScrean();
-		static void disableFullScrean();
+		static void enableFullScreen();
+		static void disableFullScreen();
 	};
 }
