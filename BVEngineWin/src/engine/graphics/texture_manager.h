@@ -1,11 +1,9 @@
 #pragma once
 
 #include <unordered_map>
-#include <exception>
-#include <iostream>
-#include <GL/glew.h>
-#include "mesh/texture.h"
+
 namespace bulka {
+	class Texture;
 	class TextureManager {
 	private:
 		static Texture* bad_texture;

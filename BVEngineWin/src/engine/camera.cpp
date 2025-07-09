@@ -1,5 +1,9 @@
 #include "camera.h"
 
+#include <cmath>
+#include "window.h"
+#include "graphics/shader_manager.h"
+
 namespace bulka {
 	Camera::Camera()
 	{

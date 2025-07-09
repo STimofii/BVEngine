@@ -1,4 +1,7 @@
 #include "window.h"
+
+#include <iostream>
+#include "camera.h"
 #include "hero.h"
 
 namespace bulka {

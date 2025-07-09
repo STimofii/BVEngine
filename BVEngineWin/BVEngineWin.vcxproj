@@ -149,11 +149,11 @@
     <ClCompile Include="src\engine\camera.cpp" />
     <ClCompile Include="src\engine\engine.cpp" />
     <ClCompile Include="src\engine\graphics\mesh\textured_mesh.cpp" />
-    <ClCompile Include="src\engine\graphics\mesh\vertex\vertex3f.cpp" />
+    <ClCompile Include="src\engine\graphics\mesh\vertex\vertex5f.cpp" />
     <ClCompile Include="src\engine\graphics\renderer.cpp" />
     <ClCompile Include="src\engine\graphics\shader_manager.cpp" />
     <ClCompile Include="src\engine\graphics\mesh\texture.cpp" />
-    <ClCompile Include="src\engine\graphics\tetxure_manager.cpp" />
+    <ClCompile Include="src\engine\graphics\texture_manager.cpp" />
     <ClCompile Include="src\engine\hero.cpp" />
     <ClCompile Include="src\engine\input.cpp" />
     <ClCompile Include="src\engine\settings.cpp" />
@@ -164,7 +164,7 @@
     <ClInclude Include="src\engine\camera.h" />
     <ClInclude Include="src\engine\engine.h" />
     <ClInclude Include="src\engine\graphics\mesh\textured_mesh.h" />
-    <ClInclude Include="src\engine\graphics\mesh\vertex\vertex3f.h" />
+    <ClInclude Include="src\engine\graphics\mesh\vertex\vertex5f.h" />
     <ClInclude Include="src\engine\graphics\renderer.h" />
     <ClInclude Include="src\engine\graphics\shader_manager.h" />
     <ClInclude Include="src\engine\graphics\mesh\texture.h" />

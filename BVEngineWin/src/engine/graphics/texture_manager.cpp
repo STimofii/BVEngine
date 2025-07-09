@@ -1,5 +1,10 @@
 #include "texture_manager.h"
 
+#include <exception>
+#include <iostream>
+#include <GL/glew.h>
+#include "mesh/texture.h"
+
 namespace bulka {
 	std::unordered_map<const char*, Texture*> TextureManager::textures;
 	Texture* TextureManager::bad_texture = nullptr;

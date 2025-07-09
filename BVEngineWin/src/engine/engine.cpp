@@ -1,5 +1,17 @@
 #include "engine.h"
+
 #include "hero.h"
+#include "graphics/mesh/textured_mesh.h"
+
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <chrono>
+#include <bcppul/timer.h>
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+#include "graphics/mesh/vertex/vertex5f.h"
+
 
 namespace bulka {
 	bool Engine::running = false;

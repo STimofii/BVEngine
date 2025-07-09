@@ -2,10 +2,12 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include "mesh/textured_mesh.h"
+
 
 
 namespace bulka {
+	class Texture;
+	class TexturedMesh;
 	class Renderer {
 	private:
 	protected:

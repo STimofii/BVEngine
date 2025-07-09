@@ -1,14 +1,10 @@
 #pragma once
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
+
 #include <string>
-#include <fstream>
-#include <sstream>
-#include <exception>
-#include <iostream>
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
+
 namespace bulka {
 	class ShaderManager {
 	private:

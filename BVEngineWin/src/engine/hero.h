@@ -1,12 +1,9 @@
 #pragma once
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
-#include <cmath>
 #include "camera.h"
 
-
 namespace bulka {
-	//class Camera;
 	class Hero {
 	private:
 		Camera camera;

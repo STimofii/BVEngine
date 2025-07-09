@@ -1,10 +1,8 @@
 #pragma once
 
-#include <iostream>
-#include <string>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include "camera.h"
+#include <string>
 #include "engine.h"
 
 

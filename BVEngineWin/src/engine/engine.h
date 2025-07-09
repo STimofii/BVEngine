@@ -1,21 +1,15 @@
 #pragma once
-#include <iostream>
-#include <string>
-#include <algorithm>
-#include <chrono>
-#include <bcppul/timer.h>
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
+
 #include "window.h"
 #include "input.h"
 #include "settings.h"
-#include "graphics/mesh/textured_mesh.h"
 #include "graphics/shader_manager.h"
 #include "graphics/renderer.h"
 #include "graphics/texture_manager.h"
 
 namespace bulka {
 	class Hero;
+	class TexturedMesh;
 	class Engine {
 	private:
 		static bool running;

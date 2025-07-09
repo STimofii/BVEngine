@@ -1,5 +1,8 @@
 #include "textured_mesh.h"
 
+#include "vertex/vertex5f.h"
+#include "texture.h"
+
 namespace bulka {
 	TexturedMesh::TexturedMesh(Vertex5f* vertices, size_t vertices_length, GLuint* indices, size_t indices_length, Texture* texture) : 
 		indices(indices), indices_length(indices_length), texture(texture)
