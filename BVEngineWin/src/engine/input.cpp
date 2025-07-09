@@ -1,5 +1,8 @@
 #include "input.h"
 
+#include "window.h"
+#include <algorithm>
+#include <iostream>
 
 
 namespace bulka {
@@ -44,7 +47,7 @@ namespace bulka {
 
 	void Input::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 	{
-		int key = GLFW_KEY_LAST + button + 1;
+		int key = MOUSE_BUTTON_KEYS_START + button;
 		switch (action) {
 		case GLFW_PRESS: {
 			keys[key] = true;
@@ -103,7 +106,7 @@ namespace bulka {
 	void Input::pollEvents()
 	{
 		key_repeat = 0;
-		for (size_t i = 0; i <= GLFW_KEY_LAST; i++)
+		for (size_t i = 0; i < KEYS_ALL; i++)
 		{
 			if (keys_typed[i]) {
 				keys_typed[i] = false;
@@ -155,19 +158,19 @@ namespace bulka {
 
 	bool Input::isMouseButtonPressed(int key)
 	{
-		return keys[GLFW_KEY_LAST + key + 1];
+		return keys[MOUSE_BUTTON_KEYS_START + key];
 	}
 	bool Input::isMouseButtonTyped(int key)
 	{
-		return keys_typed[GLFW_KEY_LAST + key + 1];
+		return keys_typed[MOUSE_BUTTON_KEYS_START + key];
 	}
 	bool Input::isMouseButtonReleased(int key)
 	{
-		return keys_released[GLFW_KEY_LAST + key + 1];
+		return keys_released[MOUSE_BUTTON_KEYS_START + key];
 	}
 	bool Input::isMouseButtonRepeated(int key)
 	{
-		return key_repeat == GLFW_KEY_LAST + key + 1;
+		return key_repeat == MOUSE_BUTTON_KEYS_START + key;
 	}
 
 	int Input::getKeyRepeat()
