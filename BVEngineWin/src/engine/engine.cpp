@@ -8,6 +8,7 @@ namespace bulka {
 	double Engine::deltaTime = 0;
 	long long Engine::fpsLimit = 0;
 	double Engine::fpsLimitDelta = 0;
+	bool Engine::v_sync = false;
 
 	Hero Engine::hero;
 	TexturedMesh Engine::simpleMesh;
@@ -21,7 +22,7 @@ namespace bulka {
 		init();
 		postInit();
 
-		setFPSLimit(0);
+		setVSync(v_sync);
 
 		hero.setPosition(0, 0, 10);
 
@@ -97,7 +98,7 @@ namespace bulka {
 
 	void Engine::preInit()
 	{
-		Settings::init();
+		
 	}
 	void Engine::init()
 	{
@@ -105,6 +106,7 @@ namespace bulka {
 			std::cerr << "GLFW CAN'T INIT!!!" << std::endl;
 			throw new std::exception("GLFW CAN'T INIT!!!");
 		}
+		Settings::init();
 
 
 		Window::setRealWidth(1280);
@@ -233,6 +235,19 @@ namespace bulka {
 		}
 		else {
 			fpsLimitDelta = 0;
+		}
+	}
+	bool Engine::isVSync()
+	{
+		return v_sync;
+	}
+	void Engine::setVSync(bool v_sync) {
+		Engine::v_sync = v_sync;
+		if (v_sync) {
+			glfwSwapInterval(1);
+		}
+		else {
+			glfwSwapInterval(0);
 		}
 	}
 }

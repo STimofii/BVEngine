@@ -1,8 +1,18 @@
 #include "settings.h"
 
+#include "engine.h"
+#include "hero.h"
+
 namespace bulka {
 	bcppul::Properties Settings::properties("settings.properties");
+	bool Settings::changed = false;
+
 	std::string Settings::GAME_NAME = "BVEngine";
+	float Settings::FOV = 70.0f;
+	float Settings::SENSITIVITY = 0.2f;
+	float Settings::FPS_LIMIT = 0;
+	bool Settings::V_SYNC = false;
+
 	void Settings::load()
 	{
 		properties.load();
@@ -10,7 +20,15 @@ namespace bulka {
 	void Settings::init()
 	{
 		load();
-		GAME_NAME = getAndSetIfNotExists("game.name", GAME_NAME);
+		
+		FPS_LIMIT = getAndSetIfNotExists("game.graphics.fps_limit", FPS_LIMIT);
+		Engine::setFPSLimit(FPS_LIMIT);
+		V_SYNC = getAndSetIfNotExists("game.graphics.v_sync", V_SYNC);
+		Engine::setVSync(V_SYNC);
+		FOV = getAndSetIfNotExists("game.graphics.fov", FOV);
+		Engine::getHero().getCamera().setFOV(FOV);
+		SENSITIVITY = getAndSetIfNotExists("game.graphics.sensitivity", SENSITIVITY);
+		Engine::getHero().setSensitivity(SENSITIVITY);
 		save();
 	}
 
@@ -36,26 +54,31 @@ namespace bulka {
 
 	void Settings::set(std::string key, std::string value)
 	{
+		changed = true;
 		properties.set(key, value);
 	}
 
 	void Settings::set(std::string key, long long value)
 	{
+		changed = true;
 		properties.set(key, value);
 	}
 
 	void Settings::set(std::string key, double value)
 	{
+		changed = true;
 		properties.set(key, value);
 	}
 
 	void Settings::set(std::string key, bool value)
 	{
+		changed = true;
 		properties.set(key, value);
 	}
 	void Settings::setIfNotExists(std::string key, std::string value)
 	{
 		if(properties.get(key).empty()){
+			changed = true;
 			properties.set(key, value);
 		}
 	}
@@ -63,6 +86,7 @@ namespace bulka {
 	void Settings::setIfNotExists(std::string key, long long value)
 	{
 		if (properties.get(key).empty()) {
+			changed = true;
 			properties.set(key, value);
 		}
 	}
@@ -70,6 +94,7 @@ namespace bulka {
 	void Settings::setIfNotExists(std::string key, double value)
 	{
 		if (properties.get(key).empty()) {
+			changed = true;
 			properties.set(key, value);
 		}
 	}
@@ -77,6 +102,7 @@ namespace bulka {
 	void Settings::setIfNotExists(std::string key, bool value)
 	{
 		if (properties.get(key).empty()) {
+			changed = true;
 			properties.set(key, value);
 		}
 	}
@@ -85,6 +111,7 @@ namespace bulka {
 	{
 		std::string temp = properties.get(key);
 		if (temp.empty()) {
+			changed = true;
 			properties.set(key, value);
 			return value;
 		}
@@ -93,6 +120,7 @@ namespace bulka {
 	long long Settings::getAndSetIfNotExists(std::string key, long long value)
 	{
 		if (properties.get(key).empty()) {
+			changed = true;
 			properties.set(key, value);
 			return value;
 		}
@@ -101,6 +129,7 @@ namespace bulka {
 	double Settings::getAndSetIfNotExists(std::string key, double value)
 	{
 		if (properties.get(key).empty()) {
+			changed = true;
 			properties.set(key, value);
 			return value;
 		}
@@ -109,6 +138,7 @@ namespace bulka {
 	bool Settings::getAndSetIfNotExists(std::string key, bool value)
 	{
 		if (properties.get(key).empty()) {
+			changed = true;
 			properties.set(key, value);
 			return value;
 		}
@@ -117,7 +147,10 @@ namespace bulka {
 
 	void Settings::save()
 	{
-		properties.save();
+		if(changed){
+			properties.save();
+			changed = false;
+		}
 	}
 	void Settings::finalization() {
 		save();

@@ -49,7 +49,6 @@ namespace bulka {
 		static void postRender();
 		static void setCursorInCenter();
 		static void finalization();
-		static void setVSync(bool vsync);
 		static void hideCursor();
 		static void showCursor();
 		static int getXPos();

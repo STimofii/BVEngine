@@ -70,7 +70,6 @@ namespace bulka {
 		glfwSetWindowPos(window, xPos, yPos);
 
 		glfwMakeContextCurrent(window);
-		setVSync(false);
 		onResize();
 		
 		glfwShowWindow(window);
@@ -156,16 +155,6 @@ namespace bulka {
 	void Window::finalization()
 	{
 
-	}
-
-	void Window::setVSync(bool vsync)
-	{
-		if(vsync){
-			glfwSwapInterval(1);
-		}
-		else {
-			glfwSwapInterval(0);
-		}
 	}
 
 	void Window::hideCursor()

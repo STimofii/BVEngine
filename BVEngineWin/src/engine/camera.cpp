@@ -91,9 +91,12 @@ namespace bulka {
 	}
 	void Camera::setFOV(float fov)
 	{
-		this->fov = fov;
-		updateProjectionMatrix();
-		updateProjViewMatrix();
+		fov = fov * (bcppul::PI / 180);
+		if (this->fov != fov){
+			this->fov = fov;
+			updateProjectionMatrix();
+			updateProjViewMatrix();
+		}
 	}
 	void Camera::updateVectors()
 	{

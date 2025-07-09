@@ -24,6 +24,7 @@ namespace bulka {
 		static double deltaTime;
 		static long long fpsLimit;
 		static double fpsLimitDelta;
+		static bool v_sync;
 		static Hero hero;
 		static TexturedMesh simpleMesh;
 	protected:
@@ -49,6 +50,8 @@ namespace bulka {
 		static double getDeltaTime();
 		static long long getFPSLimit();
 		static void setFPSLimit(long long fpsLimit);
+		static bool isVSync();
+		static void setVSync(bool v_sync);
 
 		static Hero& getHero();
 	};

@@ -97,7 +97,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\shaders\main.vert" />
-    <None Include="res\shaders\main.frag" />
+    <None Include="res\shaders\3d\main.vert" />
+    <None Include="res\shaders\3d\main.frag" />
   </ItemGroup>
 </Project>

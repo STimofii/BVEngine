@@ -24,7 +24,6 @@ namespace bulka {
 		~TexturedMesh();
 
 		void update();
-		//void loadTexture(std::string path);
 
 		size_t getPositionsLength();
 		size_t getIndicesLength();

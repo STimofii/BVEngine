@@ -3,8 +3,8 @@
 namespace bulka {
 	ShaderManager::ShaderProgram ShaderManager::mainShader;
 	void ShaderManager::init() {
-		if (mainShader.load("res/shaders/main.vert", "res/shaders/main.frag") == 0) {
-			throw std::exception("Can't load shaders: res/shaders/main.frag, res/shaders/main.vert");
+		if (mainShader.load("res/shaders/3d/main.vert", "res/shaders/3d/main.frag") == 0) {
+			throw std::exception("Can't load shaders: res/shaders/3d/main.frag, res/shaders/3d/main.vert");
 		}
 	}
 	void ShaderManager::finalization() {

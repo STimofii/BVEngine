@@ -2,13 +2,21 @@
 
 #include <bcppul/properties.h>
 
+
 namespace bulka{
+	class Engine;
+	class Hero;
 	class Settings {
 	private:
 		static bcppul::Properties properties;
+		static bool changed;
 	protected:
 	public:
 		static std::string GAME_NAME;
+		static float FOV;
+		static float SENSITIVITY;
+		static float FPS_LIMIT;
+		static bool V_SYNC;
 
 		static void load();
 		static std::string get(std::string key, std::string standard_value = "");
