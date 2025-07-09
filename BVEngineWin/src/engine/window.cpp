@@ -1,5 +1,10 @@
 #include "window.h"
+
+#include <iostream>
+#include "camera.h"
 #include "hero.h"
+#include "engine.h"
+
 
 namespace bulka {
 	int Window::realWidth = 1280;

@@ -2,10 +2,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
-#include <cmath>
 #include <bcppul/bcppul_math.h>
-#include "window.h"
-#include "graphics/shader_manager.h"
 
 
 namespace bulka {

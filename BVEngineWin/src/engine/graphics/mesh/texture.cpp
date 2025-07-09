@@ -1,5 +1,10 @@
 #include "texture.h"
 
+#include <stb_image/stb_image.h>
+#include <string>
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+
 namespace bulka {
 	Texture::Texture(const char* path)
 	{

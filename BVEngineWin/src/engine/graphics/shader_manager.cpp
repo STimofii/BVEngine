@@ -1,5 +1,12 @@
 #include "shader_manager.h"
 
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+#include <fstream>
+#include <sstream>
+#include <exception>
+#include <iostream>
+
 namespace bulka {
 	ShaderManager::ShaderProgram ShaderManager::mainShader;
 	void ShaderManager::init() {

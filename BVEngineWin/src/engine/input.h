@@ -1,14 +1,12 @@
 #pragma once
 
 #include <array>
-#include <algorithm>
+
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-
-#include "window.h"
-
 #define KEYS_ALL (GLFW_KEY_LAST + GLFW_MOUSE_BUTTON_LAST)
+#define MOUSE_BUTTON_KEYS_START (GLFW_KEY_LAST + 1)
 
 namespace bulka {
 	class Input {

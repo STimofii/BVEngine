@@ -1,5 +1,8 @@
 #include "renderer.h"
 
+#include "mesh/textured_mesh.h"
+#include "mesh/texture.h"
+
 namespace bulka {
 	void Renderer::init() {
 

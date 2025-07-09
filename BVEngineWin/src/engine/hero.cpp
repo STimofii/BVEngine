@@ -1,5 +1,12 @@
 #include "hero.h"
 
+#include <cmath>
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+#include "input.h"
+#include "engine.h"
+
+
 
 namespace bulka {
 	Hero::Hero()

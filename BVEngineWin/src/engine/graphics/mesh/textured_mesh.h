@@ -1,13 +1,12 @@
 #pragma once
 
 #include <vector>
-#include <iostream>
-#include <exception>
 #include <GL/glew.h>
-#include "vertex/vertex3f.h"
-#include "texture.h"
+
 
 namespace bulka {
+	class Vertex5f;
+	class Texture;
 	class TexturedMesh {
 	private:
 	protected:
