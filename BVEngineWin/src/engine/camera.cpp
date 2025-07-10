@@ -1,7 +1,9 @@
 #include "camera.h"
 
 #include <cmath>
+#include <iostream>
 #include "window.h"
+#include "engine.h"
 #include "graphics/shader_manager.h"
 
 namespace bulka {
@@ -20,13 +22,11 @@ namespace bulka {
 	{
 	}
 	void Camera::init() {
-		normalizedOrthoMatrix = glm::ortho(-1, 1, -1, 1);
+		
 		
 	}
 	void Camera::postInit() {
-		ShaderManager::mainShader.bind();
-		ShaderManager::mainShader.uniformMat4f("projViewMat", projViewMatrix);
-		ShaderManager::mainShader.unbind();
+		updateOrthoMatrix();
 	}
 	void Camera::finalization() {
 
@@ -125,14 +125,48 @@ namespace bulka {
 	void Camera::updateProjViewMatrix()
 	{
 		projViewMatrix = projectionMatrix * viewMatrix;
-		if(ShaderManager::mainShader.programID != 0){
-			ShaderManager::mainShader.bind();
-			ShaderManager::mainShader.uniformMat4f("projViewMat", projViewMatrix);
+		if(Engine::getIsGLInitialized()){
+			if (ShaderManager::mainShader.programID != 0) {
+				ShaderManager::mainShader.bind();
+				ShaderManager::mainShader.uniformMat4f("projViewMat", projViewMatrix);
+			}
+
 			ShaderManager::mainShader.unbind();
 		}
 	}
 	void Camera::updateOrthoMatrix()
 	{
-		orthoMatrix = glm::ortho(0, Window::getRealWidth(), Window::getRealHeight(), 0);
+		float as = Window::getAspect();
+		normalizedOrthoMatrix = glm::ortho(-1.0f * as, 1.0f * as, -1.0f, 1.0f, 0.0f, 1000.0f);
+		orthoMatrix = glm::ortho(0.0f, static_cast<float>(Window::getRealWidth()), 0.0f, static_cast<float>(Window::getRealHeight()), 0.0f, 1000.0f);
+		//orthoMatrix = glm::ortho(0.0f * as, 1.0f * as, 0.0f, 1.0f, 0.0f, 1000.0f);
+		//orthoMatrix = glm::ortho(-1.0f * as, 1.0f * as, -1.0f, 1.0f, 0.0f, 1000.0f);
+		
+		if (ShaderManager::textShader.programID != 0) {
+			ShaderManager::textShader.bind();
+			ShaderManager::textShader.uniformMat4f("projection", orthoMatrix);
+			ShaderManager::textShader.unbind();
+		}
+	}
+
+	glm::mat4& Camera::getProjectionMatrix()
+	{
+		return projectionMatrix;
+	}
+	glm::mat4& Camera::getViewMatrix()
+	{
+		return viewMatrix;
+	}
+	glm::mat4& Camera::getProjViewMatrix()
+	{
+		return projViewMatrix;
+	}
+	glm::mat4& Camera::getOrthoMatrix()
+	{
+		return orthoMatrix;
+	}
+	glm::mat4& Camera::getNormalizedOrthoMatrix()
+	{
+		return normalizedOrthoMatrix;
 	}
 }

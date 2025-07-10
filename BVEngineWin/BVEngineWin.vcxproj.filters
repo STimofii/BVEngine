@@ -57,6 +57,12 @@
     <ClCompile Include="src\engine\hero.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="src\engine\graphics\text_renderer.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\graphics\text.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\engine\engine.h">
@@ -95,9 +101,17 @@
     <ClInclude Include="src\engine\hero.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="src\engine\graphics\text_renderer.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\graphics\text.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\shaders\3d\main.vert" />
     <None Include="res\shaders\3d\main.frag" />
+    <None Include="res\shaders\3d\main.vert" />
+    <None Include="res\shaders\text\text.vert" />
+    <None Include="res\shaders\text\text.frag" />
   </ItemGroup>
 </Project>

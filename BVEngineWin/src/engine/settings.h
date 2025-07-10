@@ -13,6 +13,7 @@ namespace bulka{
 	protected:
 	public:
 		static std::string GAME_NAME;
+		static std::string FONT;
 		static float FOV;
 		static float SENSITIVITY;
 		static float FPS_LIMIT;

@@ -9,9 +9,13 @@
 
 namespace bulka {
 	ShaderManager::ShaderProgram ShaderManager::mainShader;
+	ShaderManager::ShaderProgram ShaderManager::textShader;
 	void ShaderManager::init() {
 		if (mainShader.load("res/shaders/3d/main.vert", "res/shaders/3d/main.frag") == 0) {
 			throw std::exception("Can't load shaders: res/shaders/3d/main.frag, res/shaders/3d/main.vert");
+		}
+		if (textShader.load("res/shaders/text/text.vert", "res/shaders/text/text.frag") == 0) {
+			throw std::exception("Can't load shaders: res/shaders/text/text.vert, res/shaders/text/text.frag");
 		}
 	}
 	void ShaderManager::finalization() {
@@ -155,6 +159,56 @@ namespace bulka {
 	void ShaderManager::ShaderProgram::uniform4ui(const char* name, unsigned int x, unsigned int y, unsigned int z, unsigned int w) {
 		glUniform4ui(glGetUniformLocation(programID, name), x, y, z, w);
 	}
+	void ShaderManager::ShaderProgram::uniform1iv(const char* name, glm::ivec1 vec)
+	{
+		glUniform1iv(glGetUniformLocation(programID, name), 1, glm::value_ptr(vec));
+	}
+	void ShaderManager::ShaderProgram::uniform2iv(const char* name, glm::ivec2 vec)
+	{
+		glUniform2iv(glGetUniformLocation(programID, name), 1, glm::value_ptr(vec));
+	}
+	void ShaderManager::ShaderProgram::uniform3iv(const char* name, glm::ivec3 vec)
+	{
+		glUniform3iv(glGetUniformLocation(programID, name), 1, glm::value_ptr(vec));
+	}
+	void ShaderManager::ShaderProgram::uniform4iv(const char* name, glm::ivec4 vec)
+	{
+		glUniform4iv(glGetUniformLocation(programID, name), 1, glm::value_ptr(vec));
+	}
+	void ShaderManager::ShaderProgram::uniform1fv(const char* name, glm::vec1 vec)
+	{
+		glUniform1fv(glGetUniformLocation(programID, name), 1, glm::value_ptr(vec));
+	}
+	void ShaderManager::ShaderProgram::uniform2fv(const char* name, glm::vec2 vec)
+	{
+		glUniform2fv(glGetUniformLocation(programID, name), 1, glm::value_ptr(vec));
+	}
+	void ShaderManager::ShaderProgram::uniform3fv(const char* name, glm::vec3 vec)
+	{
+		glUniform3fv(glGetUniformLocation(programID, name), 1, glm::value_ptr(vec));
+	}
+	void ShaderManager::ShaderProgram::uniform4fv(const char* name, glm::vec4 vec)
+	{
+		glUniform4fv(glGetUniformLocation(programID, name), 1, glm::value_ptr(vec));
+	}
+	void ShaderManager::ShaderProgram::uniform1uiv(const char* name, glm::uvec1 vec)
+	{
+		glUniform1uiv(glGetUniformLocation(programID, name), 1, glm::value_ptr(vec));
+	}
+	void ShaderManager::ShaderProgram::uniform2uiv(const char* name, glm::uvec2 vec)
+	{
+		glUniform2uiv(glGetUniformLocation(programID, name), 1, glm::value_ptr(vec));
+	}
+	void ShaderManager::ShaderProgram::uniform3uiv(const char* name, glm::uvec3 vec)
+	{
+		glUniform3uiv(glGetUniformLocation(programID, name), 1, glm::value_ptr(vec));
+	}
+	void ShaderManager::ShaderProgram::uniform4uiv(const char* name, glm::uvec4 vec)
+	{
+		glUniform4uiv(glGetUniformLocation(programID, name), 1, glm::value_ptr(vec));
+	}
+
+
 	void ShaderManager::ShaderProgram::uniformMat2f(const char* name, glm::mat2& mat) {
 		glUniformMatrix2fv(glGetUniformLocation(programID, name), 1, GL_FALSE, glm::value_ptr(mat));
 	}

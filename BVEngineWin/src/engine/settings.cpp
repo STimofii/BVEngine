@@ -8,6 +8,7 @@ namespace bulka {
 	bool Settings::changed = false;
 
 	std::string Settings::GAME_NAME = "BVEngine";
+	std::string Settings::FONT = "C:/Windows/Fonts/Arial.ttf";
 	float Settings::FOV = 70.0f;
 	float Settings::SENSITIVITY = 0.2f;
 	float Settings::FPS_LIMIT = 0;
@@ -21,6 +22,7 @@ namespace bulka {
 	{
 		load();
 		
+		FONT = getAndSetIfNotExists("game.graphics.font", FONT);
 		FPS_LIMIT = getAndSetIfNotExists("game.graphics.fps_limit", FPS_LIMIT);
 		Engine::setFPSLimit(FPS_LIMIT);
 		V_SYNC = getAndSetIfNotExists("game.graphics.v_sync", V_SYNC);

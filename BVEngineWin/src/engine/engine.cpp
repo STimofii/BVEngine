@@ -12,6 +12,9 @@
 #include <GLFW/glfw3.h>
 #include "graphics/mesh/vertex/vertex5f.h"
 
+#include "graphics/text.h"
+
+
 
 namespace bulka {
 	bool Engine::running = false;
@@ -21,13 +24,21 @@ namespace bulka {
 	long long Engine::fpsLimit = 0;
 	double Engine::fpsLimitDelta = 0;
 	bool Engine::v_sync = false;
-
+	bool Engine::isGLInitialized = false;;
+	FT_Library Engine::ft_library;
+	FT_Face Engine::main_font;
 	Hero Engine::hero;
 	TexturedMesh Engine::simpleMesh;
+
+	Text text;
+
+
 
 	int Engine::run() {
 		bcppul::Timer timer("engine", false);
 		timer.start();
+
+
 		std::cout << "Initializing!" << std::endl;
 		running = false;
 		preInit();
@@ -38,11 +49,13 @@ namespace bulka {
 
 		hero.setPosition(0, 0, 10);
 
+		float z = 0.0f;
+		float size = 1.0f;
 		simpleMesh.setVertices(new Vertex5f[4]{
-			Vertex5f(-1, -1, 0, 0, 1),
-			Vertex5f(1, -1, 0, 1, 1),
-			Vertex5f(1, 1, 0, 1, 0),
-			Vertex5f(-1, 1, 0, 0, 0)
+			Vertex5f(-size, -size, z, 0, 1),
+			Vertex5f(size, -size, z, 1, 1),
+			Vertex5f(size, size, z, 1, 0),
+			Vertex5f(-size, size, z, 0, 0)
 		}, 4);
 		simpleMesh.setIndices(new GLuint[6]{
 			0, 1, 2,
@@ -59,6 +72,9 @@ namespace bulka {
 		long long timeFrameElapsed;
 		long long timeFPS = unixTime();
 		long long frames = 0;
+
+		text = Text("bulko_cat", 16, 255, 0, 0, 255);
+		text.init();
 		while (running) {
 			timeFrameStart = unixTime();
 			preUpdate();
@@ -85,9 +101,7 @@ namespace bulka {
 
 			postRender();
 
-			if (glGetError() != GL_NO_ERROR) {
-				std::cerr << "GL_ERROR: " << glGetError() << std::endl;
-			}
+			checkGLErrors();
 			do {
 				timeFrameElapsed = unixTime() - timeFrameStart;
 				deltaTime = timeFrameElapsed / 1000000000.0;
@@ -120,6 +134,22 @@ namespace bulka {
 		}
 		Settings::init();
 
+		FT_Error error = FT_Init_FreeType(&ft_library);
+		if (error) {
+			std::cerr << "FreeType FT_Init_FreeType error: " << error << std::endl;
+		}
+		error = FT_New_Face(ft_library, Settings::FONT.c_str(), 0, &main_font);
+		if (error) {
+			std::cerr << "FreeType font " << Settings::FONT.c_str() << " loading error: " << error << std::endl;
+		}
+
+		error = FT_Set_Pixel_Sizes(main_font, 0, 16);
+		if (error) {
+			std::cerr << "FreeType FT_Set_Pixel_Sizes error: " << error << std::endl;
+		}
+
+
+
 
 		Window::setRealWidth(1280);
 		Window::setRealHeight(720);
@@ -130,9 +160,12 @@ namespace bulka {
 			std::cerr << "GLEW CAN'T INIT!!!" << std::endl;
 			throw new std::exception("GLEW CAN'T INIT!!!");
 		}
+		isGLInitialized = true;
+
 
 		ShaderManager::init();
 		Input::init();
+		TextRenderer::init();
 		TextureManager::init();
 		hero.init();
 		Renderer::init();
@@ -190,6 +223,7 @@ namespace bulka {
 		ShaderManager::mainShader.bind();
 		Renderer::render(simpleMesh);
 		ShaderManager::mainShader.unbind();
+		text.render();
 		Window::render();
 	}
 	void Engine::postRender()
@@ -207,14 +241,32 @@ namespace bulka {
 		Renderer::finalization();
 		hero.finalization();
 		TextureManager::finalization();
+		TextRenderer::finalization();
 		ShaderManager::finalization();
 		Input::finalization();
 		Window::finalization();
+		FT_Done_Face(main_font);
+		FT_Done_FreeType(ft_library);
 		Settings::finalization();
+	}
+	void Engine::checkGLErrors()
+	{
+		unsigned int gl_error = glGetError();
+		if (gl_error != GL_NO_ERROR) {
+			std::cerr << "GL_ERROR: " << gl_error << std::endl;
+		}
 	}
 	int Engine::getExitCode()
 	{
 		return exitCode;
+	}
+	FT_Library& Engine::getFT_Library()
+	{
+		return ft_library;
+	}
+	FT_Face& Engine::getMainFont()
+	{
+		return main_font;
 	}
 	Hero& Engine::getHero()
 	{
@@ -261,5 +313,9 @@ namespace bulka {
 		else {
 			glfwSwapInterval(0);
 		}
+	}
+	bool Engine::getIsGLInitialized()
+	{
+		return isGLInitialized;
 	}
 }

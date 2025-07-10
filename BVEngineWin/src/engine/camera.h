@@ -42,5 +42,11 @@ namespace bulka {
 		void updateViewMatrix();
 		void updateProjViewMatrix();
 		void updateOrthoMatrix();
+
+		glm::mat4& getProjectionMatrix();
+		glm::mat4& getViewMatrix();
+		glm::mat4& getProjViewMatrix();
+		glm::mat4& getOrthoMatrix();
+		glm::mat4& getNormalizedOrthoMatrix();
 	};
 }
