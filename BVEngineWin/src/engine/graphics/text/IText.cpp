@@ -58,4 +58,14 @@ namespace bulka {
 		this->position = position;
 	}
 
+	glm::mat4* IText::getProjection()
+	{
+		return projection;
+	}
+
+	void IText::setProjection(glm::mat4* projection)
+	{
+		this->projection = projection;
+	}
+
 }

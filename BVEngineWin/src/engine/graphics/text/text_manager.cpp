@@ -21,11 +21,11 @@ namespace bulka {
 
 	TextManager::SingleSize::SingleSize(unsigned int size)
 	{
-		characters = new Character[255];
+		characters = new Character[256];
 		FT_Set_Pixel_Sizes(Engine::getMainFont(), 0, size);
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 		FT_Face& face = Engine::getMainFont();
-		for (unsigned int c = 0; c < 255; c++)
+		for (unsigned int c = 0; c < 256; c++)
 		{
 			if (FT_Load_Char(face, c, FT_LOAD_RENDER))
 			{
@@ -82,7 +82,7 @@ namespace bulka {
 				texture, VAO, VBO,
 				glm::ivec2(width, height),
 				glm::ivec2(left, top),
-				advance
+				advance, (width > 0) && (height > 0)
 			);
 		}
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -100,8 +100,12 @@ namespace bulka {
 	{
 		return characters[c];
 	}
-	TextManager::SingleSize::Character::Character(unsigned int texture, unsigned int VAO, unsigned int VBO, glm::ivec2 size, glm::ivec2 bearing, unsigned int advance) :
-		texture(texture), VAO(VAO), VBO(VBO), size(size), bearing(bearing), advance(advance)
+	TextManager::SingleSize::Character::Character(
+		unsigned int texture, unsigned int VAO, unsigned int VBO, 
+		glm::ivec2 size, glm::ivec2 bearing, 
+		unsigned int advance, bool visible
+	) :
+		texture(texture), VAO(VAO), VBO(VBO), size(size), bearing(bearing), advance(advance), visible(visible)
 	{
 	}
 	TextManager::SingleSize::Character::~Character()

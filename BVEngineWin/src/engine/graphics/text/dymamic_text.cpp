@@ -7,8 +7,6 @@
 #include "../../engine.h"
 #include "../../hero.h"
 #include "../shader_manager.h"
-#include "IText.h"
-
 
 namespace bulka {
 	DynamicText::DynamicText()
@@ -16,9 +14,8 @@ namespace bulka {
 	}
 	DynamicText::DynamicText(
 		std::string text, unsigned int size, glm::vec3 position, unsigned char r, unsigned char g, unsigned char b, unsigned char a, float scale) 
-		: text(text), size(size), position(position), scale(scale)
+		: IText(text, size, position, r, g, b, a, scale)
 	{
-		setColor(r, g, b, a);
 	}
 
 	DynamicText::~DynamicText()
@@ -27,12 +24,11 @@ namespace bulka {
 	void DynamicText::init()
 	{
 		singleSizeFont = TextManager::getSingleSize(size);
-		projection = Engine::getHero().getCamera().getProjViewMatrix();
 	}
 	void DynamicText::render()
 	{
 		ShaderManager::textShader.bind();
-		//ShaderManager::textShader.uniformMat4f("projection", projection);
+		ShaderManager::textShader.uniformMat4f("projection", *projection);
 		ShaderManager::textShader.uniform1f("scale", scale);
 		ShaderManager::textShader.uniform4fv("textColor", glm::vec4(
 			static_cast<float>((color >> 24) & 0xFF) / 256,
@@ -42,66 +38,31 @@ namespace bulka {
 		));
 		glActiveTexture(GL_TEXTURE0);
 
-		std::string::const_iterator c;
 
-		glm::vec3 temp_position = position;
+		std::string::const_iterator c;
+		ShaderManager::textShader.uniform3fv("text_position", position);
+
+		glm::vec2 char_position = {0, 0};
 		for (c = text.begin(); c != text.end(); ++c)
 		{
+			if (*c == '\n') {
+				char_position.x = 0;
+				char_position.y += size;
+				continue;
+			}
 			TextManager::SingleSize::Character& character = singleSizeFont->getCharacter(*c);
+			if (!character.visible) {
+				continue;
+			}
 			glBindVertexArray(character.VAO);
-			ShaderManager::textShader.uniform3fv("position", temp_position);
+			ShaderManager::textShader.uniform2fv("char_position", char_position);
 			glBindTexture(GL_TEXTURE_2D, character.texture);
 			glDrawArrays(GL_TRIANGLES, 0, 6);
 			
-			temp_position.x += character.size.x + 2;
+			char_position.x += (character.advance>>6);
 		}
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glBindVertexArray(0);
 		ShaderManager::textShader.unbind();
-	}
-	std::string& DynamicText::getText()
-	{
-		return text;
-	}
-	void DynamicText::setText(std::string& text)
-	{
-		this->text = text;
-	}
-	int DynamicText::getColor()
-	{
-		return color;
-	}
-	void DynamicText::setColor(unsigned int)
-	{
-		this->color = color;
-	}
-	void DynamicText::setColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
-	{
-		color = (r << 24) | (g << 16) | (b << 8) | (a);
-	}
-	int DynamicText::getSize()
-	{
-		return size;
-	}
-	void DynamicText::setSize(unsigned int size)
-	{
-		this->size = size;
-		singleSizeFont = TextManager::getSingleSize(size);
-	}
-	float DynamicText::getScale()
-	{
-		return scale;
-	}
-	void DynamicText::setScale(float scale)
-	{
-		this->scale = scale;
-	}
-	glm::vec3 DynamicText::getPosition()
-	{
-		return position;
-	}
-	void DynamicText::setPosition(glm::vec3 position)
-	{
-		this->position = position;
 	}
 }

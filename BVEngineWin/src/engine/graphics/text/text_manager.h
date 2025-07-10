@@ -12,17 +12,18 @@ namespace bulka {
 		{
 		protected:
 		public:
-			class Character {
-			private:
-			protected:
-			public:
+			struct Character {
 				unsigned int texture;
 				unsigned int VAO;
 				unsigned int VBO;
 				glm::ivec2 size;
 				glm::ivec2 bearing;
 				unsigned int advance;
-				Character(unsigned int texture = 0, unsigned int VAO = 0, unsigned int VBO = 0, glm::ivec2 size = glm::vec2(), glm::ivec2 bearing = glm::vec2(), unsigned int advance = 0);
+				bool visible;
+				Character(
+					unsigned int texture = 0, unsigned int VAO = 0, unsigned int VBO = 0, 
+					glm::ivec2 size = glm::vec2(), glm::ivec2 bearing = glm::vec2(), 
+					unsigned int advance = 0, bool visible = false);
 				~Character();
 				void bind();
 				void unbind();

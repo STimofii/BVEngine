@@ -4,6 +4,9 @@
 #include "graphics/mesh/textured_mesh.h"
 
 #include <iostream>
+#include <fstream>
+#include <sstream>
+#include <codecvt>
 #include <string>
 #include <algorithm>
 #include <chrono>
@@ -38,6 +41,7 @@ namespace bulka {
 		bcppul::Timer timer("engine", false);
 		timer.start();
 
+		setlocale(LC_ALL, "uk_UA");
 
 		std::cout << "Initializing!" << std::endl;
 		running = false;
@@ -56,11 +60,11 @@ namespace bulka {
 			Vertex5f(size, -size, z, 1, 1),
 			Vertex5f(size, size, z, 1, 0),
 			Vertex5f(-size, size, z, 0, 0)
-		}, 4);
+			}, 4);
 		simpleMesh.setIndices(new GLuint[6]{
 			0, 1, 2,
 			2, 3, 0
-		}, 6);
+			}, 6);
 		simpleMesh.update();
 		simpleMesh.setTexture(TextureManager::getTexture("res/textures/bulka.png"));
 
@@ -73,14 +77,18 @@ namespace bulka {
 		long long timeFPS = unixTime();
 		long long frames = 0;
 
-		texts = new DynamicText[255];
-		for (size_t i = 0; i < 255; i++)
-		{
-			new (& texts[i]) DynamicText(
-				"bulko_cat", 256, glm::vec3(0, 0, i), 255, 0, 0, 255, 1.0f
-			);
-			texts[i].init();
-		}
+
+		texts = new DynamicText(
+			"bulko_cat\ncatuscat", 32, glm::vec3(-1, -1, 0), 255, 0, 0, 255, 1
+		);
+		//std::wifstream wif("res/text.txt");
+		//wif.imbue(std::locale(std::locale(), new std::codecvt_utf8<wchar_t>));
+		//std::wstringstream wss;
+		//wss << wif.rdbuf();
+		//wif.close();
+		//std::wcout << wss.str();
+		texts->setProjection(&hero.getCamera().getOrthoMatrix());
+		texts->init();
 
 		
 		while (running) {
@@ -97,7 +105,7 @@ namespace bulka {
 			update();
 			postUpdate();
 			glClearColor(135.0f / 256, 206.0f / 256, 235.0f / 256, 1);
-			glClear(GL_COLOR_BUFFER_BIT);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			preRender();
 
 			render();
@@ -124,8 +132,6 @@ namespace bulka {
 			++frames;
 		}
 		std::cout << "Don't Running!" << std::endl;
-
-		delete[] texts;
 
 		onExit();
 		glfwTerminate();
@@ -158,9 +164,6 @@ namespace bulka {
 			std::cerr << "FreeType FT_Set_Pixel_Sizes error: " << error << std::endl;
 		}
 
-
-
-
 		Window::setRealWidth(1280);
 		Window::setRealHeight(720);
 		Window::setTitle(new char[10] {"BVEngine!"});
@@ -183,6 +186,7 @@ namespace bulka {
 	void Engine::postInit()
 	{
 		glEnable(GL_CULL_FACE);
+		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		hero.postInit();
@@ -233,10 +237,11 @@ namespace bulka {
 		ShaderManager::mainShader.bind();
 		Renderer::render(simpleMesh);
 		ShaderManager::mainShader.unbind();
-		for (size_t i = 0; i < 255; i++)
-		{
-			texts[i].render();
-		}
+		texts->render();
+		//for (size_t i = 0; i < 1; i++)
+		//{
+		//	texts[i].render();
+		//}
 		
 		Window::render();
 	}

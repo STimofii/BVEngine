@@ -4,6 +4,8 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
+#include "../../engine.h"
+#include "../../hero.h"
 #include "text_manager.h"
 
 namespace bulka {
@@ -15,7 +17,7 @@ namespace bulka {
 		unsigned int size = 16;
 		float scale = 1.0f;
 		TextManager::SingleSize* singleSizeFont;
-		glm::mat4 projection = 1.0f;
+		glm::mat4* projection = &Engine::getHero().getCamera().getOrthoMatrix();
 		glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f);
 	public:
 		IText();
@@ -35,6 +37,8 @@ namespace bulka {
 		virtual void setScale(float scale);
 		virtual glm::vec3 getPosition();
 		virtual void setPosition(glm::vec3 scale);
+		virtual glm::mat4* getProjection();
+		virtual void setProjection(glm::mat4* projection);
 	};
 
 
