@@ -73,7 +73,7 @@ namespace bulka {
 		long long timeFPS = unixTime();
 		long long frames = 0;
 
-		text = Text("bulko_cat", 16, 255, 0, 0, 255);
+		text = Text("bulko_cat", 200, 255, 0, 0, 255, 1);
 		text.init();
 		while (running) {
 			timeFrameStart = unixTime();

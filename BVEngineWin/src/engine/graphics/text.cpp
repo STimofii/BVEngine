@@ -13,7 +13,7 @@ namespace bulka {
 	Text::Text()
 	{
 	}
-	Text::Text(std::string text, unsigned int size, unsigned char r, unsigned char g, unsigned char b, unsigned char a) : text(text), size(size)
+	Text::Text(std::string text, unsigned int size, unsigned char r, unsigned char g, unsigned char b, unsigned char a, float scale) : text(text), size(size), scale(scale)
 	{
 		setColor(r, g, b, a);
 	}
@@ -30,6 +30,7 @@ namespace bulka {
 	{
 		ShaderManager::textShader.bind();
 		//ShaderManager::textShader.uniformMat4f("projection", projection);
+		ShaderManager::textShader.uniform1f("scale", scale);
 		ShaderManager::textShader.uniform4fv("textColor", glm::vec4(
 			static_cast<float>((color >> 24) & 0xFF) / 256,
 			static_cast<float>((color >> 16) & 0xFF) / 256,
@@ -39,18 +40,18 @@ namespace bulka {
 		glActiveTexture(GL_TEXTURE0);
 
 		std::string::const_iterator c;
-		glm::vec2 pos(50, 50);
+		glm::vec3 pos(50, 50, 0);
 
 
 		for (c = text.begin(); c != text.end(); ++c)
 		{
 			TextRenderer::SingleSize::Character& character = singleSizeFont->getCharacter(*c);
 			glBindVertexArray(character.VAO);
-			ShaderManager::textShader.uniform2fv("position", pos);
+			ShaderManager::textShader.uniform3fv("position", pos);
 			glBindTexture(GL_TEXTURE_2D, character.texture);
 			glDrawArrays(GL_TRIANGLES, 0, 6);
 			
-			pos.x += character.size.x;
+			pos.x += character.size.x + 2;
 		}
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glBindVertexArray(0);
@@ -76,5 +77,13 @@ namespace bulka {
 	{
 		this->size = size;
 		singleSizeFont = TextRenderer::getSingleSize(size);
+	}
+	float Text::getScale()
+	{
+		return scale;
+	}
+	void Text::setScale(float scale)
+	{
+		this->scale = scale;
 	}
 }
