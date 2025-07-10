@@ -12,7 +12,7 @@
 #include <GLFW/glfw3.h>
 #include "graphics/mesh/vertex/vertex5f.h"
 
-#include "graphics/text.h"
+#include "graphics/text/dynamic_text.h"
 
 
 
@@ -30,7 +30,7 @@ namespace bulka {
 	Hero Engine::hero;
 	TexturedMesh Engine::simpleMesh;
 
-	Text text;
+	DynamicText* texts;
 
 
 
@@ -62,7 +62,7 @@ namespace bulka {
 			2, 3, 0
 		}, 6);
 		simpleMesh.update();
-		simpleMesh.setTexture(TextureManager::getTexture("res/textures/apple.png"));
+		simpleMesh.setTexture(TextureManager::getTexture("res/textures/bulka.png"));
 
 		std::cout << "Initialized! Time for initializing - " << timer.getTimeSeconds() << std::endl;
 		
@@ -73,8 +73,16 @@ namespace bulka {
 		long long timeFPS = unixTime();
 		long long frames = 0;
 
-		text = Text("bulko_cat", 200, 255, 0, 0, 255, 1);
-		text.init();
+		texts = new DynamicText[255];
+		for (size_t i = 0; i < 255; i++)
+		{
+			new (& texts[i]) DynamicText(
+				"bulko_cat", 256, glm::vec3(0, 0, i), 255, 0, 0, 255, 1.0f
+			);
+			texts[i].init();
+		}
+
+		
 		while (running) {
 			timeFrameStart = unixTime();
 			preUpdate();
@@ -116,6 +124,8 @@ namespace bulka {
 			++frames;
 		}
 		std::cout << "Don't Running!" << std::endl;
+
+		delete[] texts;
 
 		onExit();
 		glfwTerminate();
@@ -165,7 +175,7 @@ namespace bulka {
 
 		ShaderManager::init();
 		Input::init();
-		TextRenderer::init();
+		TextManager::init();
 		TextureManager::init();
 		hero.init();
 		Renderer::init();
@@ -223,7 +233,11 @@ namespace bulka {
 		ShaderManager::mainShader.bind();
 		Renderer::render(simpleMesh);
 		ShaderManager::mainShader.unbind();
-		text.render();
+		for (size_t i = 0; i < 255; i++)
+		{
+			texts[i].render();
+		}
+		
 		Window::render();
 	}
 	void Engine::postRender()
@@ -241,7 +255,7 @@ namespace bulka {
 		Renderer::finalization();
 		hero.finalization();
 		TextureManager::finalization();
-		TextRenderer::finalization();
+		TextManager::finalization();
 		ShaderManager::finalization();
 		Input::finalization();
 		Window::finalization();

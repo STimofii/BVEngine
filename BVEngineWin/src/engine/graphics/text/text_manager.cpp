@@ -1,25 +1,25 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-#include "text_renderer.h"
+#include "text_manager.h"
 
 
-#include "../settings.h"
-#include "../engine.h"
+#include "../../settings.h"
+#include "../../engine.h"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 
 namespace bulka {
-	std::unordered_map<unsigned int, TextRenderer::SingleSize*> TextRenderer::sizes;
+	std::unordered_map<unsigned int, TextManager::SingleSize*> TextManager::sizes;
 
 
-	TextRenderer::SingleSize::SingleSize()
+	TextManager::SingleSize::SingleSize()
 	{
 
 	}
 
-	TextRenderer::SingleSize::SingleSize(unsigned int size)
+	TextManager::SingleSize::SingleSize(unsigned int size)
 	{
 		characters = new Character[255];
 		FT_Set_Pixel_Sizes(Engine::getMainFont(), 0, size);
@@ -88,45 +88,45 @@ namespace bulka {
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
-	TextRenderer::SingleSize::~SingleSize()
+	TextManager::SingleSize::~SingleSize()
 	{
 		delete[] characters;
 	}
-	TextRenderer::SingleSize::Character* TextRenderer::SingleSize::getCharacters()
+	TextManager::SingleSize::Character* TextManager::SingleSize::getCharacters()
 	{
 		return characters;
 	}
-	TextRenderer::SingleSize::Character& TextRenderer::SingleSize::getCharacter(unsigned char c)
+	TextManager::SingleSize::Character& TextManager::SingleSize::getCharacter(unsigned char c)
 	{
 		return characters[c];
 	}
-	TextRenderer::SingleSize::Character::Character(unsigned int texture, unsigned int VAO, unsigned int VBO, glm::ivec2 size, glm::ivec2 bearing, unsigned int advance) :
+	TextManager::SingleSize::Character::Character(unsigned int texture, unsigned int VAO, unsigned int VBO, glm::ivec2 size, glm::ivec2 bearing, unsigned int advance) :
 		texture(texture), VAO(VAO), VBO(VBO), size(size), bearing(bearing), advance(advance)
 	{
 	}
-	TextRenderer::SingleSize::Character::~Character()
+	TextManager::SingleSize::Character::~Character()
 	{
 		glDeleteTextures(1, &texture);
 		glDeleteBuffers(1, &VBO);
 		glDeleteVertexArrays(1, &VAO);
 	}
-	void TextRenderer::SingleSize::Character::bind() {
+	void TextManager::SingleSize::Character::bind() {
 		glBindTexture(GL_TEXTURE_2D, texture);
 	}
-	void TextRenderer::SingleSize::Character::unbind() {
+	void TextManager::SingleSize::Character::unbind() {
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
-	void TextRenderer::init() {
+	void TextManager::init() {
 		getSingleSize(16);
 	}
-	void TextRenderer::finalization() {
+	void TextManager::finalization() {
 		for (auto& pair : sizes)
 		{
 			delete pair.second;
 		}
 	}
-	TextRenderer::SingleSize* TextRenderer::getSingleSize(unsigned int size)
+	TextManager::SingleSize* TextManager::getSingleSize(unsigned int size)
 	{
 		auto it = sizes.find(size);
 		if (it == sizes.end()) {

@@ -57,10 +57,13 @@
     <ClCompile Include="src\engine\hero.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="src\engine\graphics\text_renderer.cpp">
+    <ClCompile Include="src\engine\graphics\text\text_manager.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="src\engine\graphics\text.cpp">
+    <ClCompile Include="src\engine\graphics\text\dymamic_text.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\graphics\text\IText.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
@@ -101,10 +104,13 @@
     <ClInclude Include="src\engine\hero.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="src\engine\graphics\text_renderer.h">
+    <ClInclude Include="src\engine\graphics\text\text_manager.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="src\engine\graphics\text.h">
+    <ClInclude Include="src\engine\graphics\text\dynamic_text.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\graphics\text\IText.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

@@ -5,7 +5,7 @@
 #include <glm/ext.hpp>
 
 namespace bulka {
-	class TextRenderer {
+	class TextManager {
 	protected:
 	public:
 		class SingleSize
