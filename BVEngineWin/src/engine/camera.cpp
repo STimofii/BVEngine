@@ -67,10 +67,10 @@ namespace bulka {
 		rotation.x += x;
 		rotation.y += y;
 		rotation.z += z;
-		if(rotation.y <= 0 || rotation.y >= 360){
+		if(rotation.y < 0 || rotation.y > 360){
 			rotation.y = std::fmod(rotation.y, 360);
 		}
-		if (rotation.z <= 0 || rotation.z >= 360) {
+		if (rotation.z < 0 || rotation.z > 360) {
 			rotation.z = std::fmod(rotation.z, 360);
 		}
 

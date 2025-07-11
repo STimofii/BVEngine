@@ -33,11 +33,14 @@ namespace bulka {
 			SingleSize(unsigned int size);
 			~SingleSize();
 
-			Character* getCharacters();
-			Character& getCharacter(unsigned char c);
+			void loadChar(unsigned int c);
+
+			std::unordered_map<unsigned int, Character>* getCharacters();
+			Character& getCharacter(unsigned int c);
 
 		private:
-			Character* characters;
+			unsigned int size;
+			std::unordered_map<unsigned int, Character> characters;
 		};
 
 		static void init();

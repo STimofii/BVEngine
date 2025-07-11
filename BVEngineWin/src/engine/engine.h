@@ -7,10 +7,19 @@
 #include "graphics/renderer.h"
 #include "graphics/texture_manager.h"
 
+#define BVENGINE_VERSION_MAJOR 0
+#define BVENGINE_VERSION_MINOR 0
+#define BVENGINE_VERSION_REVISION 1
+
+#include <string>
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
 namespace bulka {
+	const std::string BVENGINE_VERSION = "BVEngine v" +
+		std::to_string(BVENGINE_VERSION_MAJOR) + "." +
+		std::to_string(BVENGINE_VERSION_MINOR) + "." +
+		std::to_string(BVENGINE_VERSION_REVISION);
 	class Hero;
 	class TexturedMesh;
 	class Engine {

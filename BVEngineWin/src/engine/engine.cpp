@@ -19,6 +19,7 @@
 
 
 
+
 namespace bulka {
 	bool Engine::running = false;
 	int Engine::exitCode = 0;
@@ -41,7 +42,9 @@ namespace bulka {
 		bcppul::Timer timer("engine", false);
 		timer.start();
 
-		setlocale(LC_ALL, "uk_UA");
+		setlocale(LC_TIME, "uk_UA");
+		setlocale(LC_MONETARY, "uk_UA");
+		setlocale(LC_NUMERIC, "C");
 
 		std::cout << "Initializing!" << std::endl;
 		running = false;
@@ -79,7 +82,8 @@ namespace bulka {
 
 
 		texts = new DynamicText(
-			"bulko_cat\ncatuscat", 32, glm::vec3(-1, -1, 0), 255, 0, 0, 255, 1
+			BVENGINE_VERSION, 16, glm::vec3(0, 0, 0), 255, 255, 255, 255, 1,
+			LEFT_BOTTOM_CORNER
 		);
 		//std::wifstream wif("res/text.txt");
 		//wif.imbue(std::locale(std::locale(), new std::codecvt_utf8<wchar_t>));
@@ -158,7 +162,6 @@ namespace bulka {
 		if (error) {
 			std::cerr << "FreeType font " << Settings::FONT.c_str() << " loading error: " << error << std::endl;
 		}
-
 		error = FT_Set_Pixel_Sizes(main_font, 0, 16);
 		if (error) {
 			std::cerr << "FreeType FT_Set_Pixel_Sizes error: " << error << std::endl;

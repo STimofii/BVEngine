@@ -4,7 +4,7 @@ namespace bulka {
 	IText::IText()
 	{
 	}
-	IText::IText(std::string text, unsigned int size, glm::vec3 position, unsigned char r, unsigned char g, unsigned char b, unsigned char a, float scale) : text(text), size(size), position(position), scale(scale)
+	IText::IText(std::string text, unsigned int size, glm::vec3 position, unsigned char r, unsigned char g, unsigned char b, unsigned char a, float scale, unsigned int alignment) : text(text), size(size), position(position), scale(scale), alignment(alignment)
 	{
 		setColor(r, g, b, a);
 	}
