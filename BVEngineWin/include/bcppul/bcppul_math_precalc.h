@@ -4,10 +4,7 @@
 #define BCPPUL_MATH_PRECALC_H
 
 #include "bcppul/bcppul_expimp.h"
-#include "bcppul/bcppul_math.h"
-#include <cmath>
-#include <exception>
-#include <iostream>
+
 
 
 namespace bcppul {

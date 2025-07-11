@@ -4,13 +4,13 @@
 #define TIMER_H
 
 #include "bcppul/bcppul_expimp.h"
-#include <iostream>
-#include <chrono>
-#include <iomanip>
+
 
 #ifdef _MSC_VER
 #include <intrin.h>
 #endif
+
+#include <iostream>
 
 
 

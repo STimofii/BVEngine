@@ -13,6 +13,8 @@ namespace bulka {
 	float Settings::SENSITIVITY = 0.2f;
 	float Settings::FPS_LIMIT = 0;
 	bool Settings::V_SYNC = false;
+	bcppul::LogLevel Settings::CONSOLE_LOG_LEVEL = bcppul::TRACE;
+	bcppul::LogLevel Settings::FILE_LOG_LEVEL = bcppul::NONE;
 
 	void Settings::load()
 	{
@@ -31,6 +33,9 @@ namespace bulka {
 		Engine::getHero().getCamera().setFOV(FOV);
 		SENSITIVITY = getAndSetIfNotExists("game.graphics.sensitivity", SENSITIVITY);
 		Engine::getHero().setSensitivity(SENSITIVITY);
+		CONSOLE_LOG_LEVEL = bcppul::LogLevel(getAndSetIfNotExists("engine.log.console_level", static_cast<long long>(CONSOLE_LOG_LEVEL)));
+		FILE_LOG_LEVEL = bcppul::LogLevel(getAndSetIfNotExists("engine.log.file_level", static_cast<long long>(FILE_LOG_LEVEL)));
+
 		save();
 	}
 

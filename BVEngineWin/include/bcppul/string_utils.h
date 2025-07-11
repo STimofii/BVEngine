@@ -4,15 +4,8 @@
 #define STRING_UTILS_H
 
 #include "bcppul/bcppul_expimp.h"
-#include <iostream>
-#include <map>
 #include <string>
-#include <iomanip>
-#include <cctype>
-#include <sstream>
-#include <stdexcept>
-#include "bcppul/timer.h"
-#include "bcppul/file_utils.h"
+#include <map>
 
 namespace bcppul {
 	const std::map<char, char> simple_escapes = {

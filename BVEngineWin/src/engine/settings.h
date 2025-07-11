@@ -1,6 +1,7 @@
 #pragma once
 
 #include <bcppul/properties.h>
+#include <bcppul/logging.h>
 
 
 namespace bulka{
@@ -18,6 +19,8 @@ namespace bulka{
 		static float SENSITIVITY;
 		static float FPS_LIMIT;
 		static bool V_SYNC;
+		static bcppul::LogLevel CONSOLE_LOG_LEVEL;
+		static bcppul::LogLevel FILE_LOG_LEVEL;
 
 		static void load();
 		static std::string get(std::string key, std::string standard_value = "");

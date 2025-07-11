@@ -5,9 +5,9 @@
 
 #include "bcppul/bcppul_expimp.h"
 #include <iostream>
-#include <fstream>
+#include <string>
 #include <vector>
-#include <filesystem>
+
 
 namespace bcppul {
 	BCPPUL_API std::vector<std::string> getFilesInDirectory(std::string path, bool recursively, std::vector<std::string>& files);
