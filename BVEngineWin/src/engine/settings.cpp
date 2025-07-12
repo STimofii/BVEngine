@@ -2,6 +2,8 @@
 
 #include "engine.h"
 #include "hero.h"
+#include <bcppul/logging.h>
+#include <bcppul/bcppul_math.h>
 
 namespace bulka {
 	bcppul::Properties Settings::properties("settings.properties");
@@ -13,17 +15,14 @@ namespace bulka {
 	float Settings::SENSITIVITY = 0.2f;
 	float Settings::FPS_LIMIT = 0;
 	bool Settings::V_SYNC = false;
-	bcppul::LogLevel Settings::CONSOLE_LOG_LEVEL = bcppul::TRACE;
-	bcppul::LogLevel Settings::FILE_LOG_LEVEL = bcppul::NONE;
 
 	void Settings::load()
 	{
 		properties.load();
 	}
-	void Settings::init()
+	void Settings::reload()
 	{
-		load();
-		
+
 		FONT = getAndSetIfNotExists("game.graphics.font", FONT);
 		FPS_LIMIT = getAndSetIfNotExists("game.graphics.fps_limit", FPS_LIMIT);
 		Engine::setFPSLimit(FPS_LIMIT);
@@ -33,8 +32,17 @@ namespace bulka {
 		Engine::getHero().getCamera().setFOV(FOV);
 		SENSITIVITY = getAndSetIfNotExists("game.graphics.sensitivity", SENSITIVITY);
 		Engine::getHero().setSensitivity(SENSITIVITY);
-		CONSOLE_LOG_LEVEL = bcppul::LogLevel(getAndSetIfNotExists("engine.log.console_level", static_cast<long long>(CONSOLE_LOG_LEVEL)));
-		FILE_LOG_LEVEL = bcppul::LogLevel(getAndSetIfNotExists("engine.log.file_level", static_cast<long long>(FILE_LOG_LEVEL)));
+		bcppul::console_log_level = bcppul::LogLevel(bcppul::clamp(
+			static_cast<long long>(bcppul::LogLevel(getAndSetIfNotExists("engine.log.console_level", static_cast<long long>(bcppul::console_log_level))))
+			, static_cast<long long>(bcppul::TRACE), static_cast<long long>(bcppul::NONE)));
+		bcppul::file_log_level = bcppul::LogLevel(bcppul::clamp(
+			static_cast<long long>(bcppul::LogLevel(getAndSetIfNotExists("engine.log.file_level", static_cast<long long>(bcppul::file_log_level))))
+			, static_cast<long long>(bcppul::TRACE), static_cast<long long>(bcppul::NONE)));
+	}
+	void Settings::init()
+	{
+		load();
+		reload();
 
 		save();
 	}

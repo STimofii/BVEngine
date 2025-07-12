@@ -4,6 +4,7 @@
 #define BCPPUL_MATH_H
 
 #include "bcppul/bcppul_expimp.h"
+#include <cmath>
 
 
 namespace bcppul {
@@ -17,6 +18,10 @@ namespace bcppul {
 	template<typename T>
 	inline T map(T a, T aMin, T aMax, T bMin, T bMax) {
 		return (a - aMin) * (bMax - bMin) / (aMax - aMin) + bMin;
+	}
+	template <typename T>
+	inline T clamp(T value, T min_val, T max_val) {
+		return std::max(min_val, std::min(value, max_val));
 	}
 
 

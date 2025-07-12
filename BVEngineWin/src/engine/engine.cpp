@@ -19,8 +19,8 @@
 
 
 
-
 namespace bulka {
+	bcppul::Logger* logger = bcppul::getLogger("Engine");
 	bool Engine::running = false;
 	int Engine::exitCode = 0;
 	long long Engine::fps = 0;
@@ -39,6 +39,7 @@ namespace bulka {
 
 
 	int Engine::run() {
+		logger->info("Running!!!");
 		bcppul::Timer timer("engine", false);
 		timer.start();
 
@@ -46,11 +47,12 @@ namespace bulka {
 		setlocale(LC_MONETARY, "uk_UA");
 		setlocale(LC_NUMERIC, "C");
 
-		std::cout << "Initializing!" << std::endl;
+		logger->info("Initializing");
 		running = false;
 		preInit();
 		init();
 		postInit();
+		logger->info("Initialized");
 
 		setVSync(v_sync);
 
@@ -71,7 +73,7 @@ namespace bulka {
 		simpleMesh.update();
 		simpleMesh.setTexture(TextureManager::getTexture("res/textures/bulka.png"));
 
-		std::cout << "Initialized! Time for initializing - " << timer.getTimeSeconds() << std::endl;
+		*logger << bcppul::INFO << "Initialized! Time for initializing - " << timer.getTimeSeconds();
 		
 		running = true;
 		std::cout << "Running!!!" << std::endl;
@@ -94,7 +96,7 @@ namespace bulka {
 		texts->setProjection(&hero.getCamera().getOrthoMatrix());
 		texts->init();
 
-		
+		logger->info("Starting game loop");
 		while (running) {
 			timeFrameStart = unixTime();
 			preUpdate();
@@ -135,59 +137,82 @@ namespace bulka {
 			}
 			++frames;
 		}
-		std::cout << "Don't Running!" << std::endl;
+		logger->info("Don't Running!");
 
+		logger->info("onExit()");
 		onExit();
+		logger->info("finalized");
 		glfwTerminate();
+		logger->info("Bye!");
 		return exitCode;
 	}
 
 	void Engine::preInit()
 	{
-		
+		logger->info("Pre init");
 	}
 	void Engine::init()
 	{
+		logger->info("Init");
+		logger->debug("Initializing GLFW");
 		if (!glfwInit()) {
-			std::cerr << "GLFW CAN'T INIT!!!" << std::endl;
+			logger->fatal("GLFW CAN'T INIT!!!");
 			throw new std::exception("GLFW CAN'T INIT!!!");
 		}
+		logger->debug("Initialized GLFW");
+		logger->debug("Initializing Settings");
 		Settings::init();
+		logger->debug("Initialized Settings");
 
+		logger->debug("Initializing FreeType");
 		FT_Error error = FT_Init_FreeType(&ft_library);
 		if (error) {
-			std::cerr << "FreeType FT_Init_FreeType error: " << error << std::endl;
+			*logger << bcppul::ERROR << "FreeType FT_Init_FreeType error: " << error;
 		}
+		*logger << bcppul::DEBUG << "Loading font: " << Settings::FONT;
 		error = FT_New_Face(ft_library, Settings::FONT.c_str(), 0, &main_font);
 		if (error) {
-			std::cerr << "FreeType font " << Settings::FONT.c_str() << " loading error: " << error << std::endl;
+			logger->error("GLFW CAN'T INIT!!!");
+			*logger << bcppul::ERROR << "FreeType font " << Settings::FONT.c_str() << " loading error: " << error;
 		}
 		error = FT_Set_Pixel_Sizes(main_font, 0, 16);
 		if (error) {
-			std::cerr << "FreeType FT_Set_Pixel_Sizes error: " << error << std::endl;
+			logger->error("GLFW CAN'T INIT!!!");
+			*logger << bcppul::ERROR << "FreeType FT_Set_Pixel_Sizes error: " << error;
 		}
+		logger->debug("Initialized FreeType");
 
+
+		logger->debug("Creating Window");
 		Window::setRealWidth(1280);
 		Window::setRealHeight(720);
 		Window::setTitle(new char[10] {"BVEngine!"});
 		Window::create();
-
+		logger->debug("Created Window");
+		logger->debug("Initializing GLEW");
 		if (glewInit() != GLEW_OK) {
-			std::cerr << "GLEW CAN'T INIT!!!" << std::endl;
+			logger->fatal("GLEW CAN'T INIT!!!");
 			throw new std::exception("GLEW CAN'T INIT!!!");
 		}
 		isGLInitialized = true;
+		logger->debug("Initialized GLEW");
 
-
+		logger->debug("Initializing ShaderManager");
 		ShaderManager::init();
+		logger->debug("Initializing Input");
 		Input::init();
+		logger->debug("Initializing TextManager");
 		TextManager::init();
+		logger->debug("Initializing TextureManager");
 		TextureManager::init();
+		logger->debug("Initializing Hero");
 		hero.init();
+		logger->debug("Initializing Renderer");
 		Renderer::init();
 	}
 	void Engine::postInit()
 	{
+		logger->info("Post init");
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_BLEND);

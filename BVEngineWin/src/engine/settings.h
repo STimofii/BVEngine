@@ -19,10 +19,9 @@ namespace bulka{
 		static float SENSITIVITY;
 		static float FPS_LIMIT;
 		static bool V_SYNC;
-		static bcppul::LogLevel CONSOLE_LOG_LEVEL;
-		static bcppul::LogLevel FILE_LOG_LEVEL;
 
 		static void load();
+		static void reload();
 		static std::string get(std::string key, std::string standard_value = "");
 		static long long getLong(std::string key, long long standard_value = 0);
 		static double getDouble(std::string key, double standard_value = 0.0);
