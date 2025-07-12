@@ -8,9 +8,12 @@
 #include "../../engine.h"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <exception>
+#include <cmath>
 
 
 namespace bulka {
+	bcppul::Logger* TextManager::logger = bcppul::getLogger("TextManager");
 	std::unordered_map<unsigned int, TextManager::SingleSize*> TextManager::sizes;
 
 
@@ -29,7 +32,8 @@ namespace bulka {
 
 	TextManager::SingleSize::~SingleSize()
 	{
-
+		glDeleteTextures(1, &texture);
+		texture = 0;
 	}
 	void TextManager::SingleSize::loadChar(unsigned int c)
 	{
@@ -38,9 +42,10 @@ namespace bulka {
 		FT_Face& face = Engine::getMainFont();
 		if (FT_Load_Char(face, c, FT_LOAD_RENDER))
 		{
-			std::cerr << "ERROR::FREETYPE: Failed to load Glyph " << c << std::endl;
+			*logger << bcppul::ERROR << "ERROR::FREETYPE: Failed to load Glyph " << c;
 			return;
 		}
+		line_height = face->size->metrics.height;
 		float width = face->glyph->bitmap.width;
 		float height = face->glyph->bitmap.rows;
 		float left = face->glyph->bitmap_left;
@@ -61,12 +66,13 @@ namespace bulka {
 			GL_UNSIGNED_BYTE,
 			face->glyph->bitmap.buffer
 		);
-		//std::cout << static_cast<char>(c) << ": " << left << std::endl;
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		float vertices[] = {
 				0.0f, height, 0.0f, 0.0f,
 				0.0f, 0.0f, 0.0f, 1.0f,
@@ -95,6 +101,87 @@ namespace bulka {
 		);
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
+	void TextManager::SingleSize::createTexture()
+	{
+		FT_Set_Pixel_Sizes(Engine::getMainFont(), 0, size);
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+		FT_Face& face = Engine::getMainFont();
+		unsigned int maxGlyphWidth = 0;
+		unsigned int maxGlyphHeight = std::pow(2, std::ceil(std::log2(face->size->metrics.height >> 6)));
+		for (unsigned int c = 0; c < 128; ++c) {
+			unsigned int glyphWidth = getCharacter(c).size.x;
+			if (glyphWidth > maxGlyphWidth) {
+				maxGlyphWidth = glyphWidth;
+			}
+		}
+		maxGlyphWidth = std::pow(2, std::ceil(std::log2(maxGlyphWidth)));
+		unsigned int glyphSize = maxGlyphHeight * maxGlyphWidth;
+		unsigned int width = 16 * maxGlyphWidth;
+		unsigned int height = 8 * maxGlyphHeight;
+		std::cout << width << "\t" << height << std::endl;
+		unsigned int bmSize = width * height;
+		unsigned char* bitmap = new unsigned char[bmSize] {};
+		try {
+			for (unsigned int yc = 0; yc < 8; ++yc) {
+				for (unsigned int xc = 0; xc < 16; ++xc) {
+					unsigned char c = (yc * 16 + xc);
+					unsigned int beginY = yc * maxGlyphHeight;
+					unsigned int beginX = xc * maxGlyphWidth;
+					if (FT_Load_Char(face, c, FT_LOAD_RENDER))
+					{
+						*logger << bcppul::ERROR << "ERROR::FREETYPE: Failed to load Glyph " << c;
+						return;
+					}
+					for (unsigned int y = 0; y < face->glyph->bitmap.rows; ++y)
+					{
+						for (unsigned int x = 0; x < face->glyph->bitmap.width; ++x)
+						{
+							bitmap[(beginY + y) * width + (beginX + x)] = face->glyph->bitmap.buffer[y * face->glyph->bitmap.width + x];
+						}
+					}
+				}
+			}
+		}
+		catch (std::exception e) {
+			*logger << bcppul::ERROR << "Error in creating font texture: " << e.what();
+		}
+
+		//for (unsigned int yc = 0; yc < 8; ++yc) {
+		//	for (unsigned int xc = 0; xc < 16; ++xc) {
+		//		unsigned char c = (yc * 16 + xc);
+		//		unsigned int currentCharacterBitmapBegin = c * glyphSize;
+		//		for (unsigned int y = 0; y < maxGlyphHeight; ++y){
+		//			for (unsigned int x = 0; x < maxGlyphWidth; ++x)
+		//			{
+		//				const char* str = (bitmap[currentCharacterBitmapBegin + y * maxGlyphWidth + x] > 127) ? "##" : "  ";
+		//				std::cout << str;
+		//			}
+		//			std::cout << std::endl;
+		//		}
+		//	}
+		//	std::cout << std::endl;
+		//}
+
+		glGenTextures(1, &texture);
+		glBindTexture(GL_TEXTURE_2D, texture);
+		glTexImage2D(
+			GL_TEXTURE_2D,
+			0,
+			GL_RED,
+			width,
+			height,
+			0,
+			GL_RED,
+			GL_UNSIGNED_BYTE,
+			bitmap
+		);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+		delete[] bitmap;
+	}
 	std::unordered_map<unsigned int, TextManager::SingleSize::Character>* TextManager::SingleSize::getCharacters()
 	{
 		return &characters;
@@ -107,6 +194,17 @@ namespace bulka {
 			return characters[c];
 		}
 		return characters[c];
+	}
+	unsigned int TextManager::SingleSize::getLineHeight()
+	{
+		return line_height;
+	}
+	unsigned int TextManager::SingleSize::getTexture()
+	{
+		if (texture == 0) {
+			createTexture();
+		}
+		return texture;
 	}
 	TextManager::SingleSize::Character::Character(
 		unsigned int texture, unsigned int VAO, unsigned int VBO, 

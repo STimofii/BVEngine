@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include "camera.h"
+#include "input.h"
 #include "hero.h"
 #include "engine.h"
 

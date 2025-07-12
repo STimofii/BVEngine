@@ -27,7 +27,8 @@ namespace bulka {
 	class IText{
 	private:
 	protected:
-		std::string text = "";
+		std::string text;
+		std::wstring wtext;
 		unsigned int color = 0xFF;
 		unsigned int size = 16;
 		float scale = 1.0f;
@@ -40,12 +41,18 @@ namespace bulka {
 		IText(std::string text, unsigned int size = 16, glm::vec3 position = glm::vec3(),
 			unsigned char r = 0, unsigned char g = 0, unsigned char b = 0, unsigned char a = 255, 
 			float scale = 1.0f, unsigned int alignment = LEFT_TOP_CORNER);
+		IText(std::wstring wtext, unsigned int size = 16, glm::vec3 position = glm::vec3(),
+			unsigned char r = 0, unsigned char g = 0, unsigned char b = 0, unsigned char a = 255, 
+			float scale = 1.0f, unsigned int alignment = LEFT_TOP_CORNER);
 		~IText();
 		
 		virtual void render() = 0;
+		virtual void init();
 
-		virtual std::string& getText();
-		virtual void setText(std::string& text);
+		virtual std::string getText();
+		virtual void setText(std::string text);
+		virtual std::wstring getTextW();
+		virtual void setTextW(std::wstring text);
 		virtual int getColor();
 		virtual void setColor(unsigned int color);
 		virtual void setColor(unsigned char r = 0, unsigned char g = 0, unsigned char b = 0, unsigned char a = 0);

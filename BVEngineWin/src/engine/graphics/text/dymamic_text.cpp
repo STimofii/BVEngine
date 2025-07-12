@@ -17,16 +17,24 @@ namespace bulka {
 		: IText(text, size, position, r, g, b, a, scale, alignment)
 	{
 	}
+	DynamicText::DynamicText(
+		std::wstring wtext, unsigned int size, glm::vec3 position, unsigned char r, unsigned char g, unsigned char b, unsigned char a, float scale, unsigned int alignment) 
+		: IText(wtext, size, position, r, g, b, a, scale, alignment)
+	{
+	}
 
 	DynamicText::~DynamicText()
 	{
 	}
-	void DynamicText::init()
-	{
-		singleSizeFont = TextManager::getSingleSize(size);
-	}
 	void DynamicText::render()
 	{
+		bool normalText = true;
+		if (text.empty()) {
+			normalText = false;
+			if (wtext.empty()) {
+				return;
+			}
+		}
 		ShaderManager::textShader.bind();
 		ShaderManager::textShader.uniformMat4f("projection", *projection);
 		ShaderManager::textShader.uniform1f("scale", scale);
@@ -44,39 +52,38 @@ namespace bulka {
 
 		std::string::const_iterator c;
 		std::string::const_iterator end;
+		std::wstring::const_iterator wc;
+		std::wstring::const_iterator wend;
 
 		unsigned int lines;
 		unsigned int* lines_widths = 0;
 		unsigned int maxLineWidth = 0;
 
 		if (alignment & DRAW_LINES_UP || alignment & DRAW_LINE_RIGHT_SIDE) {
-			lines = std::count(text.begin(), text.end(), '\n') + 1;
+			if (normalText) {
+				lines = std::count(text.begin(), text.end(), '\n') + 1;
+			}
+			else {
+				lines = std::count(wtext.begin(), wtext.end(), '\n') + 1;
+			}
 		}
 
 		if (alignment & DRAW_LINE_RIGHT_SIDE) {
 			lines_widths = new unsigned int[lines] {};
 			maxLineWidth = 0;
-			c = text.begin();
-			end = text.end();
-			for (unsigned int i = 0; i < lines; i++) {
-				for (; c != end; ++c)
-				{
-					if ((*c) == '\n') {
-						++c;
-						break;
-					}
-					TextManager::SingleSize::Character* character = &singleSizeFont->getCharacter(*c);
-					lines_widths[i] += (character->advance >> 6);
-
-				}
-				unsigned int width = lines_widths[i];
-				if (maxLineWidth < width) {
-					maxLineWidth = width;
-				}
+			if(normalText){
+				c = text.begin();
+				end = text.end();
+				maxLineWidth = getLinesWidths(c, end, lines, lines_widths);
+			}
+			else {
+				wc = wtext.begin();
+				wend = wtext.end();
+				maxLineWidth = getLinesWidthsW(wc, wend, lines, lines_widths);
 			}
 		}
 
-		unsigned int lineSpace = size;
+		unsigned int lineSpace = singleSizeFont->getLineHeight() >> 6;
 		unsigned int screenWidth = 0;
 
 
@@ -106,18 +113,74 @@ namespace bulka {
 			char_position.y -= lineSpace;
 		}
 
-		c = text.begin();
-		end = text.end();
-		unsigned int line = 0;
-		for (; c != end; ++c)
-		{
-			renderChar(*c, char_position, lines_widths, line, lineSpace, screenWidth);
+		if (normalText) {
+			c = text.begin();
+			end = text.end();
+			unsigned int line = 0;
+			for (; c != end; ++c)
+			{
+				renderChar(*c, char_position, lines_widths, line, lineSpace, screenWidth);
+			}
 		}
+		else {
+			wc = wtext.begin();
+			wend = wtext.end();
+			unsigned int line = 0;
+			for (; wc != wend; ++wc)
+			{
+				renderChar(*wc, char_position, lines_widths, line, lineSpace, screenWidth);
+			}
+		}
+
 		delete[] lines_widths;
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glBindVertexArray(0);
 		ShaderManager::textShader.unbind();
 	}
+
+	unsigned int DynamicText::getLinesWidths(std::string::const_iterator c, std::string::const_iterator end, unsigned int lines, unsigned int* lines_widths)
+	{
+		unsigned int maxLineWidth = 0;
+		for (unsigned int i = 0; i < lines; i++) {
+			for (; c != end; ++c)
+			{
+				if ((*c) == '\n') {
+					++c;
+					break;
+				}
+				TextManager::SingleSize::Character* character = &singleSizeFont->getCharacter(*c);
+				lines_widths[i] += (character->advance >> 6);
+
+			}
+			unsigned int width = lines_widths[i];
+			if (maxLineWidth < width) {
+				maxLineWidth = width;
+			}
+		}
+		return maxLineWidth;
+	}
+	unsigned int DynamicText::getLinesWidthsW(std::wstring::const_iterator c, std::wstring::const_iterator end, unsigned int lines, unsigned int* lines_widths)
+	{
+		unsigned int maxLineWidth = 0;
+		for (unsigned int i = 0; i < lines; i++) {
+			for (; c != end; ++c)
+			{
+				if ((*c) == '\n') {
+					++c;
+					break;
+				}
+				TextManager::SingleSize::Character* character = &singleSizeFont->getCharacter(*c);
+				lines_widths[i] += (character->advance >> 6);
+
+			}
+			unsigned int width = lines_widths[i];
+			if (maxLineWidth < width) {
+				maxLineWidth = width;
+			}
+		}
+		return maxLineWidth;
+	}
+
 	void DynamicText::renderChar(unsigned int c, glm::vec2& char_position, unsigned int* lines_widths, unsigned int& line, unsigned int lineSpace, unsigned int screenWidth)
 	{
 		if (c == '\n') {

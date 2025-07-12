@@ -8,7 +8,7 @@
 namespace bulka {
 	class Camera {
 	private:
-		float fov = 67 * (bcppul::PI / 180);
+		float fov = bcppul::degreesToRadians(70);
 	protected:
 	public:
 		glm::vec3 position;

@@ -3,6 +3,13 @@
 #include "hero.h"
 #include "graphics/mesh/textured_mesh.h"
 
+#include "window.h"
+#include "input.h"
+#include "settings.h"
+#include "graphics/shader_manager.h"
+#include "graphics/texture_manager.h"
+#include "graphics/renderer.h"
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -14,13 +21,11 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include "graphics/mesh/vertex/vertex5f.h"
-
+#include "graphics/mesh/texture.h"
 #include "graphics/text/dynamic_text.h"
 
-
-
 namespace bulka {
-	bcppul::Logger* logger = bcppul::getLogger("Engine");
+	bcppul::Logger* Engine::logger = bcppul::getLogger("Engine");
 	bool Engine::running = false;
 	int Engine::exitCode = 0;
 	long long Engine::fps = 0;
@@ -34,7 +39,7 @@ namespace bulka {
 	Hero Engine::hero;
 	TexturedMesh Engine::simpleMesh;
 
-	DynamicText* texts;
+	IText* text;
 
 
 
@@ -43,6 +48,7 @@ namespace bulka {
 		bcppul::Timer timer("engine", false);
 		timer.start();
 
+		std::locale::global(std::locale("en_US.UTF-8"));
 		setlocale(LC_TIME, "uk_UA");
 		setlocale(LC_MONETARY, "uk_UA");
 		setlocale(LC_NUMERIC, "C");
@@ -71,37 +77,44 @@ namespace bulka {
 			2, 3, 0
 			}, 6);
 		simpleMesh.update();
-		simpleMesh.setTexture(TextureManager::getTexture("res/textures/bulka.png"));
+		//simpleMesh.setTexture(TextureManager::getTexture("res/textures/bulka.png"));
+		//simpleMesh.setTexture();
+
 
 		*logger << bcppul::INFO << "Initialized! Time for initializing - " << timer.getTimeSeconds();
-		
+
+		text = new DynamicText(
+			"Catumba\nbumba\nchuchumba", 16, glm::vec3(0, 0, 0), 255, 0, 0, 255, 1,
+			LEFT_BOTTOM_CORNER
+		);
+		text->setProjection(&hero.getCamera().getOrthoMatrix());
+		text->init();
+		Texture texture;
+		texture.texture = TextManager::getSingleSize(12)->getTexture();
+		simpleMesh.setTexture(&texture);
+
+		//std::wstring str;
+		//std::wifstream wif("res/text.txt");
+		//wif.imbue(std::locale(wif.getloc(), new std::codecvt_utf8<wchar_t>));
+		//std::wstring wline;
+		//while (std::getline(wif, wline)) {
+		//	str += wline + L"\n";
+		//}
+		//wif.close();
+		//text.setTextW(str);
+
+
+		logger->info("Starting game loop");
 		running = true;
-		std::cout << "Running!!!" << std::endl;
 		long long timeFrameStart;
 		long long timeFrameElapsed;
 		long long timeFPS = unixTime();
 		long long frames = 0;
-
-
-		texts = new DynamicText(
-			BVENGINE_VERSION, 16, glm::vec3(0, 0, 0), 255, 255, 255, 255, 1,
-			LEFT_BOTTOM_CORNER
-		);
-		//std::wifstream wif("res/text.txt");
-		//wif.imbue(std::locale(std::locale(), new std::codecvt_utf8<wchar_t>));
-		//std::wstringstream wss;
-		//wss << wif.rdbuf();
-		//wif.close();
-		//std::wcout << wss.str();
-		texts->setProjection(&hero.getCamera().getOrthoMatrix());
-		texts->init();
-
-		logger->info("Starting game loop");
 		while (running) {
 			timeFrameStart = unixTime();
 			preUpdate();
 			if (Window::isShouldClose() || Input::isKeyPressed(GLFW_KEY_ESCAPE)) {
-				std::cout << "Window should close... Or ESC is pressed" << std::endl;
+				logger->info("Window should close... Or ESC is pressed");
 				exitCode = 0;
 				running = false;
 			}
@@ -144,6 +157,7 @@ namespace bulka {
 		logger->info("finalized");
 		glfwTerminate();
 		logger->info("Bye!");
+		delete text;
 		return exitCode;
 	}
 
@@ -265,7 +279,7 @@ namespace bulka {
 		ShaderManager::mainShader.bind();
 		Renderer::render(simpleMesh);
 		ShaderManager::mainShader.unbind();
-		texts->render();
+		text->render();
 		//for (size_t i = 0; i < 1; i++)
 		//{
 		//	texts[i].render();

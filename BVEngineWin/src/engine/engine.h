@@ -1,12 +1,5 @@
 #pragma once
 
-#include "window.h"
-#include "input.h"
-#include "settings.h"
-#include "graphics/shader_manager.h"
-#include "graphics/renderer.h"
-#include "graphics/texture_manager.h"
-
 #define BVENGINE_VERSION_MAJOR 0
 #define BVENGINE_VERSION_MINOR 0
 #define BVENGINE_VERSION_REVISION 1
@@ -14,6 +7,10 @@
 #include <string>
 #include <ft2build.h>
 #include FT_FREETYPE_H
+
+#include <bcppul/logging.h>
+
+
 
 namespace bulka {
 	const std::string BVENGINE_VERSION = "BVEngine v" +
@@ -24,6 +21,7 @@ namespace bulka {
 	class TexturedMesh;
 	class Engine {
 	private:
+		static bcppul::Logger* logger;
 		static bool running;
 		static int exitCode;
 		static long long fps;

@@ -8,17 +8,33 @@ namespace bulka {
 	{
 		setColor(r, g, b, a);
 	}
+	IText::IText(std::wstring wtext, unsigned int size, glm::vec3 position, unsigned char r, unsigned char g, unsigned char b, unsigned char a, float scale, unsigned int alignment) : wtext(wtext), size(size), position(position), scale(scale), alignment(alignment)
+	{
+		setColor(r, g, b, a);
+	}
 	IText::~IText()
 	{
 	}
 
-	std::string& IText::getText()
+	void IText::init() {
+		singleSizeFont = TextManager::getSingleSize(size);
+	}
+
+	std::string IText::getText()
 	{
 		return text;
 	}
-	void IText::setText(std::string& text)
+	void IText::setText(std::string text)
 	{
 		this->text = text;
+	}
+	std::wstring IText::getTextW()
+	{
+		return wtext;
+	}
+	void IText::setTextW(std::wstring text)
+	{
+		this->wtext = text;
 	}
 	int IText::getColor()
 	{

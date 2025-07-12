@@ -49,9 +49,9 @@ namespace bulka {
 	}
 	void Camera::moveInDirection(float x, float y, float z)
 	{
-		float pitch = rotation.x * (bcppul::PI / 180);
-		float yaw = rotation.y * (bcppul::PI / 180);
-		float roll = rotation.z * (bcppul::PI / 180);
+		float pitch = bcppul::degreesToRadians(rotation.x);
+		float yaw = bcppul::degreesToRadians(rotation.y);
+		float roll = bcppul::degreesToRadians(rotation.z);
 		position.x += std::sin(yaw) * -z + std::sin(yaw - bcppul::HALF_PI) * -x;
 		position.y += y;
 		position.z += std::cos(yaw) * z + std::cos(yaw - bcppul::HALF_PI) * x;
@@ -95,7 +95,7 @@ namespace bulka {
 	}
 	void Camera::setFOV(float fov)
 	{
-		fov = fov * (bcppul::PI / 180);
+		fov = bcppul::degreesToRadians(fov);
 		if (this->fov != fov){
 			this->fov = fov;
 			updateProjectionMatrix();
@@ -117,9 +117,9 @@ namespace bulka {
 	void Camera::updateViewMatrix()
 	{
 		viewMatrix = glm::mat4(1.0f);
-		viewMatrix = glm::rotate(viewMatrix, static_cast<float>(rotation.x * (bcppul::PI / 180)), glm::vec3(1, 0, 0));
-		viewMatrix = glm::rotate(viewMatrix, static_cast<float>(rotation.y * (bcppul::PI / 180)), glm::vec3(0, 1, 0));
-		viewMatrix = glm::rotate(viewMatrix, static_cast<float>(rotation.z * (bcppul::PI / 180)), glm::vec3(0, 0, 1));
+		viewMatrix = glm::rotate(viewMatrix, static_cast<float>(bcppul::degreesToRadians(rotation.x)), glm::vec3(1, 0, 0));
+		viewMatrix = glm::rotate(viewMatrix, static_cast<float>(bcppul::degreesToRadians(rotation.y)), glm::vec3(0, 1, 0));
+		viewMatrix = glm::rotate(viewMatrix, static_cast<float>(bcppul::degreesToRadians(rotation.z)), glm::vec3(0, 0, 1));
 		viewMatrix = glm::translate(viewMatrix, -position);
 	}
 	void Camera::updateProjViewMatrix()
@@ -130,11 +130,6 @@ namespace bulka {
 				ShaderManager::mainShader.bind();
 				ShaderManager::mainShader.uniformMat4f("projViewMat", projViewMatrix);
 			}
-			//if (ShaderManager::textShader.programID != 0) {
-			//	ShaderManager::textShader.bind();
-			//	ShaderManager::textShader.uniformMat4f("projection", *projViewMatrix);
-			//	ShaderManager::textShader.unbind();
-			//}
 
 			ShaderManager::mainShader.unbind();
 		}
@@ -144,8 +139,6 @@ namespace bulka {
 		float as = Window::getAspect();
 		normalizedOrthoMatrix = glm::ortho(-1.0f * as, 1.0f * as, -1.0f, 1.0f, 0.0f, 1000.0f);
 		orthoMatrix = glm::ortho(0.0f, static_cast<float>(Window::getRealWidth()), 0.0f, static_cast<float>(Window::getRealHeight()), 0.0f, 1000.0f);
-		//orthoMatrix = &glm::ortho(0.0f * as, 1.0f * as, 0.0f, 1.0f, 0.0f, 1000.0f);
-		//orthoMatrix = &glm::ortho(-1.0f * as, 1.0f * as, -1.0f, 1.0f, 0.0f, 1000.0f);
 	}
 
 	glm::mat4& Camera::getProjectionMatrix()

@@ -4,8 +4,12 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
+#include <bcppul/logging.h>
+
 namespace bulka {
 	class TextManager {
+	private:
+		static bcppul::Logger* logger;
 	protected:
 	public:
 		class SingleSize
@@ -34,12 +38,17 @@ namespace bulka {
 			~SingleSize();
 
 			void loadChar(unsigned int c);
+			void createTexture();
 
 			std::unordered_map<unsigned int, Character>* getCharacters();
 			Character& getCharacter(unsigned int c);
+			unsigned int getLineHeight();
+			unsigned int getTexture();
 
 		private:
+			unsigned int texture;
 			unsigned int size;
+			unsigned int line_height;
 			std::unordered_map<unsigned int, Character> characters;
 		};
 
