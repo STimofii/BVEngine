@@ -4,7 +4,6 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <iostream>
 namespace bulka {
 	Crosshair::Crosshair()
 	{
@@ -31,36 +30,36 @@ namespace bulka {
 			VAO = 0;
 		}
 		float size = 13.0f;
-		float thickness = 1.0f;
+
 		float screenWidth = Window::getRealWidth();
 		float screenHeight = Window::getRealHeight();
 		float right = (screenWidth - size)/ 2.0f;
 		float left = (screenWidth + size) / 2.0f;
 		float bottom = (screenHeight - size) / 2.0f;
 		float top = (screenHeight + size) / 2.0f;
-		float centerX = (screenWidth + thickness) / 2.0f;
-		float centerY = (screenHeight - thickness) / 2.0f;
+		float centerX = (screenWidth + 1) / 2.0f;
+		float centerY = (screenHeight - 1) / 2.0f;
 		float vertices[] = {
-			left, centerY, 1.0f / left, 1.0f / centerY,
-			right, centerY, 1.0f / right, 1.0f / centerY,
-			centerX, bottom, 1.0f / top, 1.0f / centerX,
-			centerX, top, 1.0f / bottom, 1.0f / centerX
+			left, centerY,
+			right, centerY,
+			centerX, bottom,
+			centerX, top
 		};
 		glGenVertexArrays(1, &VAO);
 		glBindVertexArray(VAO);
 		glGenBuffers(1, &VBO);
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(float) * 4, vertices, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, 2 * sizeof(float) * 4, vertices, GL_STATIC_DRAW);
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (GLvoid*)(0 * sizeof(float)));
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (GLvoid*)(0 * sizeof(float)));
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
 	}
 	void Crosshair::render() {
-		//ShaderManager::crosshairShader.bind();
-		//glBindVertexArray(VAO);
-		//glDrawArrays(GL_LINES, 0, 4);
-		//glBindVertexArray(0);
-		//ShaderManager::crosshairShader.unbind();
+		ShaderManager::crosshairShader.bind();
+		glBindVertexArray(VAO);
+		glDrawArrays(GL_LINES, 0, 4);
+		glBindVertexArray(0);
+		ShaderManager::crosshairShader.unbind();
 	}
 }

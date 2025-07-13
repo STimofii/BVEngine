@@ -37,14 +37,15 @@ namespace bulka {
 	long long Engine::fpsLimit = 0;
 	double Engine::fpsLimitDelta = 0;
 	bool Engine::v_sync = false;
-	bool Engine::isGLInitialized = false;;
+	bool Engine::usePostprocessing = true;
+	bool Engine::isGLInitialized = false;
 	FT_Library Engine::ft_library;
 	FT_Face Engine::main_font;
 	Hero Engine::hero;
 	TexturedMesh Engine::simpleMesh;
-
 	DevText Engine::dev_text;
 	Postprocessing Engine::postprocessing;
+	Crosshair Engine::crosshair;
 
 
 
@@ -108,7 +109,9 @@ namespace bulka {
 			inputUpdate();
 			update();
 			postUpdate();
-			postprocessing.bindFBO();
+			if (usePostprocessing) {
+				postprocessing.bindFBO();
+			}
 			glClearColor(135.0f / 256, 206.0f / 256, 235.0f / 256, 1);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -221,6 +224,7 @@ namespace bulka {
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		hero.postInit();
 		postprocessing.init();
+		crosshair.init();
 		
 	}
 
@@ -273,9 +277,13 @@ namespace bulka {
 		ShaderManager::mainShader.bind();
 		Renderer::render(simpleMesh);
 		ShaderManager::mainShader.unbind();
-		postprocessing.unbindFBO();
-
-		postprocessing.render();
+		if (usePostprocessing){
+			postprocessing.unbindFBO();
+			postprocessing.render();
+		}
+		else {
+			crosshair.render();
+		}
 		dev_text.render();
 		
 		Window::render();
@@ -330,6 +338,10 @@ namespace bulka {
 	{
 		return postprocessing;
 	}
+	Crosshair& Engine::getCrosshair()
+	{
+		return crosshair;
+	}
 	long long Engine::unixTime()
 	{
 		return std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
@@ -375,6 +387,14 @@ namespace bulka {
 		else {
 			glfwSwapInterval(0);
 		}
+	}
+	bool Engine::isPostprocessing()
+	{
+		return usePostprocessing;
+	}
+	void Engine::setPostprocessing(bool val)
+	{
+		usePostprocessing = val;
 	}
 	bool Engine::getIsGLInitialized()
 	{

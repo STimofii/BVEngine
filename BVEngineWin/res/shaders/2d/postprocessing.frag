@@ -14,13 +14,15 @@ void main()
     vec2 pixelCoords = texCoords * screenResolution;
     vec2 center = screenResolution / 2.0;
     bool isCrosshairPixel = false;
-    if (abs(pixelCoords.y - center.y) < crosshairThickness &&
-        abs(pixelCoords.x - center.x) < crosshairSize) {
-        isCrosshairPixel = true;
-    }
-    if (abs(pixelCoords.x - center.x) < crosshairThickness &&
-        abs(pixelCoords.y - center.y) < crosshairSize) {
-        isCrosshairPixel = true;
+    if(crosshairSize > 0.0){
+        if (abs(pixelCoords.y - center.y) < crosshairThickness &&
+            abs(pixelCoords.x - center.x) < crosshairSize) {
+            isCrosshairPixel = true;
+        }
+        if (abs(pixelCoords.x - center.x) < crosshairThickness &&
+            abs(pixelCoords.y - center.y) < crosshairSize) {
+            isCrosshairPixel = true;
+        }
     }
     if (isCrosshairPixel) {
         FragColor = vec4(vec3(1.3) - color.rgb, color.a);

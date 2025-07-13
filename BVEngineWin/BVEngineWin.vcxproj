@@ -192,6 +192,8 @@
     <ClInclude Include="src\engine\graphics\text\dynamic_text.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="res\shaders\2d\crosshair.frag" />
+    <None Include="res\shaders\2d\crosshair.vert" />
     <None Include="res\shaders\2d\postprocessing.frag" />
     <None Include="res\shaders\2d\postprocessing.vert" />
     <None Include="res\shaders\3d\main.frag" />

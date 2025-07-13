@@ -54,6 +54,7 @@ namespace bulka {
 		static ShaderProgram mainShader;
 		static ShaderProgram textShader;
 		static ShaderProgram postprocessingShader;
+		static ShaderProgram crosshairShader;
 
 		static void init();
 		static void postInit();

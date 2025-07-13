@@ -155,6 +155,11 @@ namespace bulka {
 			ShaderManager::postprocessingShader.uniform2fv("screenResolution", glm::vec2(Window::getRealWidth(), Window::getRealHeight()));
 			ShaderManager::postprocessingShader.unbind();
 		}
+		if (ShaderManager::crosshairShader.programID != 0) {
+			ShaderManager::crosshairShader.bind();
+			ShaderManager::crosshairShader.uniformMat4f("projection", orthoMatrix);
+			ShaderManager::crosshairShader.unbind();
+		}
 	}
 
 	glm::mat4& Camera::getProjectionMatrix()

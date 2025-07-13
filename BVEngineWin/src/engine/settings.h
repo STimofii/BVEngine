@@ -19,6 +19,7 @@ namespace bulka{
 		static float SENSITIVITY;
 		static float FPS_LIMIT;
 		static bool V_SYNC;
+		static bool USE_POSTPROCESSING;
 
 		static void load();
 		static void reload();

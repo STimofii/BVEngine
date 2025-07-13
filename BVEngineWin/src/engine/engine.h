@@ -21,6 +21,7 @@ namespace bulka {
 	class TexturedMesh;
 	class DevText;
 	class Postprocessing;
+	class Crosshair;
 	class Engine {
 	private:
 		static bcppul::Logger* logger;
@@ -31,6 +32,7 @@ namespace bulka {
 		static long long fpsLimit;
 		static double fpsLimitDelta;
 		static bool v_sync;
+		static bool usePostprocessing;
 		static bool isGLInitialized;
 		static FT_Library ft_library;
 		static FT_Face main_font;
@@ -38,6 +40,7 @@ namespace bulka {
 		static TexturedMesh simpleMesh;
 		static DevText dev_text;
 		static Postprocessing postprocessing;
+		static Crosshair crosshair;
 
 	protected:
 	public:
@@ -65,14 +68,17 @@ namespace bulka {
 		static long long getFPSLimit();
 		static void setFPSLimit(long long fpsLimit);
 		static bool isVSync();
-		static bool isRunning();
 		static void setVSync(bool v_sync);
+		static bool isPostprocessing();
+		static void setPostprocessing(bool val);
+		static bool isRunning();
 		static bool getIsGLInitialized();
 
 		static FT_Library& getFT_Library();
 		static FT_Face& getMainFont();
 		static Hero& getHero();
 		static Postprocessing& getPostprocessing();
+		static Crosshair& getCrosshair();
 		
 	};
 }

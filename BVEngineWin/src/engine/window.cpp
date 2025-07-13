@@ -7,6 +7,7 @@
 #include "engine.h"
 #include "graphics/text/static_text.h"
 #include "graphics/postprocessing.h"
+#include "graphics/crosshair/crosshair.h"
 
 
 namespace bulka {
@@ -92,6 +93,7 @@ namespace bulka {
 		if(Engine::isRunning())
 		{
 			Engine::getPostprocessing().initFBO();
+			Engine::getCrosshair().init();
 			for (StaticText* static_text : staticTextsForUpdatingMesh) {
 				static_text->updateScreenPosition();
 			}

@@ -15,6 +15,7 @@ namespace bulka {
 	float Settings::SENSITIVITY = 0.2f;
 	float Settings::FPS_LIMIT = 0;
 	bool Settings::V_SYNC = false;
+	bool Settings::USE_POSTPROCESSING = true;
 
 	void Settings::load()
 	{
@@ -28,6 +29,8 @@ namespace bulka {
 		Engine::setFPSLimit(FPS_LIMIT);
 		V_SYNC = getAndSetIfNotExists("game.graphics.v_sync", V_SYNC);
 		Engine::setVSync(V_SYNC);
+		USE_POSTPROCESSING = getAndSetIfNotExists("game.graphics.use_postprocessing", USE_POSTPROCESSING);
+		Engine::setPostprocessing(USE_POSTPROCESSING);
 		FOV = getAndSetIfNotExists("game.graphics.fov", FOV);
 		Engine::getHero().getCamera().setFOV(FOV);
 		SENSITIVITY = getAndSetIfNotExists("game.graphics.sensitivity", SENSITIVITY);
