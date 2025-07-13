@@ -34,6 +34,8 @@ namespace bulka {
 		virtual void setTextWWithoutUpdating(std::wstring text);
 		virtual unsigned int getVAO();
 		virtual unsigned int getVBO();
+		virtual bool getChanged();
+		virtual void setChanged(bool val);
 
 	};
 }

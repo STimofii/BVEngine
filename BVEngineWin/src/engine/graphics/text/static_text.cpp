@@ -5,6 +5,7 @@
 
 #include <GL/glew.h>
 #include "../../engine.h"
+#include "../../window.h"
 #include "../../hero.h"
 #include "../shader_manager.h"
 
@@ -15,17 +16,20 @@
 namespace bulka {
 	StaticText::StaticText()
 	{
+		Window::addStaticText(this);
 	}
 	StaticText::StaticText(
 		std::string text, unsigned int size, glm::vec3 position, unsigned char r, unsigned char g, unsigned char b, unsigned char a, float scale, unsigned int alignment) 
 		: IText(std::string(""), size, position, r, g, b, a, scale, alignment)
 	{
+		Window::addStaticText(this);
 		setText(text);
 	}
 	StaticText::StaticText(
 		std::wstring wtext, unsigned int size, glm::vec3 position, unsigned char r, unsigned char g, unsigned char b, unsigned char a, float scale, unsigned int alignment) 
 		: IText(std::wstring(L""), size, position, r, g, b, a, scale, alignment)
 	{
+		Window::addStaticText(this);
 		setTextW(wtext);
 	}
 
@@ -39,6 +43,7 @@ namespace bulka {
 			glDeleteVertexArrays(1, &VAO);
 			VAO = 0;
 		}
+		Window::removeStaticText(this);
 	}
 	void StaticText::init()
 	{
@@ -287,5 +292,13 @@ namespace bulka {
 	unsigned int StaticText::getVBO()
 	{
 		return VBO;
+	}
+	bool StaticText::getChanged()
+	{
+		return changed;
+	}
+	void StaticText::setChanged(bool val)
+	{
+		changed = val;
 	}
 }

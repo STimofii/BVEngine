@@ -237,6 +237,9 @@ namespace bulka {
 				Window::enableFullScreen();
 			}
 		}
+		if (Input::isKeyTyped(GLFW_KEY_F3)) {
+			dev_text.toggleVisible();
+		}
 
 		hero.inputUpdate();
 	}

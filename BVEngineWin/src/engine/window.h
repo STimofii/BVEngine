@@ -3,10 +3,12 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <string>
+#include <vector>
 
 
 namespace bulka {
 	class Hero;
+	class StaticText;
 	class Window {
 	private:
 		static int memWidth;
@@ -25,6 +27,7 @@ namespace bulka {
 		static bool cursorHided;
 		static bool cursorJustHided;
 		static std::string title;
+		static std::vector<StaticText*> staticTextsForUpdatingMesh;
 
 		static void windowSizeCallback(GLFWwindow* window, int width, int height);
 		static void windowPosCallback(GLFWwindow* window, int xpos, int ypos);
@@ -65,5 +68,7 @@ namespace bulka {
 		static void setTitle(std::string title);
 		static void enableFullScreen();
 		static void disableFullScreen();
+		static void addStaticText(StaticText* static_text);
+		static void removeStaticText(StaticText* static_text);
 	};
 }

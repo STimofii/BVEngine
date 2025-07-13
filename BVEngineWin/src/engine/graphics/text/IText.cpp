@@ -80,7 +80,7 @@ namespace bulka {
 	{
 		this->wtext = text;
 	}
-	int IText::getColor()
+	unsigned int IText::getColor()
 	{
 		return color;
 	}

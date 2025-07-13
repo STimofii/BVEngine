@@ -56,7 +56,7 @@ namespace bulka {
 		virtual void setText(std::string text);
 		virtual std::wstring getTextW();
 		virtual void setTextW(std::wstring text);
-		virtual int getColor();
+		virtual unsigned int getColor();
 		virtual void setColor(unsigned int color);
 		virtual void setColor(unsigned char r = 0, unsigned char g = 0, unsigned char b = 0, unsigned char a = 0);
 		virtual int getSize();

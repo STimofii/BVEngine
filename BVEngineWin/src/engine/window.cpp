@@ -5,6 +5,7 @@
 #include "input.h"
 #include "hero.h"
 #include "engine.h"
+#include "graphics/text/static_text.h"
 
 
 namespace bulka {
@@ -25,6 +26,7 @@ namespace bulka {
 	bool Window::cursorJustHided = false;
 	std::string Window::title = "BVEngine";
 	GLFWwindow* Window::window = nullptr;
+	std::vector<StaticText*> Window::staticTextsForUpdatingMesh;
 
 	void Window::windowSizeCallback(GLFWwindow* window, int width, int height) {
 		Window::realWidth = width;
@@ -86,6 +88,10 @@ namespace bulka {
 		Engine::getHero().getCamera().updateOrthoMatrix();
 		Engine::getHero().getCamera().updateProjectionMatrix();
 		Engine::getHero().getCamera().updateProjViewMatrix();
+		for (StaticText* static_text : staticTextsForUpdatingMesh) {
+			static_text->setChanged(true);
+			static_text->createMesh();
+		}
 	}
 	void Window::resize()
 	{
@@ -117,6 +123,16 @@ namespace bulka {
 		realHeight = memHeight;
 		glfwSetWindowMonitor(window, nullptr, memXPos, memYPos, memWidth, memHeight, GLFW_DONT_CARE);
 		glViewport(0, 0, realWidth, realHeight);
+	}
+
+	void Window::addStaticText(StaticText* static_text)
+	{
+		staticTextsForUpdatingMesh.push_back(static_text);
+	}
+
+	void Window::removeStaticText(StaticText* static_text)
+	{
+		staticTextsForUpdatingMesh.erase(std::remove(staticTextsForUpdatingMesh.begin(), staticTextsForUpdatingMesh.end(), static_text), staticTextsForUpdatingMesh.end());
 	}
 
 	bool Window::isShouldClose()
