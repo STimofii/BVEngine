@@ -31,6 +31,7 @@ namespace bulka {
 		void setPosition(float x, float y, float z);
 		void addPosition(float x, float y, float z);
 		void moveInDirection(float x, float y, float z);
+		void moveInDirectionWithVertical(float x, float y, float z);
 		void setRotation(float x, float y, float z);
 		void addRotation(float x, float y, float z);
 		glm::vec3& getPosition();
@@ -38,7 +39,6 @@ namespace bulka {
 		glm::vec3& getDirection();
 		float getFOV();
 		void setFOV(float fov);
-		//void updateVectors();
 		void updateDirection();
 		void updateProjectionMatrix();
 		void updateViewMatrix();

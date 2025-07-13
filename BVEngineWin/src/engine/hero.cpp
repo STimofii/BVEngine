@@ -67,6 +67,7 @@ namespace bulka {
 		float moveSpeed = Engine::getDeltaTime() * speed;
 		camera.addRotation(addRotY, addRotX, 0);
 		camera.moveInDirection(moveSpeed * x, moveSpeed * y, moveSpeed * z);
+		//camera.moveInDirectionWithVertical(moveSpeed * x, moveSpeed * y, moveSpeed * z);
 		if (moved || rotated) {
 			camera.updateViewMatrix();
 			camera.updateProjViewMatrix();

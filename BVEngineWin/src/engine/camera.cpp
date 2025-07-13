@@ -53,6 +53,13 @@ namespace bulka {
 		position.y += y;
 		position.z += direction.z * x + direction.x * z;
 	}
+	void Camera::moveInDirectionWithVertical(float x, float y, float z)
+	{
+		//TODO: MAYBE NOT CORRECT
+		position.x += direction.x * x - direction.z * z;
+		position.y += direction.y * x + direction.y * z;
+		position.z += direction.z * x + direction.x * z;
+	}
 	void Camera::setRotation(float x, float y, float z)
 	{
 		rotation.x = x;
@@ -111,7 +118,7 @@ namespace bulka {
 		float yaw = bcppul::degreesToRadians(rotation.y);
 		float roll = bcppul::degreesToRadians(rotation.z);
 		direction.x = std::cos(yaw);
-		direction.y = std::cos(pitch);
+		direction.y = std::sin(pitch);
 		direction.z = std::sin(yaw);
 
 	}
