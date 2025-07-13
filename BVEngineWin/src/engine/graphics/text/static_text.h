@@ -13,6 +13,7 @@ namespace bulka {
 		unsigned int VBO = 0;
 		unsigned int lines = 0;
 		bool changed = true;
+		glm::vec2 screenPosition;
 	protected:
 	public:
 		static constexpr float ONE_GLYPH_TEXTURE_PART_X = 1.0f / 16.0f;
@@ -24,8 +25,9 @@ namespace bulka {
 
 		virtual void init() override;
 		virtual void render() override;
+		virtual void updateScreenPosition();
 		virtual void createMesh();
-		virtual void addCharToMesh(unsigned char c, float* vertices, unsigned int i, glm::vec2& char_position, unsigned int* lines_widths, unsigned int& line, unsigned int screenWidth, unsigned int lineSpace, unsigned int line_height, unsigned int max_glyph_width, float onePixelPartTextureX, float onePixelPartTextureY);
+		virtual void addCharToMesh(unsigned char c, float* vertices, unsigned int i, glm::vec2& char_position, unsigned int* lines_widths, unsigned int& line, unsigned int lineSpace, unsigned int line_height, unsigned int max_glyph_width, float onePixelPartTextureX, float onePixelPartTextureY);
 		virtual std::string getText() override;
 		virtual void setText(std::string text) override;
 		virtual std::wstring getTextW() override;

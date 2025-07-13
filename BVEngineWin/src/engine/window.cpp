@@ -89,8 +89,7 @@ namespace bulka {
 		Engine::getHero().getCamera().updateProjectionMatrix();
 		Engine::getHero().getCamera().updateProjViewMatrix();
 		for (StaticText* static_text : staticTextsForUpdatingMesh) {
-			static_text->setChanged(true);
-			static_text->createMesh();
+			static_text->updateScreenPosition();
 		}
 	}
 	void Window::resize()
