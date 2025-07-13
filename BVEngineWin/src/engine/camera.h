@@ -13,6 +13,7 @@ namespace bulka {
 	public:
 		glm::vec3 position;
 		glm::vec3 rotation;
+		glm::vec3 direction;
 		glm::mat4 projectionMatrix = 1.0f;
 		glm::mat4 orthoMatrix = 1.0f;
 		glm::mat4 normalizedOrthoMatrix = 1.0f;
@@ -34,9 +35,10 @@ namespace bulka {
 		void addRotation(float x, float y, float z);
 		glm::vec3& getPosition();
 		glm::vec3& getRotation();
+		glm::vec3& getDirection();
 		float getFOV();
 		void setFOV(float fov);
-		void updateVectors();
+		//void updateVectors();
 		void updateDirection();
 		void updateProjectionMatrix();
 		void updateViewMatrix();

@@ -44,6 +44,7 @@ namespace bulka {
 		if (visible) {
 			glm::vec3 position = Engine::getHero().getCamera().getPosition();
 			glm::vec3 rotation = Engine::getHero().getCamera().getRotation();
+			glm::vec3 direction = Engine::getHero().getCamera().getDirection();
 
 			std::stringstream ss;
 			ss << std::fixed << std::setprecision(3);
@@ -51,6 +52,7 @@ namespace bulka {
 			ss << "FPS: " << Engine::getFPS() << "\n\n";
 			ss << "XYZ: " << position.x << "; " << position.y << "; " << position.z << "; " << "\n";
 			ss << "PYR: " << rotation.x << "; " << rotation.y << "; " << rotation.z << "; " << "\n";
+			ss << "Direction PYR: " << direction.x << "; " << direction.y << "; " << direction.z << "; " << "\n";
 			left_top_text->setText(ss.str());
 			ss.str("");
 			ss.clear();

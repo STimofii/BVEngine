@@ -12,11 +12,11 @@ namespace bulka {
 	}
 	Camera::Camera(glm::vec3 position, glm::vec3 rotation) : position(position), rotation(rotation)
 	{
-		updateVectors();
+		updateDirection();
 	}
 	Camera::Camera(glm::vec3 position) : position(position)
 	{
-		updateVectors();
+		
 	}
 	Camera::~Camera()
 	{
@@ -49,18 +49,16 @@ namespace bulka {
 	}
 	void Camera::moveInDirection(float x, float y, float z)
 	{
-		float pitch = bcppul::degreesToRadians(rotation.x);
-		float yaw = bcppul::degreesToRadians(rotation.y);
-		float roll = bcppul::degreesToRadians(rotation.z);
-		position.x += std::sin(yaw) * -z + std::sin(yaw - bcppul::HALF_PI) * -x;
+		position.x += direction.x * x - direction.z * z;
 		position.y += y;
-		position.z += std::cos(yaw) * z + std::cos(yaw - bcppul::HALF_PI) * x;
+		position.z += direction.z * x + direction.x * z;
 	}
 	void Camera::setRotation(float x, float y, float z)
 	{
 		rotation.x = x;
 		rotation.y = y;
 		rotation.z = z;
+		updateDirection();
 	}
 	void Camera::addRotation(float x, float y, float z)
 	{
@@ -80,6 +78,7 @@ namespace bulka {
 		else if (rotation.x > 90) {
 			rotation.x = 90;
 		}
+		updateDirection();
 	}
 	glm::vec3& Camera::getPosition()
 	{
@@ -88,6 +87,10 @@ namespace bulka {
 	glm::vec3& Camera::getRotation()
 	{
 		return rotation;
+	}
+	glm::vec3& Camera::getDirection()
+	{
+		return direction;
 	}
 	float Camera::getFOV()
 	{
@@ -102,12 +105,14 @@ namespace bulka {
 			updateProjViewMatrix();
 		}
 	}
-	void Camera::updateVectors()
-	{
-
-	}
 	void Camera::updateDirection()
 	{
+		float pitch = bcppul::degreesToRadians(rotation.x);
+		float yaw = bcppul::degreesToRadians(rotation.y);
+		float roll = bcppul::degreesToRadians(rotation.z);
+		direction.x = std::cos(yaw);
+		direction.y = std::cos(pitch);
+		direction.z = std::sin(yaw);
 
 	}
 	void Camera::updateProjectionMatrix()

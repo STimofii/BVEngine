@@ -81,7 +81,8 @@ namespace bulka {
 	}
 	void StaticText::updateScreenPosition()
 	{
-		screenPosition = glm::vec2();
+		screenPosition.x = 0;
+		screenPosition.y = 0;
 		unsigned int screenWidth = 0;
 		if (alignment & TOP_EDGE) {
 			screenPosition.y = ((1 / projection[0][1].y) * 2);
