@@ -75,6 +75,9 @@
     <ClCompile Include="src\engine\graphics\crosshair\crosshair.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="src\engine\graphics\postprocessing.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\engine\engine.h">
@@ -131,13 +134,16 @@
     <ClInclude Include="src\engine\graphics\crosshair\crosshair.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="src\engine\graphics\postprocessing.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\3d\main.frag" />
     <None Include="res\shaders\3d\main.vert" />
     <None Include="res\shaders\text\text.vert" />
     <None Include="res\shaders\text\text.frag" />
-    <None Include="res\shaders\2d\crosshair.vert" />
-    <None Include="res\shaders\2d\crosshair.frag" />
+    <None Include="res\shaders\2d\postprocessing.vert" />
+    <None Include="res\shaders\2d\postprocessing.frag" />
   </ItemGroup>
 </Project>

@@ -26,6 +26,7 @@
 #include "graphics/text/static_text.h"
 #include "graphics/text/dev_text.h"
 #include "graphics/crosshair/crosshair.h"
+#include "graphics/postprocessing.h"
 
 namespace bulka {
 	bcppul::Logger* Engine::logger = bcppul::getLogger("Engine");
@@ -43,7 +44,7 @@ namespace bulka {
 	TexturedMesh Engine::simpleMesh;
 
 	DevText Engine::dev_text;
-	Crosshair Engine::crosshair;
+	Postprocessing Engine::postprocessing;
 
 
 
@@ -106,8 +107,10 @@ namespace bulka {
 			inputUpdate();
 			update();
 			postUpdate();
+			postprocessing.bindFBO();
 			glClearColor(135.0f / 256, 206.0f / 256, 235.0f / 256, 1);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 			preRender();
 
 			render();
@@ -210,12 +213,12 @@ namespace bulka {
 	void Engine::postInit()
 	{
 		logger->info("Post init");
-		glEnable(GL_CULL_FACE);
+		//glEnable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		hero.postInit();
-		crosshair.init();
+		postprocessing.init();
 	}
 
 	void Engine::preUpdate()
@@ -267,7 +270,9 @@ namespace bulka {
 		ShaderManager::mainShader.bind();
 		Renderer::render(simpleMesh);
 		ShaderManager::mainShader.unbind();
-		crosshair.render();
+		postprocessing.unbindFBO();
+
+		postprocessing.render();
 		dev_text.render();
 		
 		Window::render();
@@ -318,9 +323,9 @@ namespace bulka {
 	{
 		return hero;
 	}
-	Crosshair& Engine::getCrosshair()
+	Postprocessing& Engine::getPostprocessing()
 	{
-		return crosshair;
+		return postprocessing;
 	}
 	long long Engine::unixTime()
 	{

@@ -20,7 +20,7 @@ namespace bulka {
 	class Hero;
 	class TexturedMesh;
 	class DevText;
-	class Crosshair;
+	class Postprocessing;
 	class Engine {
 	private:
 		static bcppul::Logger* logger;
@@ -37,7 +37,7 @@ namespace bulka {
 		static Hero hero;
 		static TexturedMesh simpleMesh;
 		static DevText dev_text;
-		static Crosshair crosshair;
+		static Postprocessing postprocessing;
 
 	protected:
 	public:
@@ -72,7 +72,7 @@ namespace bulka {
 		static FT_Library& getFT_Library();
 		static FT_Face& getMainFont();
 		static Hero& getHero();
-		static Crosshair& getCrosshair();
+		static Postprocessing& getPostprocessing();
 		
 	};
 }

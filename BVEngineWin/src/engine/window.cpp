@@ -6,7 +6,7 @@
 #include "hero.h"
 #include "engine.h"
 #include "graphics/text/static_text.h"
-#include "graphics/crosshair/crosshair.h"
+#include "graphics/postprocessing.h"
 
 
 namespace bulka {
@@ -91,7 +91,7 @@ namespace bulka {
 		Engine::getHero().getCamera().updateProjViewMatrix();
 		if(Engine::isRunning())
 		{
-			Engine::getCrosshair().init();
+			Engine::getPostprocessing().initFBO();
 			for (StaticText* static_text : staticTextsForUpdatingMesh) {
 				static_text->updateScreenPosition();
 			}

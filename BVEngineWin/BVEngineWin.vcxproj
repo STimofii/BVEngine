@@ -154,6 +154,7 @@
     <ClCompile Include="src\engine\graphics\crosshair\crosshair.cpp" />
     <ClCompile Include="src\engine\graphics\mesh\textured_mesh.cpp" />
     <ClCompile Include="src\engine\graphics\mesh\vertex\vertex5f.cpp" />
+    <ClCompile Include="src\engine\graphics\postprocessing.cpp" />
     <ClCompile Include="src\engine\graphics\renderer.cpp" />
     <ClCompile Include="src\engine\graphics\shader_manager.cpp" />
     <ClCompile Include="src\engine\graphics\mesh\texture.cpp" />
@@ -175,6 +176,7 @@
     <ClInclude Include="src\engine\graphics\crosshair\crosshair.h" />
     <ClInclude Include="src\engine\graphics\mesh\textured_mesh.h" />
     <ClInclude Include="src\engine\graphics\mesh\vertex\vertex5f.h" />
+    <ClInclude Include="src\engine\graphics\postprocessing.h" />
     <ClInclude Include="src\engine\graphics\renderer.h" />
     <ClInclude Include="src\engine\graphics\shader_manager.h" />
     <ClInclude Include="src\engine\graphics\mesh\texture.h" />
@@ -190,8 +192,8 @@
     <ClInclude Include="src\engine\graphics\text\dynamic_text.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\shaders\2d\crosshair.frag" />
-    <None Include="res\shaders\2d\crosshair.vert" />
+    <None Include="res\shaders\2d\postprocessing.frag" />
+    <None Include="res\shaders\2d\postprocessing.vert" />
     <None Include="res\shaders\3d\main.frag" />
     <None Include="res\shaders\3d\main.vert" />
     <None Include="res\shaders\text\text.frag" />

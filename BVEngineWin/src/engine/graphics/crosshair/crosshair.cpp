@@ -31,14 +31,15 @@ namespace bulka {
 			VAO = 0;
 		}
 		float size = 13.0f;
+		float thickness = 1.0f;
 		float screenWidth = Window::getRealWidth();
 		float screenHeight = Window::getRealHeight();
 		float right = (screenWidth - size)/ 2.0f;
 		float left = (screenWidth + size) / 2.0f;
 		float bottom = (screenHeight - size) / 2.0f;
 		float top = (screenHeight + size) / 2.0f;
-		float centerX = (screenWidth) / 2.0f;
-		float centerY = (screenHeight) / 2.0f;
+		float centerX = (screenWidth + thickness) / 2.0f;
+		float centerY = (screenHeight - thickness) / 2.0f;
 		float vertices[] = {
 			left, centerY, 1.0f / left, 1.0f / centerY,
 			right, centerY, 1.0f / right, 1.0f / centerY,
@@ -56,10 +57,10 @@ namespace bulka {
 		glBindVertexArray(0);
 	}
 	void Crosshair::render() {
-		ShaderManager::crosshairShader.bind();
-		glBindVertexArray(VAO);
-		glDrawArrays(GL_LINES, 0, 4);
-		glBindVertexArray(0);
-		ShaderManager::crosshairShader.unbind();
+		//ShaderManager::crosshairShader.bind();
+		//glBindVertexArray(VAO);
+		//glDrawArrays(GL_LINES, 0, 4);
+		//glBindVertexArray(0);
+		//ShaderManager::crosshairShader.unbind();
 	}
 }
