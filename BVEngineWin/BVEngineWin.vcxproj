@@ -151,6 +151,7 @@
     <ClCompile Include="src\BWEngineWin.cpp" />
     <ClCompile Include="src\engine\camera.cpp" />
     <ClCompile Include="src\engine\engine.cpp" />
+    <ClCompile Include="src\engine\graphics\crosshair\crosshair.cpp" />
     <ClCompile Include="src\engine\graphics\mesh\textured_mesh.cpp" />
     <ClCompile Include="src\engine\graphics\mesh\vertex\vertex5f.cpp" />
     <ClCompile Include="src\engine\graphics\renderer.cpp" />
@@ -171,6 +172,7 @@
   <ItemGroup>
     <ClInclude Include="src\engine\camera.h" />
     <ClInclude Include="src\engine\engine.h" />
+    <ClInclude Include="src\engine\graphics\crosshair\crosshair.h" />
     <ClInclude Include="src\engine\graphics\mesh\textured_mesh.h" />
     <ClInclude Include="src\engine\graphics\mesh\vertex\vertex5f.h" />
     <ClInclude Include="src\engine\graphics\renderer.h" />
@@ -188,6 +190,8 @@
     <ClInclude Include="src\engine\graphics\text\dynamic_text.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="res\shaders\2d\crosshair.frag" />
+    <None Include="res\shaders\2d\crosshair.vert" />
     <None Include="res\shaders\3d\main.frag" />
     <None Include="res\shaders\3d\main.vert" />
     <None Include="res\shaders\text\text.frag" />

@@ -141,9 +141,8 @@ namespace bulka {
 			if (ShaderManager::mainShader.programID != 0) {
 				ShaderManager::mainShader.bind();
 				ShaderManager::mainShader.uniformMat4f("projViewMat", projViewMatrix);
+				ShaderManager::mainShader.unbind();
 			}
-
-			ShaderManager::mainShader.unbind();
 		}
 	}
 	void Camera::updateOrthoMatrix()
@@ -151,6 +150,11 @@ namespace bulka {
 		float as = Window::getAspect();
 		normalizedOrthoMatrix = glm::ortho(-1.0f * as, 1.0f * as, -1.0f, 1.0f, 0.0f, 1000.0f);
 		orthoMatrix = glm::ortho(0.0f, static_cast<float>(Window::getRealWidth()), 0.0f, static_cast<float>(Window::getRealHeight()), 0.0f, 1000.0f);
+		if (ShaderManager::crosshairShader.programID != 0) {
+			ShaderManager::crosshairShader.bind();
+			ShaderManager::crosshairShader.uniformMat4f("projection", orthoMatrix);
+			ShaderManager::crosshairShader.unbind();
+		}
 	}
 
 	glm::mat4& Camera::getProjectionMatrix()

@@ -19,6 +19,8 @@ namespace bulka {
 		std::to_string(BVENGINE_VERSION_REVISION);
 	class Hero;
 	class TexturedMesh;
+	class DevText;
+	class Crosshair;
 	class Engine {
 	private:
 		static bcppul::Logger* logger;
@@ -34,6 +36,8 @@ namespace bulka {
 		static FT_Face main_font;
 		static Hero hero;
 		static TexturedMesh simpleMesh;
+		static DevText dev_text;
+		static Crosshair crosshair;
 
 	protected:
 	public:
@@ -60,6 +64,7 @@ namespace bulka {
 		static double getDeltaTime();
 		static long long getFPSLimit();
 		static void setFPSLimit(long long fpsLimit);
+		static bool isRunning();
 		static bool isVSync();
 		static void setVSync(bool v_sync);
 		static bool getIsGLInitialized();
@@ -67,6 +72,7 @@ namespace bulka {
 		static FT_Library& getFT_Library();
 		static FT_Face& getMainFont();
 		static Hero& getHero();
+		static Crosshair& getCrosshair();
 		
 	};
 }
