@@ -49,6 +49,9 @@ namespace bulka {
 		virtual void render() = 0;
 		virtual void init();
 
+		virtual unsigned int getLinesWidths(std::string::const_iterator c, std::string::const_iterator end, unsigned int lines, unsigned int* lines_widths);
+		virtual unsigned int getLinesWidthsW(std::wstring::const_iterator c, std::wstring::const_iterator end, unsigned int lines, unsigned int* lines_widths);
+
 		virtual std::string getText();
 		virtual void setText(std::string text);
 		virtual std::wstring getTextW();

@@ -17,8 +17,6 @@ namespace bulka {
 		~DynamicText();
 
 		virtual void render() override;
-		virtual unsigned int getLinesWidths(std::string::const_iterator c, std::string::const_iterator end, unsigned int lines, unsigned int* lines_widths);
-		virtual unsigned int getLinesWidthsW(std::wstring::const_iterator c, std::wstring::const_iterator end, unsigned int lines, unsigned int* lines_widths);
 		virtual void renderChar(unsigned int c, glm::vec2& char_position, unsigned int* lines_widths, unsigned int& line, unsigned int lineSpace, unsigned int screenWidth);
 	};
 }

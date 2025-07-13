@@ -16,8 +16,52 @@ namespace bulka {
 	{
 	}
 
+
 	void IText::init() {
 		singleSizeFont = TextManager::getSingleSize(size);
+	}
+
+	unsigned int IText::getLinesWidths(std::string::const_iterator c, std::string::const_iterator end, unsigned int lines, unsigned int* lines_widths)
+	{
+		unsigned int maxLineWidth = 0;
+		for (unsigned int i = 0; i < lines; i++) {
+			for (; c != end; ++c)
+			{
+				if ((*c) == '\n') {
+					++c;
+					break;
+				}
+				TextManager::SingleSize::Character* character = &singleSizeFont->getCharacter(*c);
+				lines_widths[i] += (character->advance >> 6);
+
+			}
+			unsigned int width = lines_widths[i];
+			if (maxLineWidth < width) {
+				maxLineWidth = width;
+			}
+		}
+		return maxLineWidth;
+	}
+	unsigned int IText::getLinesWidthsW(std::wstring::const_iterator c, std::wstring::const_iterator end, unsigned int lines, unsigned int* lines_widths)
+	{
+		unsigned int maxLineWidth = 0;
+		for (unsigned int i = 0; i < lines; i++) {
+			for (; c != end; ++c)
+			{
+				if ((*c) == '\n') {
+					++c;
+					break;
+				}
+				TextManager::SingleSize::Character* character = &singleSizeFont->getCharacter(*c);
+				lines_widths[i] += (character->advance >> 6);
+
+			}
+			unsigned int width = lines_widths[i];
+			if (maxLineWidth < width) {
+				maxLineWidth = width;
+			}
+		}
+		return maxLineWidth;
 	}
 
 	std::string IText::getText()

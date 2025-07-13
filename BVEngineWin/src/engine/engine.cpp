@@ -23,6 +23,7 @@
 #include "graphics/mesh/vertex/vertex5f.h"
 #include "graphics/mesh/texture.h"
 #include "graphics/text/dynamic_text.h"
+#include "graphics/text/static_text.h"
 
 namespace bulka {
 	bcppul::Logger* Engine::logger = bcppul::getLogger("Engine");
@@ -40,6 +41,7 @@ namespace bulka {
 	TexturedMesh Engine::simpleMesh;
 
 	IText* text;
+	IText* static_text;
 
 
 
@@ -78,19 +80,25 @@ namespace bulka {
 			}, 6);
 		simpleMesh.update();
 		//simpleMesh.setTexture(TextureManager::getTexture("res/textures/bulka.png"));
-		//simpleMesh.setTexture();
-
 
 		*logger << bcppul::INFO << "Initialized! Time for initializing - " << timer.getTimeSeconds();
 
 		text = new DynamicText(
-			"Catumba\nbumba\nchuchumba", 16, glm::vec3(0, 0, 0), 255, 0, 0, 255, 1,
-			LEFT_BOTTOM_CORNER
+			"Catumba\nbumba\nchuchumba\nbebras", 32, glm::vec3(0, 0, 0), 255, 0, 0, 255, 1,
+			RIGHT_TOP_CORNER
 		);
 		text->setProjection(&hero.getCamera().getOrthoMatrix());
 		text->init();
+
+		static_text = new StaticText(
+			"Catumba\nbumba\nchuchumba\nbebras", 32, glm::vec3(0, 0, 0), 255, 0, 0, 255, 1,
+			LEFT_BOTTOM_CORNER
+		);
+		static_text->setProjection(&hero.getCamera().getOrthoMatrix());
+		static_text->init();
+
 		Texture texture;
-		texture.texture = TextManager::getSingleSize(12)->getTexture();
+		texture.texture = TextManager::getSingleSize(32)->getTexture();
 		simpleMesh.setTexture(&texture);
 
 		//std::wstring str;
@@ -158,6 +166,7 @@ namespace bulka {
 		glfwTerminate();
 		logger->info("Bye!");
 		delete text;
+		delete static_text;
 		return exitCode;
 	}
 
@@ -280,10 +289,7 @@ namespace bulka {
 		Renderer::render(simpleMesh);
 		ShaderManager::mainShader.unbind();
 		text->render();
-		//for (size_t i = 0; i < 1; i++)
-		//{
-		//	texts[i].render();
-		//}
+		static_text->render();
 		
 		Window::render();
 	}

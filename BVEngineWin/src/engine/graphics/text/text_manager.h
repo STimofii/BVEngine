@@ -3,8 +3,12 @@
 #include <unordered_map>
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
 #include <bcppul/logging.h>
+
+#define TEXTURE_INTERPOLATION GL_NEAREST
 
 namespace bulka {
 	class TextManager {
@@ -43,12 +47,22 @@ namespace bulka {
 			std::unordered_map<unsigned int, Character>* getCharacters();
 			Character& getCharacter(unsigned int c);
 			unsigned int getLineHeight();
+			unsigned int getLineHeightLoged();
+			unsigned int getMaxGlyphWidth();
+			unsigned int getMaxGlyphWidthLoged();
 			unsigned int getTexture();
+			float getOnePixelPartOfTextureX();
+			float getOnePixelPartOfTextureY();
 
 		private:
-			unsigned int texture;
-			unsigned int size;
-			unsigned int line_height;
+			unsigned int texture = 0;
+			unsigned int size = 0;
+			unsigned int line_height = 0;
+			unsigned int line_height_loged = 0;
+			unsigned int max_glyph_width = 0;
+			unsigned int max_glyph_width_loged = 0;
+			float onePixelPartOfTextureX = 0;
+			float onePixelPartOfTextureY = 0;
 			std::unordered_map<unsigned int, Character> characters;
 		};
 
