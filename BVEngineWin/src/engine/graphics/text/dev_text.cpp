@@ -42,26 +42,24 @@ namespace bulka {
 	}
 	void DevText::update() {
 		if (visible) {
-			std::stringstream ss;
-			ss << std::fixed << std::setprecision(3);
-			ss << "FPS: " << Engine::getFPS() << "\n";
 			glm::vec3 position = Engine::getHero().getCamera().getPosition();
 			glm::vec3 rotation = Engine::getHero().getCamera().getRotation();
-			ss << "Position XYZ: " << position.x << "; " << position.y << "; " << position.z << "; " << "\n";
-			ss << "Rotation XYZ: " << rotation.x << "; " << rotation.y << "; " << rotation.z << "; " << "\n";
-			left_top_text->setText(ss.str());
 
+			std::stringstream ss;
+			ss << std::fixed << std::setprecision(3);
+
+			ss << "FPS: " << Engine::getFPS() << "\n\n";
+			ss << "XYZ: " << position.x << "; " << position.y << "; " << position.z << "; " << "\n";
+			ss << "PYR: " << rotation.x << "; " << rotation.y << "; " << rotation.z << "; " << "\n";
+			left_top_text->setText(ss.str());
 			ss.str("");
 			ss.clear();
 
-			ss << "cat" << "\n";
 			right_top_text->setText(ss.str());
-
 			ss.str("");
 			ss.clear();
 
 			left_bottom_text->setText(ss.str());
-
 			ss.str("");
 			ss.clear();
 
