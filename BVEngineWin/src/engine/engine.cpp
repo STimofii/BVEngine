@@ -94,6 +94,7 @@ namespace bulka {
 		long long timeFrameElapsed;
 		long long timeFPS = unixTime();
 		long long frames = 0;
+		
 		while (running) {
 			timeFrameStart = unixTime();
 			preUpdate();
@@ -213,12 +214,14 @@ namespace bulka {
 	void Engine::postInit()
 	{
 		logger->info("Post init");
+		ShaderManager::postInit();
 		//glEnable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		hero.postInit();
 		postprocessing.init();
+		
 	}
 
 	void Engine::preUpdate()

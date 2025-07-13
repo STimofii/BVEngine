@@ -56,6 +56,7 @@ namespace bulka {
 		static ShaderProgram postprocessingShader;
 
 		static void init();
+		static void postInit();
 		static void finalization();
 
 

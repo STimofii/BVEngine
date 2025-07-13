@@ -65,6 +65,7 @@ namespace bulka {
 		static long long getFPSLimit();
 		static void setFPSLimit(long long fpsLimit);
 		static bool isVSync();
+		static bool isRunning();
 		static void setVSync(bool v_sync);
 		static bool getIsGLInitialized();
 

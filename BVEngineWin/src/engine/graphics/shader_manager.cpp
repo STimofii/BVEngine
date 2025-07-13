@@ -21,6 +21,13 @@ namespace bulka {
 		if (postprocessingShader.load("res/shaders/2d/postprocessing.vert", "res/shaders/2d/postprocessing.frag") == 0) {
 			throw std::exception("Can't load shaders: res/shaders/2d/postprocessing.vert, res/shaders/2d/postprocessing.frag");
 		}
+
+	}
+	void ShaderManager::postInit() {
+		postprocessingShader.bind();
+		postprocessingShader.uniform1f("crosshairSize", 8.0f);
+		postprocessingShader.uniform1f("crosshairThickness", 1.0f);
+		postprocessingShader.unbind();
 	}
 	void ShaderManager::finalization() {
 
