@@ -69,6 +69,9 @@
     <ClCompile Include="src\engine\graphics\text\static_text.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="src\engine\graphics\text\dev_text.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\engine\engine.h">
@@ -117,6 +120,9 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\graphics\text\static_text.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\graphics\text\dev_text.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

@@ -24,6 +24,7 @@
 #include "graphics/mesh/texture.h"
 #include "graphics/text/dynamic_text.h"
 #include "graphics/text/static_text.h"
+#include "graphics/text/dev_text.h"
 
 namespace bulka {
 	bcppul::Logger* Engine::logger = bcppul::getLogger("Engine");
@@ -40,8 +41,7 @@ namespace bulka {
 	Hero Engine::hero;
 	TexturedMesh Engine::simpleMesh;
 
-	IText* text;
-	IText* static_text;
+	DevText dev_text;
 
 
 
@@ -79,38 +79,11 @@ namespace bulka {
 			2, 3, 0
 			}, 6);
 		simpleMesh.update();
-		//simpleMesh.setTexture(TextureManager::getTexture("res/textures/bulka.png"));
+		simpleMesh.setTexture(TextureManager::getTexture("res/textures/bulka.png"));
 
 		*logger << bcppul::INFO << "Initialized! Time for initializing - " << timer.getTimeSeconds();
 
-		text = new DynamicText(
-			"Catumba\nbumba\nchuchumba\nbebras", 32, glm::vec3(0, 0, 0), 255, 0, 0, 255, 1,
-			LEFT_BOTTOM_CORNER
-		);
-		text->setProjection(&hero.getCamera().getOrthoMatrix());
-		text->init();
-
-		static_text = new StaticText(
-			"Catumba\nbumba\nchuchumba\nbebras", 32, glm::vec3(0, 0, 0), 255, 0, 0, 255, 1,
-			RIGHT_TOP_CORNER
-		);
-		static_text->setProjection(&hero.getCamera().getOrthoMatrix());
-		static_text->init();
-
-		Texture texture;
-		texture.texture = TextManager::getSingleSize(32)->getTexture();
-		simpleMesh.setTexture(&texture);
-
-		//std::wstring str;
-		//std::wifstream wif("res/text.txt");
-		//wif.imbue(std::locale(wif.getloc(), new std::codecvt_utf8<wchar_t>));
-		//std::wstring wline;
-		//while (std::getline(wif, wline)) {
-		//	str += wline + L"\n";
-		//}
-		//wif.close();
-		//text.setTextW(str);
-
+		dev_text.init();
 
 		logger->info("Starting game loop");
 		running = true;
@@ -165,8 +138,6 @@ namespace bulka {
 		logger->info("finalized");
 		glfwTerminate();
 		logger->info("Bye!");
-		delete text;
-		delete static_text;
 		return exitCode;
 	}
 
@@ -278,6 +249,7 @@ namespace bulka {
 	{
 		Input::postUpdate();
 		Window::postUpdate();
+		dev_text.update();
 	}
 	void Engine::preRender()
 	{
@@ -288,8 +260,7 @@ namespace bulka {
 		ShaderManager::mainShader.bind();
 		Renderer::render(simpleMesh);
 		ShaderManager::mainShader.unbind();
-		text->render();
-		static_text->render();
+		dev_text.render();
 		
 		Window::render();
 	}

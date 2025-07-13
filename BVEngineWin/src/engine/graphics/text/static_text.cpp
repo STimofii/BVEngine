@@ -188,8 +188,8 @@ namespace bulka {
 		float glyph_width = character.size.x;
 		float glyph_height = character.size.y;
 
-		float y_bottom = char_position.y;
-		float y_top = char_position.y + glyph_height;
+		float y_bottom = char_position.y + character.bearing.y - glyph_height;
+		float y_top = char_position.y + character.bearing.y;
 
 		float u1 = static_cast<float>(c % 16) * ONE_GLYPH_TEXTURE_PART_X;
 		float v1 = static_cast<float>(std::floor(c / 16.0f)) * ONE_GLYPH_TEXTURE_PART_Y;

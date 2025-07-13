@@ -157,6 +157,7 @@
     <ClCompile Include="src\engine\graphics\shader_manager.cpp" />
     <ClCompile Include="src\engine\graphics\mesh\texture.cpp" />
     <ClCompile Include="src\engine\graphics\texture_manager.cpp" />
+    <ClCompile Include="src\engine\graphics\text\dev_text.cpp" />
     <ClCompile Include="src\engine\graphics\text\IText.cpp" />
     <ClCompile Include="src\engine\graphics\text\static_text.cpp" />
     <ClCompile Include="src\engine\graphics\text\text_manager.cpp" />
@@ -176,6 +177,7 @@
     <ClInclude Include="src\engine\graphics\shader_manager.h" />
     <ClInclude Include="src\engine\graphics\mesh\texture.h" />
     <ClInclude Include="src\engine\graphics\texture_manager.h" />
+    <ClInclude Include="src\engine\graphics\text\dev_text.h" />
     <ClInclude Include="src\engine\graphics\text\IText.h" />
     <ClInclude Include="src\engine\graphics\text\static_text.h" />
     <ClInclude Include="src\engine\graphics\text\text_manager.h" />
