@@ -85,14 +85,14 @@ namespace bulka {
 
 		text = new DynamicText(
 			"Catumba\nbumba\nchuchumba\nbebras", 32, glm::vec3(0, 0, 0), 255, 0, 0, 255, 1,
-			RIGHT_TOP_CORNER
+			LEFT_BOTTOM_CORNER
 		);
 		text->setProjection(&hero.getCamera().getOrthoMatrix());
 		text->init();
 
 		static_text = new StaticText(
 			"Catumba\nbumba\nchuchumba\nbebras", 32, glm::vec3(0, 0, 0), 255, 0, 0, 255, 1,
-			LEFT_BOTTOM_CORNER
+			RIGHT_TOP_CORNER
 		);
 		static_text->setProjection(&hero.getCamera().getOrthoMatrix());
 		static_text->init();

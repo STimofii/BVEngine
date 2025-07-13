@@ -89,9 +89,8 @@ namespace bulka {
 		if(VAO != 0){
 			glDeleteVertexArrays(1, &VAO);
 		}			
-		//if (alignment & RIGHT_EDGE) {
-		//	char_position.x = screenWidth + char_position.x;
-		//}
+		unsigned int* lines_widths = 0;
+		unsigned int maxLineWidth = 0;
 
 		unsigned int line_height = singleSizeFont->getLineHeight();
 		unsigned int max_glyph_width = singleSizeFont->getMaxGlyphWidth();
@@ -99,21 +98,57 @@ namespace bulka {
 		float onePixelPartTextureX = singleSizeFont->getOnePixelPartOfTextureX();
 		float onePixelPartTextureY = singleSizeFont->getOnePixelPartOfTextureY();
 
+		std::string::const_iterator cic;
+		std::string::const_iterator ciend;
+
+		glm::vec2 char_position = {0, 0};
+
+		if (alignment & DRAW_LINE_RIGHT_SIDE) {
+			lines_widths = new unsigned int[lines] {};
+			maxLineWidth = 0;
+			cic = text.begin();
+			ciend = text.end();
+			maxLineWidth = getLinesWidths(cic, ciend, lines, lines_widths);
+		}
+
+		unsigned int lineSpace = singleSizeFont->getLineHeight();
+		unsigned int screenWidth = 0;
+
+
+		if (alignment & TOP_EDGE) {
+			char_position.y = ((1 / projection[0][1].y) * 2);
+		}
+		else {
+			char_position.y = 0;
+		}
+		if (alignment & RIGHT_EDGE) {
+			screenWidth = ((1 / projection[0][0].x) * 2);
+			char_position.x = screenWidth;
+		}
+		else {
+			char_position.x = 0;
+		}
+		if (alignment & DRAW_LINE_RIGHT_SIDE) {
+			char_position.x -= static_cast<float>(lines_widths[0]);
+		}
+		else {
+
+		}
+		if (alignment & DRAW_LINES_UP) {
+			char_position.y += lineSpace * (lines - 1);
+		}
+		else {
+			char_position.y -= lineSpace;
+		}
+
+
 		float* vertices = new float[length * 4 * 6] {};
 		unsigned char c = 0;
-		glm::vec2 char_position = {0, line_height * (lines)};
 		unsigned int line = 0;
 		for (unsigned int i = 0; i < length; i++)
 		{
-			addCharToMesh(text[i], vertices, i, char_position, nullptr, line, line_height, line_height, max_glyph_width, onePixelPartTextureX, onePixelPartTextureY);
+			addCharToMesh(text[i], vertices, i, char_position, lines_widths, line, screenWidth, line_height, line_height, max_glyph_width, onePixelPartTextureX, onePixelPartTextureY);
 		}
-		//for (unsigned int i = 0; i < length * 6; ++i) {
-		//	std::cout << 
-		//		vertices[i * 4 + 0] << "\t" << 
-		//		vertices[i * 4 + 1] << "\t" << 
-		//		vertices[i * 4 + 2] << "\t" << 
-		//		vertices[i * 4 + 3] << "\t" << std::endl;
-		//}
 
 		glGenVertexArrays(1, &VAO);
 		glBindVertexArray(VAO);
@@ -124,24 +159,26 @@ namespace bulka {
 		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (GLvoid*)(0 * sizeof(float)));
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
+		delete[] lines_widths;
 		delete[] vertices;
 
 		changed = false;
 	}
 	void StaticText::addCharToMesh(
 		unsigned char c, float* vertices, unsigned int i, glm::vec2& char_position, unsigned int* lines_widths, unsigned int& line, 
-		unsigned int lineSpace, unsigned int line_height, unsigned int max_glyph_width, float onePixelPartTextureX, float onePixelPartTextureY)
+		unsigned int screenWidth, unsigned int lineSpace, unsigned int line_height, unsigned int max_glyph_width, float onePixelPartTextureX, float onePixelPartTextureY)
 	{
 		if (c == '\n') {
-			char_position.x = 0;
+			if (alignment & DRAW_LINE_RIGHT_SIDE) {
+				char_position.x = -static_cast<float>(lines_widths[++line]);
+			}
+			else {
+				char_position.x = 0;
+			}
+			if (alignment & RIGHT_EDGE) {
+				char_position.x = screenWidth + char_position.x;
+			}
 			char_position.y -= lineSpace;
-			++line;
-			//if (alignment & DRAW_LINE_RIGHT_SIDE) {
-			//	char_position.x = -static_cast<float>(lines_widths[++line]);
-			//}
-			//else {
-			//	char_position.x = 0;
-			//}
 			return;
 		}
 
@@ -203,6 +240,7 @@ namespace bulka {
 		this->text = text;
 		changed = true;
 
+		lines = text.empty() ? 0 : 1;
 		char& c = text[0];
 		for (unsigned int i = 0; ; ++i) {
 			c = text[i];
