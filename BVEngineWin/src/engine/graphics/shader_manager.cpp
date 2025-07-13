@@ -10,12 +10,16 @@
 namespace bulka {
 	ShaderManager::ShaderProgram ShaderManager::mainShader;
 	ShaderManager::ShaderProgram ShaderManager::textShader;
+	ShaderManager::ShaderProgram ShaderManager::crosshairShader;
 	void ShaderManager::init() {
 		if (mainShader.load("res/shaders/3d/main.vert", "res/shaders/3d/main.frag") == 0) {
 			throw std::exception("Can't load shaders: res/shaders/3d/main.frag, res/shaders/3d/main.vert");
 		}
 		if (textShader.load("res/shaders/text/text.vert", "res/shaders/text/text.frag") == 0) {
 			throw std::exception("Can't load shaders: res/shaders/text/text.vert, res/shaders/text/text.frag");
+		}
+		if (crosshairShader.load("res/shaders/2d/crosshair.vert", "res/shaders/2d/crosshair.frag") == 0) {
+			throw std::exception("Can't load shaders: res/shaders/2d/crosshair.vert, res/shaders/2d/crosshair.frag");
 		}
 	}
 	void ShaderManager::finalization() {

@@ -25,6 +25,7 @@
 #include "graphics/text/dynamic_text.h"
 #include "graphics/text/static_text.h"
 #include "graphics/text/dev_text.h"
+#include "graphics/crosshair/crosshair.h"
 
 namespace bulka {
 	bcppul::Logger* Engine::logger = bcppul::getLogger("Engine");
@@ -41,7 +42,8 @@ namespace bulka {
 	Hero Engine::hero;
 	TexturedMesh Engine::simpleMesh;
 
-	DevText dev_text;
+	DevText Engine::dev_text;
+	Crosshair Engine::crosshair;
 
 
 
@@ -203,6 +205,7 @@ namespace bulka {
 		hero.init();
 		logger->debug("Initializing Renderer");
 		Renderer::init();
+
 	}
 	void Engine::postInit()
 	{
@@ -212,6 +215,7 @@ namespace bulka {
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		hero.postInit();
+		crosshair.init();
 	}
 
 	void Engine::preUpdate()
@@ -263,6 +267,7 @@ namespace bulka {
 		ShaderManager::mainShader.bind();
 		Renderer::render(simpleMesh);
 		ShaderManager::mainShader.unbind();
+		crosshair.render();
 		dev_text.render();
 		
 		Window::render();
@@ -313,6 +318,10 @@ namespace bulka {
 	{
 		return hero;
 	}
+	Crosshair& Engine::getCrosshair()
+	{
+		return crosshair;
+	}
 	long long Engine::unixTime()
 	{
 		return std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
@@ -341,6 +350,10 @@ namespace bulka {
 		else {
 			fpsLimitDelta = 0;
 		}
+	}
+	bool Engine::isRunning()
+	{
+		return running;
 	}
 	bool Engine::isVSync()
 	{

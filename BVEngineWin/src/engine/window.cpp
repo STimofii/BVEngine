@@ -6,6 +6,7 @@
 #include "hero.h"
 #include "engine.h"
 #include "graphics/text/static_text.h"
+#include "graphics/crosshair/crosshair.h"
 
 
 namespace bulka {
@@ -88,8 +89,12 @@ namespace bulka {
 		Engine::getHero().getCamera().updateOrthoMatrix();
 		Engine::getHero().getCamera().updateProjectionMatrix();
 		Engine::getHero().getCamera().updateProjViewMatrix();
-		for (StaticText* static_text : staticTextsForUpdatingMesh) {
-			static_text->updateScreenPosition();
+		if(Engine::isRunning())
+		{
+			Engine::getCrosshair().init();
+			for (StaticText* static_text : staticTextsForUpdatingMesh) {
+				static_text->updateScreenPosition();
+			}
 		}
 	}
 	void Window::resize()
