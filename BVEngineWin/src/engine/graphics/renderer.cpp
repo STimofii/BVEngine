@@ -1,7 +1,7 @@
 #include "renderer.h"
 
 #include "mesh/textured_mesh.h"
-#include "mesh/texture.h"
+#include "texture_manager.h"
 
 namespace bulka {
 	void Renderer::init() {
@@ -12,16 +12,16 @@ namespace bulka {
 	}
 	void Renderer::render(TexturedMesh& mesh) {
 		glBindVertexArray(mesh.VAO);
-		mesh.getTexture()->bind();
+		TextureManager::bindTexture(mesh.getTexture());
 		if (mesh.IBO != 0) {
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.IBO);
 			glDrawElements(GL_TRIANGLES, mesh.getIndicesLength(), GL_UNSIGNED_INT, 0);
 			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 		}
 		else {
-			glDrawArrays(GL_TRIANGLES, 0, mesh.getPositionsLength() / 5);
+			glDrawArrays(GL_TRIANGLES, 0, mesh.getVerticesLength() / 5);
 		}
-		mesh.getTexture()->unbind();
+		TextureManager::unbindTexture();
 
 		glBindVertexArray(0);
 	}

@@ -36,13 +36,7 @@
     <ClCompile Include="src\engine\graphics\mesh\textured_mesh.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="src\engine\graphics\mesh\vertex\vertex5f.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="src\engine\graphics\renderer.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
-    <ClCompile Include="src\engine\graphics\mesh\texture.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="src\engine\stb_image_impl.cpp">
@@ -78,6 +72,9 @@
     <ClCompile Include="src\engine\graphics\postprocessing.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="src\server\game.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\engine\engine.h">
@@ -98,13 +95,7 @@
     <ClInclude Include="src\engine\graphics\mesh\textured_mesh.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="src\engine\graphics\mesh\vertex\vertex5f.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="src\engine\graphics\renderer.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="src\engine\graphics\mesh\texture.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\graphics\texture_manager.h">
@@ -137,6 +128,9 @@
     <ClInclude Include="src\engine\graphics\postprocessing.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="src\server\game.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\3d\main.frag" />
@@ -145,5 +139,7 @@
     <None Include="res\shaders\text\text.frag" />
     <None Include="res\shaders\2d\postprocessing.vert" />
     <None Include="res\shaders\2d\postprocessing.frag" />
+    <None Include="res\shaders\2d\crosshair.frag" />
+    <None Include="res\shaders\2d\crosshair.vert" />
   </ItemGroup>
 </Project>

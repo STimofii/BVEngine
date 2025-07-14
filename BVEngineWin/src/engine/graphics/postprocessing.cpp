@@ -99,6 +99,7 @@ namespace bulka {
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, FBO_Texture);
 		ShaderManager::postprocessingShader.uniform1i("screenTexture", 0);
+		ShaderManager::postprocessingShader.uniform1f("time", glfwGetTime());
 		glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 		glBindVertexArray(0);

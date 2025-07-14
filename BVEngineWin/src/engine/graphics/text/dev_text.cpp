@@ -10,6 +10,7 @@
 #include <GLFW/glfw3.h>
 
 #include "../../engine.h"
+#include "../../../server/game.h"
 #include "../../window.h"
 #include "../../hero.h"
 
@@ -52,7 +53,8 @@ namespace bulka {
 			ss << "FPS: " << Engine::getFPS() << "\n\n";
 			ss << "XYZ: " << position.x << "; " << position.y << "; " << position.z << "; " << "\n";
 			ss << "PYR: " << rotation.x << "; " << rotation.y << "; " << rotation.z << "; " << "\n";
-			ss << "Direction PYR: " << direction.x << "; " << direction.y << "; " << direction.z << "; " << "\n";
+			ss << "Direction PYR: " << direction.x << "; " << direction.y << "; " << direction.z << "; " << "\n\n";
+			ss << "TPS: " << Game::getTPS() << "\n\n";
 			left_top_text->setText(ss.str());
 			ss.str("");
 			ss.clear();

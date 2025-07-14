@@ -11,6 +11,7 @@
 #include "graphics/renderer.h"
 
 #include <iostream>
+#include <thread>
 #include <fstream>
 #include <sstream>
 #include <codecvt>
@@ -20,13 +21,12 @@
 #include <bcppul/timer.h>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include "graphics/mesh/vertex/vertex5f.h"
-#include "graphics/mesh/texture.h"
 #include "graphics/text/dynamic_text.h"
 #include "graphics/text/static_text.h"
 #include "graphics/text/dev_text.h"
 #include "graphics/crosshair/crosshair.h"
 #include "graphics/postprocessing.h"
+#include "../server/game.h"
 
 namespace bulka {
 	bcppul::Logger* Engine::logger = bcppul::getLogger("Engine");
@@ -53,6 +53,8 @@ namespace bulka {
 		logger->info("Running!!!");
 		bcppul::Timer timer("engine", false);
 		timer.start();
+		std::thread gameThread(Game::init);
+		gameThread.detach();
 
 		std::locale::global(std::locale("en_US.UTF-8"));
 		setlocale(LC_TIME, "uk_UA");
@@ -72,17 +74,17 @@ namespace bulka {
 
 		float z = 0.0f;
 		float size = 1.0f;
-		simpleMesh.setVertices(new Vertex5f[4]{
-			Vertex5f(-size, -size, z, 0, 1),
-			Vertex5f(size, -size, z, 1, 1),
-			Vertex5f(size, size, z, 1, 0),
-			Vertex5f(-size, size, z, 0, 0)
-			}, 4);
-		simpleMesh.setIndices(new GLuint[6]{
+		simpleMesh.update(
+			new float[20] {
+				-size, -size, z, 0, 1,
+				size, -size, z, 1, 1,
+				size, size, z, 1, 0,
+				-size, size, z, 0, 0,
+			}, 20, 
+			new GLuint[6]{
 			0, 1, 2,
 			2, 3, 0
 			}, 6);
-		simpleMesh.update();
 		simpleMesh.setTexture(TextureManager::getTexture("res/textures/bulka.png"));
 
 		*logger << bcppul::INFO << "Initialized! Time for initializing - " << timer.getTimeSeconds();
@@ -218,7 +220,7 @@ namespace bulka {
 	{
 		logger->info("Post init");
 		ShaderManager::postInit();
-		//glEnable(GL_CULL_FACE);
+		glEnable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -309,6 +311,7 @@ namespace bulka {
 		Window::finalization();
 		FT_Done_Face(main_font);
 		FT_Done_FreeType(ft_library);
+		Game::finalization();
 		Settings::finalization();
 	}
 	void Engine::checkGLErrors()

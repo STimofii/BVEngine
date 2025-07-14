@@ -1,12 +1,10 @@
 #pragma once
 
-#include <vector>
 #include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
 
 namespace bulka {
-	class Vertex5f;
-	class Texture;
 	class TexturedMesh {
 	private:
 	protected:
@@ -14,24 +12,18 @@ namespace bulka {
 		GLuint VAO = 0;
 		GLuint PBO = 0;
 		GLuint IBO = 0;
-		GLfloat* positions = nullptr;
-		GLuint* indices = nullptr;
-		size_t positions_length = 0;
+		size_t vertices_length = 0;
 		size_t indices_length = 0;
-		Texture* texture;
-		TexturedMesh(Vertex5f* vertices = nullptr, size_t vertices_length = 0, GLuint* indices = nullptr, size_t indices_length = 0, Texture* texture = nullptr);
+		GLuint texture = 0;
+		TexturedMesh();
+		TexturedMesh(float* vertices, size_t vertices_length, GLuint* indices = nullptr, size_t indices_length = 0, GLuint texture = 0);
 		~TexturedMesh();
 
-		void update();
+		void update(float* vertices, size_t vertices_length, GLuint* indices = nullptr, size_t indices_length = 0);
 
-		size_t getPositionsLength();
+		size_t getVerticesLength();
 		size_t getIndicesLength();
-		GLfloat* getPositions();
-		void setVertices(Vertex5f* vertices, size_t length);
-		void setPositions(GLfloat* positions, size_t length);
-		GLuint* getIndices();
-		void setIndices(GLuint* indices, size_t indices_length);
-		Texture* getTexture();
-		void setTexture(Texture* texture);
+		GLuint getTexture();
+		void setTexture(GLuint texture);
 	};
 }

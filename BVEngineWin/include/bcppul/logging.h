@@ -7,6 +7,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <mutex>
 
 namespace bcppul {
 	BCPPUL_API class Logger;
@@ -28,6 +29,7 @@ namespace bcppul {
 	extern BCPPUL_API std::string logOutFileName;
 	extern BCPPUL_API std::ofstream logOutFS;
 	extern BCPPUL_API std::unordered_map<std::string, Logger*> loggers;
+	extern BCPPUL_API std::mutex mutex;
 
 	BCPPUL_API struct LogRecord {
 		Logger* logger;
@@ -110,6 +112,27 @@ namespace bcppul {
 		}
 		void BCPPUL_API fatal(const std::string& message) {
 			fatal(message.c_str());
+		}
+		void BCPPUL_API log(LogLevel level) {
+			log(level, "");
+		}
+		void BCPPUL_API trace() {
+			trace("");
+		}
+		void BCPPUL_API debug() {
+			debug("");
+		}
+		void BCPPUL_API info() {
+			info("");
+		}
+		void BCPPUL_API warning() {
+			warning("");
+		}
+		void BCPPUL_API error() {
+			error("");
+		}
+		void BCPPUL_API fatal() {
+			fatal("");
 		}
 
 		LogStream operator<<(LogLevel level) {

@@ -11,7 +11,6 @@
 #include <bcppul/logging.h>
 
 
-
 namespace bulka {
 	const std::string BVENGINE_VERSION = "BVEngine v" +
 		std::to_string(BVENGINE_VERSION_MAJOR) + "." +
@@ -22,6 +21,7 @@ namespace bulka {
 	class DevText;
 	class Postprocessing;
 	class Crosshair;
+	class Game;
 	class Engine {
 	private:
 		static bcppul::Logger* logger;
@@ -41,6 +41,7 @@ namespace bulka {
 		static DevText dev_text;
 		static Postprocessing postprocessing;
 		static Crosshair crosshair;
+		static Game game;
 
 	protected:
 	public:

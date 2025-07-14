@@ -7,6 +7,7 @@ uniform sampler2D screenTexture;
 uniform vec2 screenResolution;
 uniform float crosshairSize;
 uniform float crosshairThickness;
+uniform float time;
 
 void main()
 {

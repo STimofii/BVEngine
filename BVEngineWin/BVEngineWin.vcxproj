@@ -153,11 +153,9 @@
     <ClCompile Include="src\engine\engine.cpp" />
     <ClCompile Include="src\engine\graphics\crosshair\crosshair.cpp" />
     <ClCompile Include="src\engine\graphics\mesh\textured_mesh.cpp" />
-    <ClCompile Include="src\engine\graphics\mesh\vertex\vertex5f.cpp" />
     <ClCompile Include="src\engine\graphics\postprocessing.cpp" />
     <ClCompile Include="src\engine\graphics\renderer.cpp" />
     <ClCompile Include="src\engine\graphics\shader_manager.cpp" />
-    <ClCompile Include="src\engine\graphics\mesh\texture.cpp" />
     <ClCompile Include="src\engine\graphics\texture_manager.cpp" />
     <ClCompile Include="src\engine\graphics\text\dev_text.cpp" />
     <ClCompile Include="src\engine\graphics\text\IText.cpp" />
@@ -169,17 +167,16 @@
     <ClCompile Include="src\engine\window.cpp" />
     <ClCompile Include="src\engine\stb_image_impl.cpp" />
     <ClCompile Include="src\engine\graphics\text\dymamic_text.cpp" />
+    <ClCompile Include="src\server\game.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\engine\camera.h" />
     <ClInclude Include="src\engine\engine.h" />
     <ClInclude Include="src\engine\graphics\crosshair\crosshair.h" />
     <ClInclude Include="src\engine\graphics\mesh\textured_mesh.h" />
-    <ClInclude Include="src\engine\graphics\mesh\vertex\vertex5f.h" />
     <ClInclude Include="src\engine\graphics\postprocessing.h" />
     <ClInclude Include="src\engine\graphics\renderer.h" />
     <ClInclude Include="src\engine\graphics\shader_manager.h" />
-    <ClInclude Include="src\engine\graphics\mesh\texture.h" />
     <ClInclude Include="src\engine\graphics\texture_manager.h" />
     <ClInclude Include="src\engine\graphics\text\dev_text.h" />
     <ClInclude Include="src\engine\graphics\text\IText.h" />
@@ -190,6 +187,7 @@
     <ClInclude Include="src\engine\settings.h" />
     <ClInclude Include="src\engine\window.h" />
     <ClInclude Include="src\engine\graphics\text\dynamic_text.h" />
+    <ClInclude Include="src\server\game.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\2d\crosshair.frag" />
