@@ -3,7 +3,9 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 #include <bcppul/logging.h>
+#include "../../blocks/blocks_manager.h"
 
+namespace bulka {
 #define CHUNK_SIZE_X 16
 #define CHUNK_SIZE_Y 256
 #define CHUNK_SIZE_Z 16
@@ -11,7 +13,6 @@
 #define SUB_CHUNKS_IN_CHUNK (CHUNK_SIZE_Y / SUB_CHUNK_SIZE_Y)
 #define CHUNK_VOLUME (CHUNK_SIZE_X * CHUNK_SIZE_Y * CHUNK_SIZE_Z)
 #define SUB_CHUNK_VOLUME (CHUNK_SIZE_X * SUB_CHUNK_SIZE_Y * CHUNK_SIZE_Z)
-namespace bulka {
 	class Block;
 	class Chunk{
 	private:
@@ -41,28 +42,102 @@ namespace bulka {
 		void render();
 		void finalization();
 
-		unsigned short getBlock(unsigned int x, unsigned int y, unsigned int z);
-		Block* getBlockPrefab(unsigned int x, unsigned int y, unsigned int z);
-		unsigned short getBlockID(unsigned int x, unsigned int y, unsigned int z);
-		unsigned short getBlockState(unsigned int x, unsigned int y, unsigned int z);
-		void getBlock(unsigned int x, unsigned int y, unsigned int z, unsigned short& blockID, unsigned short& blockState);
-		unsigned short getBlock(glm::ivec3 position);
-		Block* getBlockPrefab(glm::ivec3 position);
-		unsigned short getBlockID(glm::ivec3 position);
-		unsigned short getBlockState(glm::ivec3 position);
-		void getBlock(glm::vec3 position, unsigned short& blockID, unsigned short& blockState);
-		unsigned short getBlock(unsigned int i);
-		Block* getBlockPrefab(unsigned int i);
-		unsigned short getBlockID(unsigned int i);
-		unsigned short getBlockState(unsigned int i);
-		void getBlock(unsigned int i, unsigned short& blockID, unsigned short& blockState);
-
-		void setBlock(unsigned int x, unsigned int y, unsigned int z, unsigned short block, bool needUpdateMesh = false);
-		void setBlock(glm::ivec3 position, unsigned short block, bool needUpdateMesh = false);
-		void setBlock(unsigned int i, unsigned short block, bool needUpdateMesh = false);
-		void setBlock(unsigned int x, unsigned int y, unsigned int z, unsigned short blockID, unsigned short state, bool needUpdateMesh = false);
-		void setBlock(glm::ivec3 position, unsigned short blockID, unsigned short state, bool needUpdateMesh = false);
-		void setBlock(unsigned int i, unsigned short blockID, unsigned short state, bool needUpdateMesh = false);
+		inline unsigned short getBlock(unsigned int x, unsigned int y, unsigned int z)
+		{
+			return blocks[((y * CHUNK_SIZE_X * CHUNK_SIZE_Z) + x * CHUNK_SIZE_Z) + z];
+		}
+		inline Block* getBlockPrefab(unsigned int x, unsigned int y, unsigned int z)
+		{
+			return BlocksManager::getBlock(getBlockID(x, y, z));
+		}
+		inline unsigned short getBlockID(unsigned int x, unsigned int y, unsigned int z)
+		{
+			return getBlock(x, y, z) & 0x0FFF;
+		}
+		inline unsigned short getBlockState(unsigned int x, unsigned int y, unsigned int z)
+		{
+			return getBlock(x, y, z) & 0xF000;
+		}
+		inline void getBlock(unsigned int x, unsigned int y, unsigned int z, unsigned short& blockID, unsigned short& blockState)
+		{
+			unsigned short block = getBlock(x, y, z);
+			blockID = block & 0x0FFF;
+			blockState = block & 0xF000;
+		}
+		inline unsigned short getBlock(glm::ivec3 position)
+		{
+			return blocks[((position.y * CHUNK_SIZE_X * CHUNK_SIZE_Z) + position.x * CHUNK_SIZE_Z) + position.z];
+		}
+		inline Block* getBlockPrefab(glm::ivec3 position)
+		{
+			return BlocksManager::getBlock(getBlockID(position));
+		}
+		inline unsigned short getBlockID(glm::ivec3 position)
+		{
+			return getBlock(position) & 0x0FFF;
+		}
+		inline unsigned short getBlockState(glm::ivec3 position)
+		{
+			return getBlock(position) & 0xF000;
+		}
+		inline void getBlock(glm::vec3 position, unsigned short& blockID, unsigned short& blockState)
+		{
+			unsigned short block = getBlock(position);
+			blockID = block & 0x0FFF;
+			blockState = block & 0xF000;
+		}
+		inline unsigned short getBlock(unsigned int i)
+		{
+			return blocks[i];
+		}
+		inline Block* getBlockPrefab(unsigned int i)
+		{
+			return BlocksManager::getBlock(getBlockID(i));
+		}
+		inline unsigned short getBlockID(unsigned int i)
+		{
+			return getBlock(i) & 0x0FFF;
+		}
+		inline unsigned short getBlockState(unsigned int i)
+		{
+			return getBlock(i) & 0xF000;
+		}
+		inline void getBlock(unsigned int i, unsigned short& blockID, unsigned short& blockState)
+		{
+			unsigned short block = getBlock(i);
+			blockID = block & 0x0FFF;
+			blockState = block & 0xF000;
+		}
+		inline void setBlock(unsigned int x, unsigned int y, unsigned int z, unsigned short block, bool needUpdateMesh)
+		{
+			blocks[((y * CHUNK_SIZE_X * CHUNK_SIZE_Z) + x * CHUNK_SIZE_Z) + z] = block;
+			needUpdate = needUpdateMesh;
+		}
+		inline void setBlock(glm::ivec3 position, unsigned short block, bool needUpdateMesh)
+		{
+			blocks[((position.y * CHUNK_SIZE_X * CHUNK_SIZE_Z) + position.x * CHUNK_SIZE_Z) + position.z] = block;
+			needUpdate = needUpdateMesh;
+		}
+		inline void setBlock(unsigned int i, unsigned short block, bool needUpdateMesh)
+		{
+			blocks[i] = block;
+			needUpdate = needUpdateMesh;
+		}
+		inline void setBlock(unsigned int x, unsigned int y, unsigned int z, unsigned short blockID, unsigned short state, bool needUpdateMesh)
+		{
+			blocks[((y * CHUNK_SIZE_X * CHUNK_SIZE_Z) + x * CHUNK_SIZE_Z) + z] = blockID | (state << 12);
+			needUpdate = needUpdateMesh;
+		}
+		inline void setBlock(glm::ivec3 position, unsigned short blockID, unsigned short state, bool needUpdateMesh)
+		{
+			blocks[((position.y * CHUNK_SIZE_X * CHUNK_SIZE_Z) + position.x * CHUNK_SIZE_Z) + position.z] = blockID | (state << 12);
+			needUpdate = needUpdateMesh;
+		}
+		inline void setBlock(unsigned int i, unsigned short blockID, unsigned short state, bool needUpdateMesh)
+		{
+			blocks[i] = blockID | (state << 12);
+			needUpdate = needUpdateMesh;
+		}
 		bool isNeedUpdate();
 		void setNeedUpdate(bool val);
 	};
