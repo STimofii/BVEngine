@@ -12,6 +12,7 @@
 #define CHUNK_VOLUME (CHUNK_SIZE_X * CHUNK_SIZE_Y * CHUNK_SIZE_Z)
 #define SUB_CHUNK_VOLUME (CHUNK_SIZE_X * SUB_CHUNK_SIZE_Y * CHUNK_SIZE_Z)
 namespace bulka {
+	class Block;
 	class Chunk{
 	private:
 		static bcppul::Logger* logger;
@@ -39,6 +40,29 @@ namespace bulka {
 		void update();
 		void render();
 		void finalization();
+
+		unsigned short getBlock(unsigned int x, unsigned int y, unsigned int z);
+		Block* getBlockPrefab(unsigned int x, unsigned int y, unsigned int z);
+		unsigned short getBlockID(unsigned int x, unsigned int y, unsigned int z);
+		unsigned short getBlockState(unsigned int x, unsigned int y, unsigned int z);
+		void getBlock(unsigned int x, unsigned int y, unsigned int z, unsigned short& blockID, unsigned short& blockState);
+		unsigned short getBlock(glm::ivec3 position);
+		Block* getBlockPrefab(glm::ivec3 position);
+		unsigned short getBlockID(glm::ivec3 position);
+		unsigned short getBlockState(glm::ivec3 position);
+		void getBlock(glm::vec3 position, unsigned short& blockID, unsigned short& blockState);
+		unsigned short getBlock(unsigned int i);
+		Block* getBlockPrefab(unsigned int i);
+		unsigned short getBlockID(unsigned int i);
+		unsigned short getBlockState(unsigned int i);
+		void getBlock(unsigned int i, unsigned short& blockID, unsigned short& blockState);
+
+		void setBlock(unsigned int x, unsigned int y, unsigned int z, unsigned short block, bool needUpdateMesh = false);
+		void setBlock(glm::ivec3 position, unsigned short block, bool needUpdateMesh = false);
+		void setBlock(unsigned int i, unsigned short block, bool needUpdateMesh = false);
+		void setBlock(unsigned int x, unsigned int y, unsigned int z, unsigned short blockID, unsigned short state, bool needUpdateMesh = false);
+		void setBlock(glm::ivec3 position, unsigned short blockID, unsigned short state, bool needUpdateMesh = false);
+		void setBlock(unsigned int i, unsigned short blockID, unsigned short state, bool needUpdateMesh = false);
 		bool isNeedUpdate();
 		void setNeedUpdate(bool val);
 	};

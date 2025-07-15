@@ -33,7 +33,6 @@ namespace bulka {
 					unsigned int i = ((y * CHUNK_SIZE_X * CHUNK_SIZE_Z) + x * CHUNK_SIZE_Z) + z;
 					if (y < 5) {
 						blocks[i] = 1;
-
 					}
 				}
 			}
@@ -64,11 +63,12 @@ namespace bulka {
 					for (unsigned int z = 0; z < CHUNK_SIZE_Z; ++z)
 					{
 						unsigned int bpos = ((y * CHUNK_SIZE_X * CHUNK_SIZE_Z) + x * CHUNK_SIZE_Z) + z;
-						unsigned short block = blocks[bpos];
-						if (block == 0) {
+						unsigned short blockID = blocks[bpos] & 0x0FFF;
+						unsigned short blockState = blocks[bpos] & 0xF000;
+						if (blockID == 0) {
 							continue;
 						}
-						Block* prefab = BlocksManager::getBlock(block);
+						Block* prefab = BlocksManager::getBlock(blockID);
 						Block::Face& back = prefab->back;
 						Block::Face& front = prefab->front;
 						Block::Face& left = prefab->left;
@@ -240,5 +240,102 @@ namespace bulka {
 	void Chunk::setNeedUpdate(bool val)
 	{
 		needUpdate = val;
+	}
+
+	unsigned short Chunk::getBlock(unsigned int x, unsigned int y, unsigned int z)
+	{
+		return blocks[((y * CHUNK_SIZE_X * CHUNK_SIZE_Z) + x * CHUNK_SIZE_Z) + z];
+	}
+	Block* Chunk::getBlockPrefab(unsigned int x, unsigned int y, unsigned int z)
+	{
+		return BlocksManager::getBlock(getBlockID(x, y, z));
+	}
+	unsigned short Chunk::getBlockID(unsigned int x, unsigned int y, unsigned int z)
+	{
+		return getBlock(x, y, z) & 0x0FFF;
+	}
+	unsigned short Chunk::getBlockState(unsigned int x, unsigned int y, unsigned int z)
+	{
+		return getBlock(x, y, z) & 0xF000;
+	}
+	void Chunk::getBlock(unsigned int x, unsigned int y, unsigned int z, unsigned short& blockID, unsigned short& blockState)
+	{
+		unsigned short block = getBlock(x, y, z);
+		blockID = block & 0x0FFF;
+		blockState = block & 0xF000;
+	}
+	unsigned short Chunk::getBlock(glm::ivec3 position)
+	{
+		return blocks[((position.y * CHUNK_SIZE_X * CHUNK_SIZE_Z) + position.x * CHUNK_SIZE_Z) + position.z];
+	}
+	Block* Chunk::getBlockPrefab(glm::ivec3 position)
+	{
+		return BlocksManager::getBlock(getBlockID(position));
+	}
+	unsigned short Chunk::getBlockID(glm::ivec3 position)
+	{
+		return getBlock(position) & 0x0FFF;
+	}
+	unsigned short Chunk::getBlockState(glm::ivec3 position)
+	{
+		return getBlock(position) & 0xF000;
+	}
+	void Chunk::getBlock(glm::vec3 position, unsigned short& blockID, unsigned short& blockState)
+	{
+		unsigned short block = getBlock(position);
+		blockID = block & 0x0FFF;
+		blockState = block & 0xF000;
+	}
+	unsigned short Chunk::getBlock(unsigned int i)
+	{
+		return blocks[i];
+	}
+	Block* Chunk::getBlockPrefab(unsigned int i)
+	{
+		return BlocksManager::getBlock(getBlockID(i));
+	}
+	unsigned short Chunk::getBlockID(unsigned int i)
+	{
+		return getBlock(i) & 0x0FFF;
+	}
+	unsigned short Chunk::getBlockState(unsigned int i)
+	{
+		return getBlock(i) & 0xF000;
+	}
+	void Chunk::getBlock(unsigned int i, unsigned short& blockID, unsigned short& blockState)
+	{
+		unsigned short block = getBlock(i);
+		blockID = block & 0x0FFF;
+		blockState = block & 0xF000;
+	}
+	void Chunk::setBlock(unsigned int x, unsigned int y, unsigned int z, unsigned short block, bool needUpdateMesh)
+	{
+		blocks[((y * CHUNK_SIZE_X * CHUNK_SIZE_Z) + x * CHUNK_SIZE_Z) + z] = block;
+		needUpdate = needUpdateMesh;
+	}
+	void Chunk::setBlock(glm::ivec3 position, unsigned short block, bool needUpdateMesh)
+	{
+		blocks[((position.y * CHUNK_SIZE_X * CHUNK_SIZE_Z) + position.x * CHUNK_SIZE_Z) + position.z] = block;
+		needUpdate = needUpdateMesh;
+	}
+	void Chunk::setBlock(unsigned int i, unsigned short block, bool needUpdateMesh)
+	{
+		blocks[i] = block;
+		needUpdate = needUpdateMesh;
+	}
+	void Chunk::setBlock(unsigned int x, unsigned int y, unsigned int z, unsigned short blockID, unsigned short state, bool needUpdateMesh)
+	{
+		blocks[((y * CHUNK_SIZE_X * CHUNK_SIZE_Z) + x * CHUNK_SIZE_Z) + z] = blockID | (state << 12);
+		needUpdate = needUpdateMesh;
+	}
+	void Chunk::setBlock(glm::ivec3 position, unsigned short blockID, unsigned short state, bool needUpdateMesh)
+	{
+		blocks[((position.y * CHUNK_SIZE_X * CHUNK_SIZE_Z) + position.x * CHUNK_SIZE_Z) + position.z] = blockID | (state << 12);
+		needUpdate = needUpdateMesh;
+	}
+	void Chunk::setBlock(unsigned int i, unsigned short blockID, unsigned short state, bool needUpdateMesh)
+	{
+		blocks[i] = blockID | (state << 12);
+		needUpdate = needUpdateMesh;
 	}
 }

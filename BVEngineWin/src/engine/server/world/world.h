@@ -23,6 +23,8 @@ namespace bulka {
 		void update();
 		void render();
 		void save();
+
+
 		
 		int getRenderDistance();
 		int getChunksWorldWidth();
