@@ -13,6 +13,7 @@
 #include "../../server/game.h"
 #include "../../window.h"
 #include "../../hero.h"
+#include "../../server/world/world.h"
 
 #include <bcppul/logging.h>
 
@@ -55,6 +56,7 @@ namespace bulka {
 			ss << "PYR: " << rotation.x << "; " << rotation.y << "; " << rotation.z << "; " << "\n";
 			ss << "Direction PYR: " << direction.x << "; " << direction.y << "; " << direction.z << "; " << "\n\n";
 			ss << "TPS: " << Game::getTPS() << "\n\n";
+			ss << "Render Distance: " << Game::getWorld()->getRenderDistance() << "\n\n";
 			left_top_text->setText(ss.str());
 			ss.str("");
 			ss.clear();

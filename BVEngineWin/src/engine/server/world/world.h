@@ -36,7 +36,7 @@ namespace bulka {
 			return chunks;
 		}
 		inline Chunk* getChunk(int x, int z) {
-			if (x > render_distance || z > render_distance) {
+			if (x > render_distance || x < -render_distance || z > render_distance || z < -render_distance) {
 				return nullptr;
 			}
 			return chunks[((x + render_distance) * chunks_world_width) + z + render_distance];
@@ -48,22 +48,29 @@ namespace bulka {
 			return chunks[i];
 		}
 		inline Chunk* getChunk(glm::ivec2 position) {
-			if (position.x > render_distance ||position.y > render_distance) {
+			if (position.x > render_distance || position.x < -render_distance || position.y > render_distance || position.y < -render_distance) {
 				return nullptr;
 			}
 			return chunks[((position.x + render_distance) * chunks_world_width) + position.y + render_distance];
 		}
 		inline Chunk* getChunkInBlockCoords(int x, int z) {
-			if (x / CHUNK_SIZE_X > render_distance || z / CHUNK_SIZE_Z > render_distance) {
+			int chunkX = x / CHUNK_SIZE_X;
+			int chunkZ = z / CHUNK_SIZE_Z;
+			if (chunkX > render_distance || chunkX < -render_distance || chunkZ > render_distance || chunkZ < -render_distance) {
 				return nullptr;
 			}
-			return chunks[((x / CHUNK_SIZE_X + render_distance) * chunks_world_width) + z / CHUNK_SIZE_Z + render_distance];
+			return chunks[((chunkX + render_distance) * chunks_world_width) + chunkZ + render_distance];
 		}
 		inline Chunk* getChunkInBlockCoords(glm::ivec2 position) {
+			int chunkX = position.x / CHUNK_SIZE_X;
+			int chunkZ = position.y / CHUNK_SIZE_Z;
 			if (position.x / CHUNK_SIZE_X > render_distance || position.y / CHUNK_SIZE_Z > render_distance) {
 				return nullptr;
 			}
-			return chunks[((position.x / CHUNK_SIZE_X + render_distance) * chunks_world_width) + position.y / CHUNK_SIZE_Z + render_distance];
+			if (chunkX > render_distance || chunkX < -render_distance || chunkZ > render_distance || chunkZ < -render_distance) {
+				return nullptr;
+			}
+			return chunks[((chunkX + render_distance) * chunks_world_width) + chunkZ + render_distance];
 		}
 
 		inline unsigned short getBlock(unsigned int x, unsigned int y, unsigned int z)

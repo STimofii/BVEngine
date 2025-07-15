@@ -115,6 +115,8 @@ namespace bulka {
 				keys_released[i] = false;
 			}
 		}
+		scrollX = 0;
+		scrollY = 0;
 	}
 
 	void Input::postPollEvents()

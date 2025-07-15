@@ -11,6 +11,7 @@
 #include "graphics/renderer.h"
 
 #include <iostream>
+#include <cmath>
 #include <thread>
 #include <fstream>
 #include <sstream>
@@ -164,6 +165,9 @@ namespace bulka {
 	void Engine::preInit()
 	{
 		logger->info("Preinit");
+		logger->debug("Initializing Settings");
+		Settings::init();
+		logger->debug("Initialized Settings");
 		logger->info("End preinit");
 	}
 	void Engine::createBlocks()
@@ -181,9 +185,6 @@ namespace bulka {
 			throw new std::exception("GLFW CAN'T INIT!!!");
 		}
 		logger->debug("Initialized GLFW");
-		logger->debug("Initializing Settings");
-		Settings::init();
-		logger->debug("Initialized Settings");
 
 		logger->debug("Initializing FreeType");
 		FT_Error error = FT_Init_FreeType(&ft_library);
@@ -274,6 +275,10 @@ namespace bulka {
 		}
 		if (Input::isKeyTyped(GLFW_KEY_F3)) {
 			dev_text.toggleVisible();
+		}
+		if (Input::getScrollY() != 0) {
+			std::cout << Game::getWorld()->getRenderDistance() << std::endl;
+			Game::getWorld()->setRenderDistance(std::max(Game::getWorld()->getRenderDistance() + Input::getScrollY(), 0.0));
 		}
 
 		hero.inputUpdate();

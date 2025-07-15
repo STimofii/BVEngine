@@ -599,6 +599,16 @@ namespace bulka {
 		updateMeshes = meshes;
 	}
 
+	bool Chunk::isMoved()
+	{
+		return moved;
+	}
+
+	void Chunk::setMoved(bool val)
+	{
+		moved = val;
+	}
+
 	void Chunk::finalization() {
 		delete[] blocks;
 		deleteMeshes();

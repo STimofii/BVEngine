@@ -31,6 +31,7 @@ namespace bulka {
 		unsigned short updateMeshes = 0b1111111111111111;
 		unsigned short* blocks = nullptr;
 		SubChunk sub_chunks[SUB_CHUNKS_IN_CHUNK]{};
+		bool moved = false;
 	protected:
 	public:
 		Chunk(World* world, glm::ivec2 position);
@@ -76,6 +77,8 @@ namespace bulka {
 		unsigned short getUpdatableMeshes();
 		void setNeedUpdateFullChunk();
 		void setNeedUpdate(unsigned short meshes);
+		bool isMoved();
+		void setMoved(bool val);
 	};
 
 }
