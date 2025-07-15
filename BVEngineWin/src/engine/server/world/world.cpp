@@ -28,7 +28,7 @@ namespace bulka {
 		for (int x = -render_distance; x <= render_distance; ++x) {
 			for (int z = -render_distance; z <= render_distance; ++z) {
 				unsigned int i = ((x + render_distance) * chunks_world_width) + z + render_distance;
-				chunks[i] = new Chunk(glm::ivec2(x, z));
+				chunks[i] = new Chunk(this, glm::ivec2(x, z));
 			}
 		}
 		generate();
@@ -75,6 +75,10 @@ namespace bulka {
 	int World::getChunksWorldWidth()
 	{
 		return chunks_world_width;
+	}
+	int World::getChunksWorldCount()
+	{
+		return chunks_world_count;
 	}
 	void World::setRenderDistance(int val)
 	{

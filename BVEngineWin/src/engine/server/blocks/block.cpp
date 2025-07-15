@@ -82,8 +82,8 @@ namespace bulka {
 
 
 
-	Block::Block(unsigned short id, std::string name, Face back, Face front, Face left, Face right, Face bottom, Face top) : 
-		id(id), name(name), back(back), front(front), left(left), right(right), bottom(bottom), top(top)
+	Block::Block(unsigned short id, std::string name, bool hasAlpha, Face back, Face front, Face left, Face right, Face bottom, Face top) : 
+		id(id), name(name), hasAlpha(hasAlpha), back(back), front(front), left(left), right(right), bottom(bottom), top(top)
 	{
 
 	}
@@ -94,12 +94,13 @@ namespace bulka {
 	Block::Face::Face(
 		float* vertices, unsigned int vertices_length, unsigned int* indices, unsigned int indices_length, 
 		float textureX, float textureY, 
-		float textureWidth, float textureHeight) : 
+		float textureWidth, float textureHeight, glm::vec3 normal) : 
 		vertices(vertices), vertices_length(vertices_length), indices(indices), indices_length(indices_length),
 		textureX(textureX * ONE_BLOCK_TEXTURE_PART_X), 
 		textureY(textureY * ONE_BLOCK_TEXTURE_PART_Y),
 		textureWidth(textureWidth* ONE_BLOCK_TEXTURE_PART_X), 
-		textureHeight(textureHeight * ONE_BLOCK_TEXTURE_PART_Y)
+		textureHeight(textureHeight * ONE_BLOCK_TEXTURE_PART_Y),
+		normal(normal)
 	{
 		recalcVertices();
 	}

@@ -6,14 +6,16 @@
 #include <vector>
 #include <iostream>
 #include <iomanip>
+#include <cmath>
 
 #include "../../blocks/block.h"
 #include "../../../engine.h"
 #include "../../../graphics/shader_manager.h"
 #include "../../blocks/blocks_manager.h"
+#include "../world.h"
 namespace bulka {
 	bcppul::Logger* Chunk::logger = bcppul::getLogger("Chunk");
-	Chunk::Chunk(glm::ivec2 position) : position(position)
+	Chunk::Chunk(World* world, glm::ivec2 position) : position(position), world(world)
 	{
 		blockStartPosition.x = position.x * CHUNK_SIZE_X;
 		blockStartPosition.y = position.y * CHUNK_SIZE_Z;
@@ -69,91 +71,174 @@ namespace bulka {
 							continue;
 						}
 						Block* prefab = BlocksManager::getBlock(blockID);
-						Block::Face& back = prefab->back;
-						Block::Face& front = prefab->front;
-						Block::Face& left = prefab->left;
-						Block::Face& right = prefab->right;
-						Block::Face& bottom = prefab->bottom;
-						Block::Face& top = prefab->top;
-						for (unsigned int i = 0; i < back.vertices_length / 5; i++)
-						{
-							vertices.push_back(back.vertices[i * 5 + 0] + x);
-							vertices.push_back(back.vertices[i * 5 + 1] + y);
-							vertices.push_back(back.vertices[i * 5 + 2] + z);
-							vertices.push_back(back.vertices[i * 5 + 3]);
-							vertices.push_back(back.vertices[i * 5 + 4]);
+						char neighbors = 0;
+						if (z != 0) {
+							if (isBlockPrefabHasAlpha(x, y, z - 1)) {
+								neighbors = neighbors | 0b00000001;
+							}
 						}
-						
-						for (unsigned int i = 0; i < back.indices_length; i++)
-						{
-							indices.push_back(back.indices[i] + index);
+						else {
+							if (position.y == -world->getRenderDistance()) {
+								neighbors = (RENDER_BLOCKS_ON_WORLD_EDGE ? neighbors | 0b00000001 : neighbors | 0b00000000);
+							}
+							else {
+								neighbors = neighbors | world->getChunk(position.x, position.y - 1)->getBlockPrefab(x, y, CHUNK_SIZE_Z - 1)->hasAlpha;
+							}
 						}
-						index += back.vertices_length / 5;
-						for (unsigned int i = 0; i < front.vertices_length / 5; i++)
-						{
-							vertices.push_back(front.vertices[i * 5 + 0] + x);
-							vertices.push_back(front.vertices[i * 5 + 1] + y);
-							vertices.push_back(front.vertices[i * 5 + 2] + z);
-							vertices.push_back(front.vertices[i * 5 + 3]);
-							vertices.push_back(front.vertices[i * 5 + 4]);
+
+						if (z != CHUNK_SIZE_Z - 1) {
+							if (isBlockPrefabHasAlpha(x, y, z + 1)) {
+								neighbors = neighbors | 0b00000010;
+							}
 						}
-						for (unsigned int i = 0; i < front.indices_length; i++)
-						{
-							indices.push_back(front.indices[i] + index);
+						else {
+							if (position.y == world->getRenderDistance()) {
+								neighbors = (RENDER_BLOCKS_ON_WORLD_EDGE ? neighbors | 0b00000010 : neighbors | 0b00000000);
+							}
+							else {
+								neighbors = neighbors | (world->getChunk(position.x, position.y + 1)->getBlockPrefab(x, y, 0)->hasAlpha) << 1;
+							}
 						}
-						index += front.vertices_length / 5;
-						for (unsigned int i = 0; i < left.vertices_length / 5; i++)
-						{
-							vertices.push_back(left.vertices[i * 5 + 0] + x);
-							vertices.push_back(left.vertices[i * 5 + 1] + y);
-							vertices.push_back(left.vertices[i * 5 + 2] + z);
-							vertices.push_back(left.vertices[i * 5 + 3]);
-							vertices.push_back(left.vertices[i * 5 + 4]);
+						if (x != 0) {
+							if (isBlockPrefabHasAlpha(x - 1, y, z)) {
+								neighbors = neighbors | 0b00000100;
+							}
 						}
-						for (unsigned int i = 0; i < left.indices_length; i++)
-						{
-							indices.push_back(left.indices[i] + index);
+						else {
+							if (position.x == -world->getRenderDistance()) {
+								neighbors = (RENDER_BLOCKS_ON_WORLD_EDGE ? neighbors | 0b00000100 : neighbors | 0b00000000);
+							}
+							else {
+								neighbors = neighbors | (world->getChunk(position.x - 1, position.y)->getBlockPrefab(CHUNK_SIZE_X - 1, y, z)->hasAlpha) << 2;
+							}
 						}
-						index += left.vertices_length / 5;
-						for (unsigned int i = 0; i < right.vertices_length / 5; i++)
-						{
-							vertices.push_back(right.vertices[i * 5 + 0] + x);
-							vertices.push_back(right.vertices[i * 5 + 1] + y);
-							vertices.push_back(right.vertices[i * 5 + 2] + z);
-							vertices.push_back(right.vertices[i * 5 + 3]);
-							vertices.push_back(right.vertices[i * 5 + 4]);
+						if (x != CHUNK_SIZE_X - 1) {
+							if (isBlockPrefabHasAlpha(x + 1, y, z)) {
+								neighbors = neighbors | 0b00001000;
+							}
 						}
-						for (unsigned int i = 0; i < right.indices_length; i++)
-						{
-							indices.push_back(right.indices[i] + index);
+						else {
+							if (position.x == world->getRenderDistance()) {
+								neighbors = (RENDER_BLOCKS_ON_WORLD_EDGE ? neighbors | 0b00001000 : neighbors | 0b00000000);
+							}
+							else {
+								neighbors = neighbors | (world->getChunk(position.x + 1, position.y)->getBlockPrefab(0, y, z)->hasAlpha) << 3;
+							}
 						}
-						index += right.vertices_length / 5;
-						for (unsigned int i = 0; i < bottom.vertices_length / 5; i++)
-						{
-							vertices.push_back(bottom.vertices[i * 5 + 0] + x);
-							vertices.push_back(bottom.vertices[i * 5 + 1] + y);
-							vertices.push_back(bottom.vertices[i * 5 + 2] + z);
-							vertices.push_back(bottom.vertices[i * 5 + 3]);
-							vertices.push_back(bottom.vertices[i * 5 + 4]);
+
+						if (y != 0) {
+							if (isBlockPrefabHasAlpha(x, y - 1, z)) {
+								neighbors = neighbors | 0b00010000;
+							}
 						}
-						for (unsigned int i = 0; i < bottom.indices_length; i++)
-						{
-							indices.push_back(bottom.indices[i] + index);
+						else {
+							neighbors = (RENDER_BLOCKS_ON_WORLD_EDGE ? neighbors | 0b00010000 : neighbors | 0b00000000);
 						}
-						index += bottom.vertices_length / 5;
-						for (unsigned int i = 0; i < top.vertices_length / 5; i++)
-						{
-							vertices.push_back(top.vertices[i * 5 + 0] + x);
-							vertices.push_back(top.vertices[i * 5 + 1] + y);
-							vertices.push_back(top.vertices[i * 5 + 2] + z);
-							vertices.push_back(top.vertices[i * 5 + 3]);
-							vertices.push_back(top.vertices[i * 5 + 4]);
+						if (y != CHUNK_SIZE_Y - 1) {
+							if (isBlockPrefabHasAlpha(x, y + 1, z)) {
+								neighbors = neighbors | 0b00100000;
+							}
 						}
-						for (unsigned int i = 0; i < top.indices_length; i++)
-						{
-							indices.push_back(top.indices[i] + index);
+						else {
+							neighbors = (RENDER_BLOCKS_ON_WORLD_EDGE ? neighbors | 0b00100000 : neighbors | 0b00000000);
 						}
-						index += top.vertices_length / 5;
+
+						if (neighbors & 0b00000001) {
+							Block::Face& back = prefab->back;
+							for (unsigned int i = 0; i < back.vertices_length / 5; i++)
+							{
+								vertices.push_back(back.vertices[i * 5 + 0] + x);
+								vertices.push_back(back.vertices[i * 5 + 1] + y);
+								vertices.push_back(back.vertices[i * 5 + 2] + z);
+								vertices.push_back(back.vertices[i * 5 + 3]);
+								vertices.push_back(back.vertices[i * 5 + 4]);
+							}
+							for (unsigned int i = 0; i < back.indices_length; i++)
+							{
+								indices.push_back(back.indices[i] + index);
+							}
+							index += back.vertices_length / 5;
+						}
+						if (neighbors & 0b00000010) {
+							Block::Face& front = prefab->front;
+							for (unsigned int i = 0; i < front.vertices_length / 5; i++)
+							{
+								vertices.push_back(front.vertices[i * 5 + 0] + x);
+								vertices.push_back(front.vertices[i * 5 + 1] + y);
+								vertices.push_back(front.vertices[i * 5 + 2] + z);
+								vertices.push_back(front.vertices[i * 5 + 3]);
+								vertices.push_back(front.vertices[i * 5 + 4]);
+							}
+							for (unsigned int i = 0; i < front.indices_length; i++)
+							{
+								indices.push_back(front.indices[i] + index);
+							}
+							index += front.vertices_length / 5;
+						}
+						if (neighbors & 0b00000100) {
+							Block::Face& left = prefab->left;
+							for (unsigned int i = 0; i < left.vertices_length / 5; i++)
+							{
+								vertices.push_back(left.vertices[i * 5 + 0] + x);
+								vertices.push_back(left.vertices[i * 5 + 1] + y);
+								vertices.push_back(left.vertices[i * 5 + 2] + z);
+								vertices.push_back(left.vertices[i * 5 + 3]);
+								vertices.push_back(left.vertices[i * 5 + 4]);
+							}
+							for (unsigned int i = 0; i < left.indices_length; i++)
+							{
+								indices.push_back(left.indices[i] + index);
+							}
+							index += left.vertices_length / 5;
+						}
+						if (neighbors & 0b00001000) {
+							Block::Face& right = prefab->right;
+							for (unsigned int i = 0; i < right.vertices_length / 5; i++)
+							{
+								vertices.push_back(right.vertices[i * 5 + 0] + x);
+								vertices.push_back(right.vertices[i * 5 + 1] + y);
+								vertices.push_back(right.vertices[i * 5 + 2] + z);
+								vertices.push_back(right.vertices[i * 5 + 3]);
+								vertices.push_back(right.vertices[i * 5 + 4]);
+							}
+							for (unsigned int i = 0; i < right.indices_length; i++)
+							{
+								indices.push_back(right.indices[i] + index);
+							}
+							index += right.vertices_length / 5;
+						}
+						if (neighbors & 0b00010000) {
+							Block::Face& bottom = prefab->bottom;
+							for (unsigned int i = 0; i < bottom.vertices_length / 5; i++)
+							{
+								vertices.push_back(bottom.vertices[i * 5 + 0] + x);
+								vertices.push_back(bottom.vertices[i * 5 + 1] + y);
+								vertices.push_back(bottom.vertices[i * 5 + 2] + z);
+								vertices.push_back(bottom.vertices[i * 5 + 3]);
+								vertices.push_back(bottom.vertices[i * 5 + 4]);
+							}
+							for (unsigned int i = 0; i < bottom.indices_length; i++)
+							{
+								indices.push_back(bottom.indices[i] + index);
+							}
+							index += bottom.vertices_length / 5;
+						}
+						if (neighbors & 0b00100000) {
+							Block::Face& top = prefab->top;
+							for (unsigned int i = 0; i < top.vertices_length / 5; i++)
+							{
+								vertices.push_back(top.vertices[i * 5 + 0] + x);
+								vertices.push_back(top.vertices[i * 5 + 1] + y);
+								vertices.push_back(top.vertices[i * 5 + 2] + z);
+								vertices.push_back(top.vertices[i * 5 + 3]);
+								vertices.push_back(top.vertices[i * 5 + 4]);
+							}
+							for (unsigned int i = 0; i < top.indices_length; i++)
+							{
+								indices.push_back(top.indices[i] + index);
+							}
+							index += top.vertices_length / 5;
+						}
 					}
 				}
 			}
@@ -241,6 +326,4 @@ namespace bulka {
 	{
 		needUpdate = val;
 	}
-
-
 }

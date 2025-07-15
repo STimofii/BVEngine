@@ -8,7 +8,7 @@ namespace bulka {
 		blocks.clear();
 		unsigned short id = 0;
 		blocks.push_back(nullptr);
-		blocks.push_back(new Block(++id, "stone"));
+		blocks.push_back(new Block(++id, "stone", false));
 	}
 	void BlocksManager::finalization() {
 		for (auto block : blocks) {

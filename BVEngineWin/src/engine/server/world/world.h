@@ -26,6 +26,12 @@ namespace bulka {
 		void render();
 		void save();
 
+		int getRenderDistance();
+		int getChunksWorldWidth();
+		int getChunksWorldCount();
+		void setRenderDistance(int val);
+
+
 		inline Chunk** getChunks() {
 			return chunks;
 		}
@@ -230,10 +236,6 @@ namespace bulka {
 			}
 			getChunkInBlockCoords(position.x, position.z)->setBlock(bx, position.y, bz, blockID, state, needUpdateMesh);
 		}
-		
-		int getRenderDistance();
-		int getChunksWorldWidth();
-		void setRenderDistance(int val);
 	};
 
 }
