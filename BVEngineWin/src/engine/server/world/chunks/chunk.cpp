@@ -38,12 +38,17 @@ namespace bulka {
 				}
 			}
 		}
+		needUpdate = true;
 	}
 	void Chunk::createMeshes() {
 		if (!Engine::isRunning()) {
 			return;
 		}
-		*logger << bcppul::TRACE << "Loading chunk X:" << position.x << "; z:" << position.y;
+		if (!needUpdate) {
+			return;
+		}
+		needUpdate = false;
+		*logger << bcppul::TRACE << "Updating chunk mesh X:" << position.x << "; z:" << position.y;
 		for (unsigned int sub_chunk_i = 0; sub_chunk_i < SUB_CHUNKS_IN_CHUNK; sub_chunk_i++)
 		{
 			SubChunk& subChunk = sub_chunks[sub_chunk_i];
@@ -227,5 +232,13 @@ namespace bulka {
 	void Chunk::finalization() {
 		delete[] blocks;
 		deleteMeshes();
+	}
+	bool Chunk::isNeedUpdate()
+	{
+		return needUpdate;
+	}
+	void Chunk::setNeedUpdate(bool val)
+	{
+		needUpdate = val;
 	}
 }

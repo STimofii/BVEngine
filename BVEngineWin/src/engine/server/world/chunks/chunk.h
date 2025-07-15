@@ -24,6 +24,7 @@ namespace bulka {
 		};
 		glm::ivec2 position;
 		glm::ivec2 blockStartPosition;
+		bool needUpdate = true;
 		unsigned short* blocks = nullptr;
 		SubChunk sub_chunks[SUB_CHUNKS_IN_CHUNK]{};
 	protected:
@@ -38,6 +39,8 @@ namespace bulka {
 		void update();
 		void render();
 		void finalization();
+		bool isNeedUpdate();
+		void setNeedUpdate(bool val);
 	};
 
 }

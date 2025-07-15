@@ -87,6 +87,9 @@
     <ClCompile Include="src\engine\server\game.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="src\engine\graphics\loading_screen.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\engine\engine.h">
@@ -155,6 +158,9 @@
     <ClInclude Include="src\engine\server\game.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="src\engine\graphics\loading_screen.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\3d\main.frag" />
@@ -167,5 +173,7 @@
     <None Include="res\shaders\2d\crosshair.vert" />
     <None Include="res\shaders\3d\chunk.vert" />
     <None Include="res\shaders\3d\chunk.frag" />
+    <None Include="res\shaders\2d\loading_screen.vert" />
+    <None Include="res\shaders\2d\loading_screen.frag" />
   </ItemGroup>
 </Project>

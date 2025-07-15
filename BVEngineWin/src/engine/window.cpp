@@ -8,6 +8,7 @@
 #include "graphics/text/static_text.h"
 #include "graphics/postprocessing.h"
 #include "graphics/crosshair/crosshair.h"
+#include "graphics/loading_screen.h"
 
 
 namespace bulka {
@@ -97,6 +98,7 @@ namespace bulka {
 			for (StaticText* static_text : staticTextsForUpdatingMesh) {
 				static_text->updateScreenPosition();
 			}
+			Engine::getLoadingScreen().init();
 		}
 	}
 	void Window::resize()

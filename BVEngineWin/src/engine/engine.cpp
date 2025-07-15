@@ -26,6 +26,7 @@
 #include "graphics/text/dev_text.h"
 #include "graphics/crosshair/crosshair.h"
 #include "graphics/postprocessing.h"
+#include "graphics/loading_screen.h"
 #include "server/game.h"
 #include "server/blocks/block.h"
 #include "server/world/world.h"
@@ -49,6 +50,7 @@ namespace bulka {
 	DevText Engine::dev_text;
 	Postprocessing Engine::postprocessing;
 	Crosshair Engine::crosshair;
+	LoadingScreen Engine::loadingScreen;
 
 
 
@@ -96,15 +98,11 @@ namespace bulka {
 
 
 		running = true;
-		while(!Game::isStarted()){
-
-		}
 		long long timeFrameStart;
 		long long timeFrameElapsed;
 		long long timeFPS = unixTime();
 		long long frames = 0;
 		
-		Game::getWorld()->reload();
 		logger->info("Starting game loop");
 		while (running) {
 			timeFrameStart = unixTime();
@@ -114,12 +112,15 @@ namespace bulka {
 				exitCode = 0;
 				running = false;
 			}
-
+			if (Game::isStarted()) {
+				Game::getWorld()->reload();
+			}
+			loadingScreen.setVisible(!Game::isStarted());
 
 			inputUpdate();
 			update();
 			postUpdate();
-			if (usePostprocessing) {
+			if (usePostprocessing && Game::isStarted()) {
 				postprocessing.bindFBO();
 			}
 			glClearColor(135.0f / 256, 206.0f / 256, 235.0f / 256, 1);
@@ -231,12 +232,13 @@ namespace bulka {
 		hero.init();
 		logger->debug("Initializing Renderer");
 		Renderer::init();
-
 	}
 	void Engine::postInit()
 	{
 		logger->info("Post init");
 		ShaderManager::postInit();
+		logger->debug("Initializing LoadingScreen");
+		loadingScreen.init();
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_BLEND);
@@ -296,15 +298,19 @@ namespace bulka {
 		ShaderManager::mainShader.bind();
 		Renderer::render(simpleMesh);
 		ShaderManager::mainShader.unbind();
-		Game::getWorld()->render();
-		if (usePostprocessing){
-			postprocessing.unbindFBO();
-			postprocessing.render();
+		if(Game::isStarted()){
+			Game::getWorld()->render();
+			if (usePostprocessing) {
+				postprocessing.unbindFBO();
+				postprocessing.render();
+			}
+			else {
+				crosshair.render();
+			}
 		}
-		else {
-			crosshair.render();
-		}
+		loadingScreen.render();
 		dev_text.render();
+		
 		
 		Window::render();
 	}
@@ -363,6 +369,10 @@ namespace bulka {
 	Crosshair& Engine::getCrosshair()
 	{
 		return crosshair;
+	}
+	LoadingScreen& Engine::getLoadingScreen()
+	{
+		return loadingScreen;
 	}
 	long long Engine::unixTime()
 	{

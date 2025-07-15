@@ -148,6 +148,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\engine\graphics\loading_screen.cpp" />
     <ClCompile Include="src\engine\server\blocks\block.cpp" />
     <ClCompile Include="src\BWEngineWin.cpp" />
     <ClCompile Include="src\engine\camera.cpp" />
@@ -174,6 +175,7 @@
     <ClCompile Include="src\engine\server\world\world.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\engine\graphics\loading_screen.h" />
     <ClInclude Include="src\engine\server\blocks\block.h" />
     <ClInclude Include="src\engine\camera.h" />
     <ClInclude Include="src\engine\engine.h" />
@@ -200,6 +202,8 @@
   <ItemGroup>
     <None Include="res\shaders\2d\crosshair.frag" />
     <None Include="res\shaders\2d\crosshair.vert" />
+    <None Include="res\shaders\2d\loading_screen.frag" />
+    <None Include="res\shaders\2d\loading_screen.vert" />
     <None Include="res\shaders\2d\postprocessing.frag" />
     <None Include="res\shaders\2d\postprocessing.vert" />
     <None Include="res\shaders\3d\chunk.frag" />

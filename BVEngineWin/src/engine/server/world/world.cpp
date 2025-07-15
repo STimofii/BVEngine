@@ -13,11 +13,13 @@ namespace bulka {
 	}
 	World::~World()
 	{
-		for (unsigned int i = 0; i < chunks_world_count; ++i) {
-			chunks[i]->finalization();
+		if(chunks != nullptr){
+			for (unsigned int i = 0; i < chunks_world_count; ++i) {
+				chunks[i]->finalization();
+			}
+			delete[] chunks;
+			chunks = nullptr;
 		}
-		delete[] chunks;
-		chunks = nullptr;
 	}
 
 	void World::load() {
@@ -26,7 +28,6 @@ namespace bulka {
 		for (int x = -render_distance; x <= render_distance; ++x) {
 			for (int z = -render_distance; z <= render_distance; ++z) {
 				unsigned int i = ((x + render_distance) * chunks_world_width) + z + render_distance;
-				//std::cerr << i << std::endl;
 				chunks[i] = new Chunk(glm::ivec2(x, z));
 			}
 		}
@@ -37,7 +38,6 @@ namespace bulka {
 		for (int x = -render_distance; x <= render_distance; ++x) {
 			for (int z = -render_distance; z <= render_distance; ++z) {
 				unsigned int i = ((x + render_distance) * chunks_world_width) + z + render_distance;
-				//std::cout << i << std::endl;
 				chunks[i]->generate();
 			}
 		}
@@ -46,7 +46,6 @@ namespace bulka {
 		for (int x = -render_distance; x <= render_distance; ++x) {
 			for (int z = -render_distance; z <= render_distance; ++z) {
 				unsigned int i = ((x + render_distance) * chunks_world_width) + z + render_distance;
-				//std::cout << i << std::endl;
 				chunks[i]->createMeshes();
 			}
 		}

@@ -22,8 +22,7 @@ namespace bulka {
 	class DevText;
 	class Postprocessing;
 	class Crosshair;
-	class Game;
-	class Block;
+	class LoadingScreen;
 	class Engine {
 	private:
 		static bcppul::Logger* logger;
@@ -43,7 +42,7 @@ namespace bulka {
 		static DevText dev_text;
 		static Postprocessing postprocessing;
 		static Crosshair crosshair;
-		static Game game;
+		static LoadingScreen loadingScreen;
 
 	protected:
 	public:
@@ -83,6 +82,6 @@ namespace bulka {
 		static Hero& getHero();
 		static Postprocessing& getPostprocessing();
 		static Crosshair& getCrosshair();
-		
+		static LoadingScreen& getLoadingScreen();
 	};
 }

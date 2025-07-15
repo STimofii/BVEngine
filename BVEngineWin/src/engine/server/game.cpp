@@ -12,6 +12,7 @@ namespace bulka {
 	World* Game::world;
 	void Game::init() {
 		logger->info("Starting game");
+		world = new World();
 		logger->info("Started game");
 
 		logger->info("Starting game loop");
@@ -25,12 +26,11 @@ namespace bulka {
 	}
 	void Game::loop()
 	{
-		//for (unsigned int i = 0; i < 1000000000; ++i);
+		//for (long long i = 0; i < 10000000000L; ++i);
 		long long timeTickStart;
 		long long timeTickElapsed;
 		long long timeTPS = Engine::unixTime();
 		long long ticks = 0;
-		world = new World();
 		world->load();
 
 		started = true;
