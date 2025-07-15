@@ -39,256 +39,255 @@ namespace bulka {
 				}
 			}
 		}
-		needUpdate = true;
+		updateMeshes = 0xFFFF;
+	}
+	void Chunk::createMesh(unsigned int sub_chunk_i)
+	{
+		updateMeshes = updateMeshes & ~(1 << sub_chunk_i);
+		SubChunk& subChunk = sub_chunks[sub_chunk_i];
+		std::vector<float> vertices;
+		std::vector<unsigned int> indices;
+
+		unsigned int index = 0;
+
+		for (unsigned int y = sub_chunk_i * SUB_CHUNK_SIZE_Y; y < SUB_CHUNK_SIZE_Y * (sub_chunk_i + 1); ++y)
+		{
+			for (unsigned int x = 0; x < CHUNK_SIZE_X; ++x)
+			{
+				for (unsigned int z = 0; z < CHUNK_SIZE_Z; ++z)
+				{
+					unsigned int bpos = ((y * CHUNK_SIZE_X * CHUNK_SIZE_Z) + x * CHUNK_SIZE_Z) + z;
+					unsigned short blockID = blocks[bpos] & 0x0FFF;
+					unsigned short blockState = blocks[bpos] & 0xF000;
+					if (blockID == 0) {
+						continue;
+					}
+					Block* prefab = BlocksManager::getBlock(blockID);
+					char neighbors = 0;
+					if (z != 0) {
+						if (isBlockPrefabHasAlpha(x, y, z - 1)) {
+							neighbors = neighbors | 0b00000001;
+						}
+					}
+					else {
+						if (position.y == -world->getRenderDistance()) {
+							neighbors = (RENDER_BLOCKS_ON_WORLD_EDGE ? neighbors | 0b00000001 : neighbors | 0b00000000);
+						}
+						else {
+							neighbors = neighbors | world->getChunk(position.x, position.y - 1)->getBlockPrefab(x, y, CHUNK_SIZE_Z - 1)->hasAlpha;
+						}
+					}
+
+					if (z != CHUNK_SIZE_Z - 1) {
+						if (isBlockPrefabHasAlpha(x, y, z + 1)) {
+							neighbors = neighbors | 0b00000010;
+						}
+					}
+					else {
+						if (position.y == world->getRenderDistance()) {
+							neighbors = (RENDER_BLOCKS_ON_WORLD_EDGE ? neighbors | 0b00000010 : neighbors | 0b00000000);
+						}
+						else {
+							neighbors = neighbors | (world->getChunk(position.x, position.y + 1)->getBlockPrefab(x, y, 0)->hasAlpha) << 1;
+						}
+					}
+					if (x != 0) {
+						if (isBlockPrefabHasAlpha(x - 1, y, z)) {
+							neighbors = neighbors | 0b00000100;
+						}
+					}
+					else {
+						if (position.x == -world->getRenderDistance()) {
+							neighbors = (RENDER_BLOCKS_ON_WORLD_EDGE ? neighbors | 0b00000100 : neighbors | 0b00000000);
+						}
+						else {
+							neighbors = neighbors | (world->getChunk(position.x - 1, position.y)->getBlockPrefab(CHUNK_SIZE_X - 1, y, z)->hasAlpha) << 2;
+						}
+					}
+					if (x != CHUNK_SIZE_X - 1) {
+						if (isBlockPrefabHasAlpha(x + 1, y, z)) {
+							neighbors = neighbors | 0b00001000;
+						}
+					}
+					else {
+						if (position.x == world->getRenderDistance()) {
+							neighbors = (RENDER_BLOCKS_ON_WORLD_EDGE ? neighbors | 0b00001000 : neighbors | 0b00000000);
+						}
+						else {
+							neighbors = neighbors | (world->getChunk(position.x + 1, position.y)->getBlockPrefab(0, y, z)->hasAlpha) << 3;
+						}
+					}
+
+
+					if (y != 0) {
+						if (isBlockPrefabHasAlpha(x, y - 1, z)) {
+							neighbors = neighbors | 0b00010000;
+						}
+					}
+					else {
+						neighbors = (RENDER_BLOCKS_ON_WORLD_EDGE ? neighbors | 0b00010000 : neighbors | 0b00000000);
+					}
+					if (y != CHUNK_SIZE_Y - 1) {
+						if (isBlockPrefabHasAlpha(x, y + 1, z)) {
+							neighbors = neighbors | 0b00100000;
+						}
+					}
+					else {
+						neighbors = (RENDER_BLOCKS_ON_WORLD_EDGE ? neighbors | 0b00100000 : neighbors | 0b00000000);
+					}
+
+					if (neighbors & 0b00000001) {
+						Block::Face& back = prefab->back;
+						for (unsigned int i = 0; i < back.vertices_length / 5; i++)
+						{
+							vertices.push_back(back.vertices[i * 5 + 0] + x);
+							vertices.push_back(back.vertices[i * 5 + 1] + y);
+							vertices.push_back(back.vertices[i * 5 + 2] + z);
+							vertices.push_back(back.vertices[i * 5 + 3]);
+							vertices.push_back(back.vertices[i * 5 + 4]);
+						}
+						for (unsigned int i = 0; i < back.indices_length; i++)
+						{
+							indices.push_back(back.indices[i] + index);
+						}
+						index += back.vertices_length / 5;
+					}
+					if (neighbors & 0b00000010) {
+						Block::Face& front = prefab->front;
+						for (unsigned int i = 0; i < front.vertices_length / 5; i++)
+						{
+							vertices.push_back(front.vertices[i * 5 + 0] + x);
+							vertices.push_back(front.vertices[i * 5 + 1] + y);
+							vertices.push_back(front.vertices[i * 5 + 2] + z);
+							vertices.push_back(front.vertices[i * 5 + 3]);
+							vertices.push_back(front.vertices[i * 5 + 4]);
+						}
+						for (unsigned int i = 0; i < front.indices_length; i++)
+						{
+							indices.push_back(front.indices[i] + index);
+						}
+						index += front.vertices_length / 5;
+					}
+					if (neighbors & 0b00000100) {
+						Block::Face& left = prefab->left;
+						for (unsigned int i = 0; i < left.vertices_length / 5; i++)
+						{
+							vertices.push_back(left.vertices[i * 5 + 0] + x);
+							vertices.push_back(left.vertices[i * 5 + 1] + y);
+							vertices.push_back(left.vertices[i * 5 + 2] + z);
+							vertices.push_back(left.vertices[i * 5 + 3]);
+							vertices.push_back(left.vertices[i * 5 + 4]);
+						}
+						for (unsigned int i = 0; i < left.indices_length; i++)
+						{
+							indices.push_back(left.indices[i] + index);
+						}
+						index += left.vertices_length / 5;
+					}
+					if (neighbors & 0b00001000) {
+						Block::Face& right = prefab->right;
+						for (unsigned int i = 0; i < right.vertices_length / 5; i++)
+						{
+							vertices.push_back(right.vertices[i * 5 + 0] + x);
+							vertices.push_back(right.vertices[i * 5 + 1] + y);
+							vertices.push_back(right.vertices[i * 5 + 2] + z);
+							vertices.push_back(right.vertices[i * 5 + 3]);
+							vertices.push_back(right.vertices[i * 5 + 4]);
+						}
+						for (unsigned int i = 0; i < right.indices_length; i++)
+						{
+							indices.push_back(right.indices[i] + index);
+						}
+						index += right.vertices_length / 5;
+					}
+					if (neighbors & 0b00010000) {
+						Block::Face& bottom = prefab->bottom;
+						for (unsigned int i = 0; i < bottom.vertices_length / 5; i++)
+						{
+							vertices.push_back(bottom.vertices[i * 5 + 0] + x);
+							vertices.push_back(bottom.vertices[i * 5 + 1] + y);
+							vertices.push_back(bottom.vertices[i * 5 + 2] + z);
+							vertices.push_back(bottom.vertices[i * 5 + 3]);
+							vertices.push_back(bottom.vertices[i * 5 + 4]);
+						}
+						for (unsigned int i = 0; i < bottom.indices_length; i++)
+						{
+							indices.push_back(bottom.indices[i] + index);
+						}
+						index += bottom.vertices_length / 5;
+					}
+					if (neighbors & 0b00100000) {
+						Block::Face& top = prefab->top;
+						for (unsigned int i = 0; i < top.vertices_length / 5; i++)
+						{
+							vertices.push_back(top.vertices[i * 5 + 0] + x);
+							vertices.push_back(top.vertices[i * 5 + 1] + y);
+							vertices.push_back(top.vertices[i * 5 + 2] + z);
+							vertices.push_back(top.vertices[i * 5 + 3]);
+							vertices.push_back(top.vertices[i * 5 + 4]);
+						}
+						for (unsigned int i = 0; i < top.indices_length; i++)
+						{
+							indices.push_back(top.indices[i] + index);
+						}
+						index += top.vertices_length / 5;
+					}
+				}
+			}
+		}
+
+		if (vertices.size() == 0 || indices.size() == 0) {
+			subChunk.VAO = 0;
+			subChunk.IBO = 0;
+			subChunk.VBO = 0;
+			subChunk.vertices_length = 0;
+			subChunk.indices_length = 0;
+			return;
+		}
+		unsigned int VAO = 0;
+		unsigned int VBO = 0;
+		unsigned int IBO = 0;
+		glGenVertexArrays(1, &VAO);
+		glBindVertexArray(VAO);
+		glGenBuffers(1, &VBO);
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (GLvoid*)(0 * sizeof(float)));
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (GLvoid*)(3 * sizeof(float)));
+		glEnableVertexAttribArray(1);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glGenBuffers(1, &IBO);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+
+		subChunk.VAO = VAO;
+		subChunk.IBO = IBO;
+		subChunk.VBO = VBO;
+		subChunk.vertices_length = vertices.size();
+		subChunk.indices_length = indices.size();
 	}
 	void Chunk::createMeshes() {
 		if (!Engine::isRunning()) {
 			return;
 		}
-		if (!needUpdate) {
+		if (updateMeshes == 0) {
 			return;
 		}
-		needUpdate = false;
 		*logger << bcppul::TRACE << "Updating chunk mesh X:" << position.x << "; z:" << position.y;
-		for (unsigned int sub_chunk_i = 0; sub_chunk_i < SUB_CHUNKS_IN_CHUNK; sub_chunk_i++)
+		for (unsigned int sub_chunk_i = 0; sub_chunk_i < SUB_CHUNKS_IN_CHUNK; ++sub_chunk_i)
 		{
-			SubChunk& subChunk = sub_chunks[sub_chunk_i];
-			std::vector<float> vertices;
-			std::vector<unsigned int> indices;
-
-			unsigned int index = 0;
-
-			for (unsigned int y = sub_chunk_i * SUB_CHUNK_SIZE_Y; y < SUB_CHUNK_SIZE_Y * (sub_chunk_i + 1); ++y)
-			{
-				for (unsigned int x = 0; x < CHUNK_SIZE_X; ++x)
-				{
-					for (unsigned int z = 0; z < CHUNK_SIZE_Z; ++z)
-					{
-						unsigned int bpos = ((y * CHUNK_SIZE_X * CHUNK_SIZE_Z) + x * CHUNK_SIZE_Z) + z;
-						unsigned short blockID = blocks[bpos] & 0x0FFF;
-						unsigned short blockState = blocks[bpos] & 0xF000;
-						if (blockID == 0) {
-							continue;
-						}
-						Block* prefab = BlocksManager::getBlock(blockID);
-						char neighbors = 0;
-						if (z != 0) {
-							if (isBlockPrefabHasAlpha(x, y, z - 1)) {
-								neighbors = neighbors | 0b00000001;
-							}
-						}
-						else {
-							if (position.y == -world->getRenderDistance()) {
-								neighbors = (RENDER_BLOCKS_ON_WORLD_EDGE ? neighbors | 0b00000001 : neighbors | 0b00000000);
-							}
-							else {
-								neighbors = neighbors | world->getChunk(position.x, position.y - 1)->getBlockPrefab(x, y, CHUNK_SIZE_Z - 1)->hasAlpha;
-							}
-						}
-
-						if (z != CHUNK_SIZE_Z - 1) {
-							if (isBlockPrefabHasAlpha(x, y, z + 1)) {
-								neighbors = neighbors | 0b00000010;
-							}
-						}
-						else {
-							if (position.y == world->getRenderDistance()) {
-								neighbors = (RENDER_BLOCKS_ON_WORLD_EDGE ? neighbors | 0b00000010 : neighbors | 0b00000000);
-							}
-							else {
-								neighbors = neighbors | (world->getChunk(position.x, position.y + 1)->getBlockPrefab(x, y, 0)->hasAlpha) << 1;
-							}
-						}
-						if (x != 0) {
-							if (isBlockPrefabHasAlpha(x - 1, y, z)) {
-								neighbors = neighbors | 0b00000100;
-							}
-						}
-						else {
-							if (position.x == -world->getRenderDistance()) {
-								neighbors = (RENDER_BLOCKS_ON_WORLD_EDGE ? neighbors | 0b00000100 : neighbors | 0b00000000);
-							}
-							else {
-								neighbors = neighbors | (world->getChunk(position.x - 1, position.y)->getBlockPrefab(CHUNK_SIZE_X - 1, y, z)->hasAlpha) << 2;
-							}
-						}
-						if (x != CHUNK_SIZE_X - 1) {
-							if (isBlockPrefabHasAlpha(x + 1, y, z)) {
-								neighbors = neighbors | 0b00001000;
-							}
-						}
-						else {
-							if (position.x == world->getRenderDistance()) {
-								neighbors = (RENDER_BLOCKS_ON_WORLD_EDGE ? neighbors | 0b00001000 : neighbors | 0b00000000);
-							}
-							else {
-								neighbors = neighbors | (world->getChunk(position.x + 1, position.y)->getBlockPrefab(0, y, z)->hasAlpha) << 3;
-							}
-						}
-
-						if (y != 0) {
-							if (isBlockPrefabHasAlpha(x, y - 1, z)) {
-								neighbors = neighbors | 0b00010000;
-							}
-						}
-						else {
-							neighbors = (RENDER_BLOCKS_ON_WORLD_EDGE ? neighbors | 0b00010000 : neighbors | 0b00000000);
-						}
-						if (y != CHUNK_SIZE_Y - 1) {
-							if (isBlockPrefabHasAlpha(x, y + 1, z)) {
-								neighbors = neighbors | 0b00100000;
-							}
-						}
-						else {
-							neighbors = (RENDER_BLOCKS_ON_WORLD_EDGE ? neighbors | 0b00100000 : neighbors | 0b00000000);
-						}
-
-						if (neighbors & 0b00000001) {
-							Block::Face& back = prefab->back;
-							for (unsigned int i = 0; i < back.vertices_length / 5; i++)
-							{
-								vertices.push_back(back.vertices[i * 5 + 0] + x);
-								vertices.push_back(back.vertices[i * 5 + 1] + y);
-								vertices.push_back(back.vertices[i * 5 + 2] + z);
-								vertices.push_back(back.vertices[i * 5 + 3]);
-								vertices.push_back(back.vertices[i * 5 + 4]);
-							}
-							for (unsigned int i = 0; i < back.indices_length; i++)
-							{
-								indices.push_back(back.indices[i] + index);
-							}
-							index += back.vertices_length / 5;
-						}
-						if (neighbors & 0b00000010) {
-							Block::Face& front = prefab->front;
-							for (unsigned int i = 0; i < front.vertices_length / 5; i++)
-							{
-								vertices.push_back(front.vertices[i * 5 + 0] + x);
-								vertices.push_back(front.vertices[i * 5 + 1] + y);
-								vertices.push_back(front.vertices[i * 5 + 2] + z);
-								vertices.push_back(front.vertices[i * 5 + 3]);
-								vertices.push_back(front.vertices[i * 5 + 4]);
-							}
-							for (unsigned int i = 0; i < front.indices_length; i++)
-							{
-								indices.push_back(front.indices[i] + index);
-							}
-							index += front.vertices_length / 5;
-						}
-						if (neighbors & 0b00000100) {
-							Block::Face& left = prefab->left;
-							for (unsigned int i = 0; i < left.vertices_length / 5; i++)
-							{
-								vertices.push_back(left.vertices[i * 5 + 0] + x);
-								vertices.push_back(left.vertices[i * 5 + 1] + y);
-								vertices.push_back(left.vertices[i * 5 + 2] + z);
-								vertices.push_back(left.vertices[i * 5 + 3]);
-								vertices.push_back(left.vertices[i * 5 + 4]);
-							}
-							for (unsigned int i = 0; i < left.indices_length; i++)
-							{
-								indices.push_back(left.indices[i] + index);
-							}
-							index += left.vertices_length / 5;
-						}
-						if (neighbors & 0b00001000) {
-							Block::Face& right = prefab->right;
-							for (unsigned int i = 0; i < right.vertices_length / 5; i++)
-							{
-								vertices.push_back(right.vertices[i * 5 + 0] + x);
-								vertices.push_back(right.vertices[i * 5 + 1] + y);
-								vertices.push_back(right.vertices[i * 5 + 2] + z);
-								vertices.push_back(right.vertices[i * 5 + 3]);
-								vertices.push_back(right.vertices[i * 5 + 4]);
-							}
-							for (unsigned int i = 0; i < right.indices_length; i++)
-							{
-								indices.push_back(right.indices[i] + index);
-							}
-							index += right.vertices_length / 5;
-						}
-						if (neighbors & 0b00010000) {
-							Block::Face& bottom = prefab->bottom;
-							for (unsigned int i = 0; i < bottom.vertices_length / 5; i++)
-							{
-								vertices.push_back(bottom.vertices[i * 5 + 0] + x);
-								vertices.push_back(bottom.vertices[i * 5 + 1] + y);
-								vertices.push_back(bottom.vertices[i * 5 + 2] + z);
-								vertices.push_back(bottom.vertices[i * 5 + 3]);
-								vertices.push_back(bottom.vertices[i * 5 + 4]);
-							}
-							for (unsigned int i = 0; i < bottom.indices_length; i++)
-							{
-								indices.push_back(bottom.indices[i] + index);
-							}
-							index += bottom.vertices_length / 5;
-						}
-						if (neighbors & 0b00100000) {
-							Block::Face& top = prefab->top;
-							for (unsigned int i = 0; i < top.vertices_length / 5; i++)
-							{
-								vertices.push_back(top.vertices[i * 5 + 0] + x);
-								vertices.push_back(top.vertices[i * 5 + 1] + y);
-								vertices.push_back(top.vertices[i * 5 + 2] + z);
-								vertices.push_back(top.vertices[i * 5 + 3]);
-								vertices.push_back(top.vertices[i * 5 + 4]);
-							}
-							for (unsigned int i = 0; i < top.indices_length; i++)
-							{
-								indices.push_back(top.indices[i] + index);
-							}
-							index += top.vertices_length / 5;
-						}
-					}
-				}
+			if (updateMeshes & 1 << sub_chunk_i) {
+				createMesh(sub_chunk_i);
 			}
-			//for (unsigned int i = 0; i < vertices.size() / 5; i++)
-			//{
-			//	std::cout << "XYZ: " << vertices[i * 5] << "; " << vertices[i * 5 + 1] << "; " << vertices[i * 5 + 2] << "; UV: " << vertices[i * 5 + 3] << "; " << vertices[i * 5 + 4] << std::endl;
-			//}
-			//for (unsigned int i = 0; i < indices.size() / 6; i++)
-			//{
-			//	std::cout << indices[i * 6 + 0] << ", " << indices[i * 6 + 1] << ", " << indices[i * 6 + 2] << "\t" 
-			//		<< indices[i * 6 + 3] << ", " << indices[i * 6 + 4] << ", " << indices[i * 6 + 5] << std::endl;
-			//}
-
-			if (vertices.size() == 0 || indices.size() == 0) {
-				subChunk.VAO = 0;
-				subChunk.IBO = 0;
-				subChunk.VBO = 0;
-				subChunk.vertices_length = 0;
-				subChunk.indices_length = 0;
-				continue;
-			}
-			unsigned int VAO = 0;
-			unsigned int VBO = 0;
-			unsigned int IBO = 0;
-			glGenVertexArrays(1, &VAO);
-			glBindVertexArray(VAO);
-			glGenBuffers(1, &VBO);
-			glBindBuffer(GL_ARRAY_BUFFER, VBO);
-			glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (GLvoid*)(0 * sizeof(float)));
-			glEnableVertexAttribArray(0);
-			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (GLvoid*)(3 * sizeof(float)));
-			glEnableVertexAttribArray(1);
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
-			glGenBuffers(1, &IBO);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO);
-			glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-			glBindVertexArray(0);
-
-			subChunk.VAO = VAO;
-			subChunk.IBO = IBO;
-			subChunk.VBO = VBO;
-			subChunk.vertices_length = vertices.size();
-			subChunk.indices_length = indices.size();
 		}
+		updateMeshes = 0;
 	}
 	void Chunk::deleteMeshes()
 	{
-		for (unsigned int i = 0; i < SUB_CHUNKS_IN_CHUNK; i++)
+		for (unsigned int i = 0; i < SUB_CHUNKS_IN_CHUNK; ++i)
 		{
 			glDeleteBuffers(1, &sub_chunks[i].VBO);
 			glDeleteBuffers(1, &sub_chunks[i].IBO);
@@ -455,65 +454,153 @@ namespace bulka {
 		blockID = block & 0x0FFF;
 		blockState = block & 0xF000;
 	}
-	void Chunk::setBlock(int x, int y, int z, unsigned short block, bool needUpdateMesh)
+	void Chunk::updateNeighbor(int x, int y, int z)
+	{
+		if (z == 0) {
+			if (position.y != -world->getRenderDistance()) {
+				world->getChunk(position.x, position.y - 1)->createMesh(y / 16);
+			}
+		} else if (z == CHUNK_SIZE_Z - 1) {
+			if (position.y != -world->getRenderDistance()) {
+				world->getChunk(position.x, position.y + 1)->createMesh(y / 16);
+			}
+		}
+		if (x == 0) {
+			if (position.x != -world->getRenderDistance()) {
+				world->getChunk(position.x - 1, position.y)->createMesh(y / 16);
+			}
+		} else if (x == CHUNK_SIZE_X - 1) {
+			if (position.x != -world->getRenderDistance()) {
+				world->getChunk(position.x + 1, position.y)->createMesh(y / 16);
+			}
+		}
+		int suby = y % SUB_CHUNK_SIZE_Y;
+		if (suby == 0) {
+			if (y != 0) {
+				updateMeshes = updateMeshes | 1 << ((y / SUB_CHUNK_SIZE_Y) - 1);
+			}
+			if (y != CHUNK_SIZE_Y - 1) {
+				updateMeshes = updateMeshes | 1 << ((y / SUB_CHUNK_SIZE_Y) + 1);
+			}
+		}
+	}
+	void Chunk::updateNeighbor(glm::ivec3 position)
+	{
+		updateNeighbor(position.x, position.y, position.z);
+	}
+
+	void Chunk::setBlock(int x, int y, int z, unsigned short block, unsigned short needUpdateMesh)
 	{
 		if (y >= CHUNK_SIZE_Y || y < 0) {
 			return;
 		}
+		if (needUpdateMesh) {
+			updateNeighbor(x, y, z);
+		}
 		blocks[((y * CHUNK_SIZE_X * CHUNK_SIZE_Z) + x * CHUNK_SIZE_Z) + z] = block;
-		needUpdate = needUpdateMesh;
+		if (needUpdateMesh != 0) {
+			if (needUpdateMesh == 1) {
+				updateMeshes = updateMeshes | (1 << (y / SUB_CHUNK_SIZE_Y));
+			}
+			else if (needUpdateMesh == 0b1111111111111111) {
+				updateMeshes = 0b1111111111111111;
+			}
+		}
 	}
-	void Chunk::setBlock(glm::ivec3 position, unsigned short block, bool needUpdateMesh)
+	void Chunk::setBlock(glm::ivec3 position, unsigned short block, unsigned short needUpdateMesh)
 	{
 		if (position.y >= CHUNK_SIZE_Y || position.y < 0) {
 			return;
 		}
 		blocks[((position.y * CHUNK_SIZE_X * CHUNK_SIZE_Z) + position.x * CHUNK_SIZE_Z) + position.z] = block;
-		needUpdate = needUpdateMesh;
+		if (needUpdateMesh != 0) {
+			if (needUpdateMesh == 1) {
+				updateMeshes = updateMeshes | (1 << position.y / SUB_CHUNK_SIZE_Y);
+			}
+			else if (needUpdateMesh == 0b1111111111111111) {
+				updateMeshes = 0b1111111111111111;
+			}
+		}
 	}
-	void Chunk::setBlock(unsigned int i, unsigned short block, bool needUpdateMesh)
+	void Chunk::setBlock(unsigned int i, unsigned short block, unsigned short needUpdateMesh)
 	{
 		if (i >= CHUNK_VOLUME || i < 0) {
 			return;
 		}
 		blocks[i] = block;
-		needUpdate = needUpdateMesh;
+		if (needUpdateMesh != 0) {
+			if (needUpdateMesh == 1) {
+				updateMeshes = updateMeshes | (1 << (i / (CHUNK_SIZE_X * CHUNK_SIZE_Z * SUB_CHUNK_SIZE_Y)));
+			}
+			else if (needUpdateMesh == 0b1111111111111111) {
+				updateMeshes = 0b1111111111111111;
+			}
+		}
 	}
-	void Chunk::setBlock(int x, int y, int z, unsigned short blockID, unsigned short state, bool needUpdateMesh)
+	void Chunk::setBlockAndState(int x, int y, int z, unsigned short blockID, unsigned short state, unsigned short needUpdateMesh)
 	{
 		if (y >= CHUNK_SIZE_Y || y < 0) {
 			return;
 		}
 		blocks[((y * CHUNK_SIZE_X * CHUNK_SIZE_Z) + x * CHUNK_SIZE_Z) + z] = blockID | (state << 12);
-		needUpdate = needUpdateMesh;
+		if (needUpdateMesh != 0) {
+			if (needUpdateMesh == 1) {
+				updateMeshes = updateMeshes | (1 << y / SUB_CHUNK_SIZE_Y);
+			}
+			else if (needUpdateMesh == 0b1111111111111111) {
+				updateMeshes = 0b1111111111111111;
+			}
+		}
 	}
-	void Chunk::setBlock(glm::ivec3 position, unsigned short blockID, unsigned short state, bool needUpdateMesh)
+	void Chunk::setBlockAndState(glm::ivec3 position, unsigned short blockID, unsigned short state, unsigned short needUpdateMesh)
 	{
 		if (position.y >= CHUNK_SIZE_Y || position.y < 0) {
 			return;
 		}
 		blocks[((position.y * CHUNK_SIZE_X * CHUNK_SIZE_Z) + position.x * CHUNK_SIZE_Z) + position.z] = blockID | (state << 12);
-		needUpdate = needUpdateMesh;
+		if (needUpdateMesh != 0) {
+			if (needUpdateMesh == 1) {
+				updateMeshes = updateMeshes | (1 << (position.y / SUB_CHUNK_SIZE_Y));
+			}
+			else if (needUpdateMesh == 0b1111111111111111) {
+				updateMeshes = 0b1111111111111111;
+			}
+		}
 	}
-	void Chunk::setBlock(unsigned int i, unsigned short blockID, unsigned short state, bool needUpdateMesh)
+	void Chunk::setBlockAndState(unsigned int i, unsigned short blockID, unsigned short state, unsigned short needUpdateMesh)
 	{
 		if (i >= CHUNK_VOLUME || i < 0) {
 			return;
 		}
 		blocks[i] = blockID | (state << 12);
-		needUpdate = needUpdateMesh;
+		if (needUpdateMesh != 0) {
+			if (needUpdateMesh == 1) {
+				updateMeshes = updateMeshes | (1 << (i / (CHUNK_SIZE_X * CHUNK_SIZE_Z * SUB_CHUNK_SIZE_Y)));
+			}
+			else if (needUpdateMesh == 0b1111111111111111){
+				updateMeshes = 0b1111111111111111;
+			}
+		}
+		
+	}
+
+	unsigned short Chunk::getUpdatableMeshes()
+	{
+		return updateMeshes;
+	}
+
+	void Chunk::setNeedUpdateFullChunk()
+	{
+		updateMeshes = 0b1111111111111111;
+	}
+
+	void Chunk::setNeedUpdate(unsigned short meshes)
+	{
+		updateMeshes = meshes;
 	}
 
 	void Chunk::finalization() {
 		delete[] blocks;
 		deleteMeshes();
-	}
-	bool Chunk::isNeedUpdate()
-	{
-		return needUpdate;
-	}
-	void Chunk::setNeedUpdate(bool val)
-	{
-		needUpdate = val;
 	}
 }

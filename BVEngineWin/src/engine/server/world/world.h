@@ -188,7 +188,7 @@ namespace bulka {
 			return getChunkInBlockCoords(position)->getBlock(bx, position.y, bz, blockID, blockState);
 		}
 
-		inline void setBlock(unsigned int x, unsigned int y, unsigned int z, unsigned short block, bool needUpdateMesh = true)
+		inline void setBlock(unsigned int x, unsigned int y, unsigned int z, unsigned short block, unsigned short needUpdateMesh = 1)
 		{
 			unsigned int bx = x % 16;
 			unsigned int bz = z % 16;
@@ -200,7 +200,7 @@ namespace bulka {
 			}
 			getChunkInBlockCoords(x, z)->setBlock(bx, y, bz, block, needUpdateMesh);
 		}
-		inline void setBlock(glm::ivec3 position, unsigned short block, bool needUpdateMesh = true)
+		inline void setBlock(glm::ivec3 position, unsigned short block, unsigned short needUpdateMesh = 1)
 		{
 			unsigned int bx = position.x % 16;
 			unsigned int bz = position.z % 16;
@@ -212,7 +212,7 @@ namespace bulka {
 			}
 			getChunkInBlockCoords(position.x, position.z)->setBlock(bx, position.y, bz, block, needUpdateMesh);
 		}
-		inline void setBlock(unsigned int x, unsigned int y, unsigned int z, unsigned short blockID, unsigned short state, bool needUpdateMesh = true)
+		inline void setBlock(unsigned int x, unsigned int y, unsigned int z, unsigned short blockID, unsigned short state, unsigned short needUpdateMesh = 1)
 		{
 			unsigned int bx = x % 16;
 			unsigned int bz = z % 16;
@@ -222,9 +222,9 @@ namespace bulka {
 			if (bz < 0) {
 				bz += CHUNK_SIZE_Z - 1;
 			}
-			getChunkInBlockCoords(x, z)->setBlock(bx, y, bz, blockID, state, needUpdateMesh);
+			getChunkInBlockCoords(x, z)->setBlockAndState(bx, y, bz, blockID, state, needUpdateMesh);
 		}
-		inline void setBlock(glm::ivec3 position, unsigned short blockID, unsigned short state, bool needUpdateMesh = true)
+		inline void setBlock(glm::ivec3 position, unsigned short blockID, unsigned short state, unsigned char needUpdateMesh = 1)
 		{
 			unsigned int bx = position.x % 16;
 			unsigned int bz = position.z % 16;
@@ -234,7 +234,7 @@ namespace bulka {
 			if (bz < 0) {
 				bz += CHUNK_SIZE_Z - 1;
 			}
-			getChunkInBlockCoords(position.x, position.z)->setBlock(bx, position.y, bz, blockID, state, needUpdateMesh);
+			getChunkInBlockCoords(position.x, position.z)->setBlockAndState(bx, position.y, bz, blockID, state, needUpdateMesh);
 		}
 	};
 

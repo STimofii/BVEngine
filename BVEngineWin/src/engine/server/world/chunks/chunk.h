@@ -28,7 +28,7 @@ namespace bulka {
 		World* world;
 		glm::ivec2 position;
 		glm::ivec2 blockStartPosition;
-		bool needUpdate = true;
+		unsigned short updateMeshes = 0b1111111111111111;
 		unsigned short* blocks = nullptr;
 		SubChunk sub_chunks[SUB_CHUNKS_IN_CHUNK]{};
 	protected:
@@ -38,6 +38,7 @@ namespace bulka {
 		Chunk& operator=(const Chunk& other) = delete;
 		~Chunk();
 		void generate();
+		void createMesh(unsigned int sub_chunk_i);
 		void createMeshes();
 		void deleteMeshes();
 		void update();
@@ -63,15 +64,18 @@ namespace bulka {
 		unsigned short getBlockState(unsigned int i);
 		void getBlock(unsigned int i, unsigned short& blockID, unsigned short& blockState);
 
-		void setBlock(int x, int y, int z, unsigned short block, bool needUpdateMesh = false);
-		void setBlock(glm::ivec3 position, unsigned short block, bool needUpdateMesh = false);
-		void setBlock(unsigned int i, unsigned short block, bool needUpdateMesh = false);
-		void setBlock(int x, int y, int z, unsigned short blockID, unsigned short state, bool needUpdateMesh = false);
-		void setBlock(glm::ivec3 position, unsigned short blockID, unsigned short state, bool needUpdateMesh = false);
-		void setBlock(unsigned int i, unsigned short blockID, unsigned short state, bool needUpdateMesh = false);
+		void updateNeighbor(int x, int y, int z);
+		void updateNeighbor(glm::ivec3 position);
+		void setBlock(int x, int y, int z, unsigned short block, unsigned short needUpdateMesh = 0);
+		void setBlock(glm::ivec3 position, unsigned short block, unsigned short needUpdateMesh = 0);
+		void setBlock(unsigned int i, unsigned short block, unsigned short needUpdateMesh = 0);
+		void setBlockAndState(int x, int y, int z, unsigned short blockID, unsigned short state, unsigned short needUpdateMesh = 0);
+		void setBlockAndState(glm::ivec3 position, unsigned short blockID, unsigned short state, unsigned short needUpdateMesh = 0);
+		void setBlockAndState(unsigned int i, unsigned short blockID, unsigned short state, unsigned short needUpdateMesh = 0);
 
-		bool isNeedUpdate();
-		void setNeedUpdate(bool val);
+		unsigned short getUpdatableMeshes();
+		void setNeedUpdateFullChunk();
+		void setNeedUpdate(unsigned short meshes);
 	};
 
 }
