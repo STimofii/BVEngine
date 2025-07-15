@@ -34,7 +34,7 @@ namespace bulka {
 	}
 	void TextureManager::bindTexture(const char* path)
 	{
-		glBindTexture(GL_TEXTURE_2D, textures[path]);
+		glBindTexture(GL_TEXTURE_2D, getTexture(path));
 	}
 	void TextureManager::unbindTexture()
 	{

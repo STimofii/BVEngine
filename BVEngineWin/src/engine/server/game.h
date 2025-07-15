@@ -3,6 +3,7 @@
 #include <bcppul/logging.h>
 
 namespace bulka {
+	class World;
 	class Game {
 	private:
 		static long long tps;
@@ -11,6 +12,8 @@ namespace bulka {
 		static const double tpsLimitDelta;
 
 		static bool started;
+
+		static World* world;
 	protected:
 	public:
 		static bcppul::Logger* logger;
@@ -24,5 +27,6 @@ namespace bulka {
 		static long long getTPSLimit();
 		static double getLimitDelta();
 		static bool isStarted();
+		static World* getWorld();
 	};
 }

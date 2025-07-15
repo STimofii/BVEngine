@@ -26,7 +26,7 @@ void main()
         }
     }
     if (isCrosshairPixel) {
-        FragColor = vec4(vec3(1.3) - color.rgb, color.a);
+        FragColor = vec4(vec3(1.4) - color.rgb, color.a);
     } else {
         FragColor = color;
     }

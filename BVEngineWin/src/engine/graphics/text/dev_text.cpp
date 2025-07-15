@@ -10,7 +10,7 @@
 #include <GLFW/glfw3.h>
 
 #include "../../engine.h"
-#include "../../../server/game.h"
+#include "../../server/game.h"
 #include "../../window.h"
 #include "../../hero.h"
 

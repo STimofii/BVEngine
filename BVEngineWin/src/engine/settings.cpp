@@ -1,6 +1,8 @@
 #include "settings.h"
 
 #include "engine.h"
+#include "server/game.h"
+#include "server/world/world.h"
 #include "hero.h"
 #include <bcppul/logging.h>
 #include <bcppul/bcppul_math.h>
@@ -16,6 +18,7 @@ namespace bulka {
 	float Settings::FPS_LIMIT = 0;
 	bool Settings::V_SYNC = false;
 	bool Settings::USE_POSTPROCESSING = true;
+	long long Settings::RENDER_DISTANCE = 2;
 
 	void Settings::load()
 	{
@@ -23,7 +26,8 @@ namespace bulka {
 	}
 	void Settings::reload()
 	{
-
+		RENDER_DISTANCE = getAndSetIfNotExists("game.graphics.render_distance", RENDER_DISTANCE);
+		Game::getWorld()->setRenderDistance(RENDER_DISTANCE);
 		FONT = getAndSetIfNotExists("game.graphics.font", FONT);
 		FPS_LIMIT = getAndSetIfNotExists("game.graphics.fps_limit", FPS_LIMIT);
 		Engine::setFPSLimit(FPS_LIMIT);
@@ -41,6 +45,7 @@ namespace bulka {
 		bcppul::file_log_level = bcppul::LogLevel(bcppul::clamp(
 			static_cast<long long>(bcppul::LogLevel(getAndSetIfNotExists("engine.log.file_level", static_cast<long long>(bcppul::file_log_level))))
 			, static_cast<long long>(bcppul::TRACE), static_cast<long long>(bcppul::NONE)));
+
 	}
 	void Settings::init()
 	{

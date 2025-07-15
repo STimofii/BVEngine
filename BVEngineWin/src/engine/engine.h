@@ -9,6 +9,7 @@
 #include FT_FREETYPE_H
 
 #include <bcppul/logging.h>
+#include <vector>
 
 
 namespace bulka {
@@ -22,6 +23,7 @@ namespace bulka {
 	class Postprocessing;
 	class Crosshair;
 	class Game;
+	class Block;
 	class Engine {
 	private:
 		static bcppul::Logger* logger;
@@ -46,8 +48,9 @@ namespace bulka {
 	protected:
 	public:
 		static int run();
-		static void init();
 		static void preInit();
+		static void createBlocks();
+		static void init();
 		static void postInit();
 		static void preUpdate();
 		static void inputUpdate();

@@ -20,6 +20,7 @@ namespace bulka{
 		static float FPS_LIMIT;
 		static bool V_SYNC;
 		static bool USE_POSTPROCESSING;
+		static long long RENDER_DISTANCE;
 
 		static void load();
 		static void reload();

@@ -1,5 +1,6 @@
 #include "game.h"
-#include "../engine/engine.h"
+#include "../engine.h"
+#include "world/world.h"
 
 namespace bulka {
 	bcppul::Logger* Game::logger = bcppul::getLogger("Game");
@@ -8,26 +9,31 @@ namespace bulka {
 	long long Game::tps = 0;
 	double Game::deltaTime = 0;
 	bool Game::started = false;
+	World* Game::world;
 	void Game::init() {
 		logger->info("Starting game");
 		logger->info("Started game");
 
 		logger->info("Starting game loop");
-		started = true;
 		loop();
 	}
 
 
 	void Game::finalization() {
 		logger->info("Finalization game");
+		delete world;
 	}
 	void Game::loop()
 	{
+		//for (unsigned int i = 0; i < 1000000000; ++i);
 		long long timeTickStart;
 		long long timeTickElapsed;
 		long long timeTPS = Engine::unixTime();
 		long long ticks = 0;
+		world = new World();
+		world->load();
 
+		started = true;
 		while (!Engine::isRunning()) {
 
 		}
@@ -62,5 +68,9 @@ namespace bulka {
 	}
 	bool Game::isStarted() {
 		return started;
+	}
+	World* Game::getWorld()
+	{
+		return world;
 	}
 }

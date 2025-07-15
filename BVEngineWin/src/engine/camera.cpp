@@ -116,7 +116,7 @@ namespace bulka {
 	{
 		float pitch = bcppul::degreesToRadians(rotation.x);
 		float yaw = bcppul::degreesToRadians(rotation.y);
-		float roll = bcppul::degreesToRadians(rotation.z);
+		//float roll = bcppul::degreesToRadians(rotation.z);
 		direction.x = std::cos(yaw);
 		direction.y = std::sin(pitch);
 		direction.z = std::sin(yaw);
@@ -142,6 +142,11 @@ namespace bulka {
 				ShaderManager::mainShader.bind();
 				ShaderManager::mainShader.uniformMat4f("projViewMat", projViewMatrix);
 				ShaderManager::mainShader.unbind();
+			}
+			if (ShaderManager::chunkShader.programID != 0) {
+				ShaderManager::chunkShader.bind();
+				ShaderManager::chunkShader.uniformMat4f("projViewMat", projViewMatrix);
+				ShaderManager::chunkShader.unbind();
 			}
 		}
 	}

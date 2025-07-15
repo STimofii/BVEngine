@@ -26,7 +26,10 @@
 #include "graphics/text/dev_text.h"
 #include "graphics/crosshair/crosshair.h"
 #include "graphics/postprocessing.h"
-#include "../server/game.h"
+#include "server/game.h"
+#include "server/blocks/block.h"
+#include "server/world/world.h"
+#include "server/blocks/blocks_manager.h"
 
 namespace bulka {
 	bcppul::Logger* Engine::logger = bcppul::getLogger("Engine");
@@ -91,13 +94,18 @@ namespace bulka {
 
 		dev_text.init();
 
-		logger->info("Starting game loop");
+
 		running = true;
+		while(!Game::isStarted()){
+
+		}
 		long long timeFrameStart;
 		long long timeFrameElapsed;
 		long long timeFPS = unixTime();
 		long long frames = 0;
 		
+		Game::getWorld()->reload();
+		logger->info("Starting game loop");
 		while (running) {
 			timeFrameStart = unixTime();
 			preUpdate();
@@ -154,7 +162,14 @@ namespace bulka {
 
 	void Engine::preInit()
 	{
-		logger->info("Pre init");
+		logger->info("Preinit");
+		logger->info("End preinit");
+	}
+	void Engine::createBlocks()
+	{
+		logger->debug("Creating blocks");
+		BlocksManager::init();
+		logger->debug("Created blocks");
 	}
 	void Engine::init()
 	{
@@ -186,6 +201,8 @@ namespace bulka {
 			*logger << bcppul::ERROR << "FreeType FT_Set_Pixel_Sizes error: " << error;
 		}
 		logger->debug("Initialized FreeType");
+
+		createBlocks();
 
 
 		logger->debug("Creating Window");
@@ -279,6 +296,7 @@ namespace bulka {
 		ShaderManager::mainShader.bind();
 		Renderer::render(simpleMesh);
 		ShaderManager::mainShader.unbind();
+		Game::getWorld()->render();
 		if (usePostprocessing){
 			postprocessing.unbindFBO();
 			postprocessing.render();
@@ -312,6 +330,7 @@ namespace bulka {
 		FT_Done_Face(main_font);
 		FT_Done_FreeType(ft_library);
 		Game::finalization();
+		BlocksManager::finalization();
 		Settings::finalization();
 	}
 	void Engine::checkGLErrors()

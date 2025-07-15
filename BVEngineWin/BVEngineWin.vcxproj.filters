@@ -72,7 +72,19 @@
     <ClCompile Include="src\engine\graphics\postprocessing.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="src\server\game.cpp">
+    <ClCompile Include="src\engine\server\blocks\block.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\server\world\world.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\server\world\chunks\chunk.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\server\blocks\blocks_manager.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\server\game.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
@@ -128,7 +140,19 @@
     <ClInclude Include="src\engine\graphics\postprocessing.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="src\server\game.h">
+    <ClInclude Include="src\engine\server\blocks\block.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\server\world\world.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\server\world\chunks\chunk.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\server\blocks\blocks_manager.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\server\game.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
@@ -141,5 +165,7 @@
     <None Include="res\shaders\2d\postprocessing.frag" />
     <None Include="res\shaders\2d\crosshair.frag" />
     <None Include="res\shaders\2d\crosshair.vert" />
+    <None Include="res\shaders\3d\chunk.vert" />
+    <None Include="res\shaders\3d\chunk.frag" />
   </ItemGroup>
 </Project>

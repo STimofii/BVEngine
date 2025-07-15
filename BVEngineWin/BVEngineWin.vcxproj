@@ -148,6 +148,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\engine\server\blocks\block.cpp" />
     <ClCompile Include="src\BWEngineWin.cpp" />
     <ClCompile Include="src\engine\camera.cpp" />
     <ClCompile Include="src\engine\engine.cpp" />
@@ -163,13 +164,17 @@
     <ClCompile Include="src\engine\graphics\text\text_manager.cpp" />
     <ClCompile Include="src\engine\hero.cpp" />
     <ClCompile Include="src\engine\input.cpp" />
+    <ClCompile Include="src\engine\server\blocks\blocks_manager.cpp" />
+    <ClCompile Include="src\engine\server\game.cpp" />
+    <ClCompile Include="src\engine\server\world\chunks\chunk.cpp" />
     <ClCompile Include="src\engine\settings.cpp" />
     <ClCompile Include="src\engine\window.cpp" />
     <ClCompile Include="src\engine\stb_image_impl.cpp" />
     <ClCompile Include="src\engine\graphics\text\dymamic_text.cpp" />
-    <ClCompile Include="src\server\game.cpp" />
+    <ClCompile Include="src\engine\server\world\world.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\engine\server\blocks\block.h" />
     <ClInclude Include="src\engine\camera.h" />
     <ClInclude Include="src\engine\engine.h" />
     <ClInclude Include="src\engine\graphics\crosshair\crosshair.h" />
@@ -184,16 +189,21 @@
     <ClInclude Include="src\engine\graphics\text\text_manager.h" />
     <ClInclude Include="src\engine\hero.h" />
     <ClInclude Include="src\engine\input.h" />
+    <ClInclude Include="src\engine\server\blocks\blocks_manager.h" />
+    <ClInclude Include="src\engine\server\game.h" />
+    <ClInclude Include="src\engine\server\world\chunks\chunk.h" />
     <ClInclude Include="src\engine\settings.h" />
     <ClInclude Include="src\engine\window.h" />
     <ClInclude Include="src\engine\graphics\text\dynamic_text.h" />
-    <ClInclude Include="src\server\game.h" />
+    <ClInclude Include="src\engine\server\world\world.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\2d\crosshair.frag" />
     <None Include="res\shaders\2d\crosshair.vert" />
     <None Include="res\shaders\2d\postprocessing.frag" />
     <None Include="res\shaders\2d\postprocessing.vert" />
+    <None Include="res\shaders\3d\chunk.frag" />
+    <None Include="res\shaders\3d\chunk.vert" />
     <None Include="res\shaders\3d\main.frag" />
     <None Include="res\shaders\3d\main.vert" />
     <None Include="res\shaders\text\text.frag" />
