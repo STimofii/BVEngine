@@ -16,10 +16,12 @@
 #include "../world.h"
 namespace bulka {
 	bcppul::Logger* Chunk::logger = bcppul::getLogger("Chunk");
-	Chunk::Chunk(World* world, glm::ivec2 position) : position(position), world(world)
+	Chunk::Chunk(World* world, glm::ivec2 position, glm::ivec2 globalPosition) : position(position), globalPosition(globalPosition), world(world)
 	{
 		blockStartPosition.x = position.x * CHUNK_SIZE_X;
 		blockStartPosition.y = position.y * CHUNK_SIZE_Z;
+		blockStartGlobalPosition.x = globalPosition.x * CHUNK_SIZE_X;
+		blockStartGlobalPosition.y = globalPosition.y * CHUNK_SIZE_Z;
 		blocks = new unsigned short[CHUNK_VOLUME] {};
 	}
 	Chunk::~Chunk()
@@ -34,7 +36,8 @@ namespace bulka {
 				for (unsigned int z = 0; z < CHUNK_SIZE_Z; z++)
 				{
 					unsigned int i = ((y * CHUNK_SIZE_X * CHUNK_SIZE_Z) + x * CHUNK_SIZE_Z) + z;
-					unsigned int fun = blockStartPosition.x + x;
+					unsigned int fun = std::abs(static_cast<int>(blockStartGlobalPosition.x + x));
+					//unsigned int fun = 10;
 					if (y < 5) {
 						blocks[i] = 1;
 					} else if (y >= 5 && y <= fun) {
@@ -45,10 +48,6 @@ namespace bulka {
 				}
 			}
 		}
-		//if (position.x == -1 && position.y == 3) {
-		//	std::cerr << position.x << ": " << position.y << std::endl;
-
-		//}
 		if (position.x != -world->getRenderDistance()) {
 			if (world->getChunk(position.x - 1, position.y) != nullptr) {
 				world->getChunk(position.x - 1, position.y)->setNeedUpdateFullChunk();
@@ -69,13 +68,14 @@ namespace bulka {
 				world->getChunk(position.x, position.y + 1)->setNeedUpdateFullChunk();
 			}
 		}
-		else {
-		}
 		updateMeshes = 0xFFFF;
 		generated = true;
 	}
 	void Chunk::createMesh(unsigned int sub_chunk_i)
 	{
+		if (!generated) {
+			return;
+		}
 		updateMeshes = updateMeshes & ~(1 << sub_chunk_i);
 		SubChunk& subChunk = sub_chunks[sub_chunk_i];
 		std::vector<float> vertices;
@@ -659,5 +659,81 @@ namespace bulka {
 	void Chunk::finalization() {
 		delete[] blocks;
 		deleteMeshes();
+	}
+
+	glm::ivec2 Chunk::getPosition() {
+		return position;
+	}
+	glm::ivec2 Chunk::getBlockStartPosition() {
+		return blockStartPosition;
+	}
+	glm::ivec2 Chunk::getGlobalPosition() {
+		return globalPosition;
+	}
+	glm::ivec2 Chunk::getBlockStartGlobalPosition() {
+		return blockStartGlobalPosition;
+	}
+	void Chunk::setPosition(int x, int z) {
+		position.x = x;
+		position.y = z;
+		blockStartPosition.x = position.x * CHUNK_SIZE_X;
+		blockStartPosition.y = position.y * CHUNK_SIZE_Z;
+	}
+	void Chunk::setGlobalPosition(int x, int z) {
+		globalPosition.x = x;
+		globalPosition.y = z;
+		blockStartGlobalPosition.x = globalPosition.x * CHUNK_SIZE_X;
+		blockStartGlobalPosition.y = globalPosition.y * CHUNK_SIZE_Z;
+	}
+	void Chunk::setPositionAndGlobalPosition(int x, int z)
+	{
+		position.x = x;
+		position.y = z;
+		blockStartPosition.x = position.x * CHUNK_SIZE_X;
+		blockStartPosition.y = position.y * CHUNK_SIZE_Z;
+		globalPosition.x = x;
+		globalPosition.y = z;
+		blockStartGlobalPosition.x = globalPosition.x * CHUNK_SIZE_X;
+		blockStartGlobalPosition.y = globalPosition.y * CHUNK_SIZE_Z;
+	}
+	void Chunk::addPosition(int x, int z) {
+		position.x += x;
+		position.y += z;
+		blockStartPosition.x = position.x * CHUNK_SIZE_X;
+		blockStartPosition.y = position.y * CHUNK_SIZE_Z;
+	}
+	void Chunk::addGlobalPosition(int x, int z) {
+		globalPosition.x += x;
+		globalPosition.y += z;
+		blockStartGlobalPosition.x = globalPosition.x * CHUNK_SIZE_X;
+		blockStartGlobalPosition.y = globalPosition.y * CHUNK_SIZE_Z;
+	}
+	void Chunk::addPositionAndGlobalPosition(int x, int z) {
+		position.x += x;
+		position.y += z;
+		blockStartPosition.x = position.x * CHUNK_SIZE_X;
+		blockStartPosition.y = position.y * CHUNK_SIZE_Z;
+		globalPosition.x += x;
+		globalPosition.y += z;
+		blockStartGlobalPosition.x = globalPosition.x * CHUNK_SIZE_X;
+		blockStartGlobalPosition.y = globalPosition.y * CHUNK_SIZE_Z;
+	}
+	void Chunk::setPosition(glm::ivec2 pos) {
+		setPosition(pos.x, pos.y);
+	}
+	void Chunk::setGlobalPosition(glm::ivec2 pos) {
+		setGlobalPosition(pos.x, pos.y);
+	}
+	void Chunk::setPositionAndGlobalPosition(glm::ivec2 pos){
+		setPositionAndGlobalPosition(pos.x, pos.y);
+	}
+	void Chunk::addPosition(glm::ivec2 pos) {
+		addPosition(pos.x, pos.y);
+	}
+	void Chunk::addGlobalPosition(glm::ivec2 pos) {
+		addGlobalPosition(pos.x, pos.y);
+	}
+	void Chunk::addPositionAndGlobalPosition(glm::ivec2 pos) {
+		addPositionAndGlobalPosition(pos.x, pos.y);
 	}
 }

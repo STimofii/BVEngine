@@ -31,6 +31,8 @@ namespace bulka {
 		int getChunksWorldCount();
 		void setRenderDistance(int val);
 
+		void moveChunks(int x, int z);
+
 
 		inline Chunk** getChunks() {
 			return chunks;

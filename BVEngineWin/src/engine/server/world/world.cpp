@@ -4,6 +4,8 @@
 #include "../../graphics/texture_manager.h"
 #include "../../graphics/shader_manager.h"
 #include "../../settings.h"
+#include "../../engine.h"
+#include "../../hero.h"
 #include <iostream>
 
 namespace bulka {
@@ -29,7 +31,7 @@ namespace bulka {
 		for (int x = -render_distance; x <= render_distance; ++x) {
 			for (int z = -render_distance; z <= render_distance; ++z) {
 				unsigned int i = ((x + render_distance) * chunks_world_width) + z + render_distance;
-				chunks[i] = new Chunk(this, glm::ivec2(x, z));
+				chunks[i] = new Chunk(this, glm::ivec2(x, z), glm::ivec2(x, z));
 			}
 		}
 		generate();
@@ -94,16 +96,14 @@ namespace bulka {
 			for (int x = -new_render_distance; x <= new_render_distance; ++x) {
 				for (int z = -new_render_distance; z <= new_render_distance; ++z) {
 					int i = ((x + new_render_distance) * new_chunks_world_width) + z + new_render_distance;
-					if (i == -1) {
-						i = new_chunks_world_count;
-					}
 					if (x >= -render_distance && x <= render_distance && z >= -render_distance && z <= render_distance) {
 						int old_i = ((x + render_distance) * chunks_world_width) + z + render_distance;
 						tempChunks[i] = chunks[old_i];
 						tempChunks[i]->setMoved(true);
 					}
 					else {
-						tempChunks[i] = new Chunk(this, glm::ivec2(x, z));
+						tempChunks[i] = new Chunk(this, glm::ivec2(x, z), glm::ivec2(x, z));
+						tempChunks[i]->generate();
 					}
 				}
 			}
@@ -116,18 +116,57 @@ namespace bulka {
 					delete chunks[i];
 				}
 			}
-			for (unsigned int i = 0; i < new_chunks_world_count; i++)
-			{
-				if (!tempChunks[i]->isGenerated())
-				{
-					tempChunks[i]->generate();
-				}
-			}
 			delete[] chunks;
 			chunks = tempChunks;
 		}
 		render_distance = new_render_distance;
 		chunks_world_width = new_chunks_world_width;
 		chunks_world_count = new_chunks_world_count;
+	}
+	void World::moveChunks(int offsetX, int offsetZ){
+		if (offsetX == 0 && offsetZ == 0) {
+			return;
+		}
+		*logger << bcppul::TRACE << "Moving chunks with offset x: " << offsetX << "; z: " << offsetZ;
+		//offsetX = -offsetX;
+		//offsetZ = -offsetZ;
+		Chunk** tempChunks = new Chunk * [chunks_world_count]{};
+		for (unsigned int i = 0; i < chunks_world_count; ++i) {
+			tempChunks[i] = nullptr;
+		}
+
+		glm::ivec2 heroChunkPos = glm::ivec2(
+			std::floor(Engine::getHero().getGlobalPosition().x / 16.0f),
+			std::floor(Engine::getHero().getGlobalPosition().z / 16.0f)
+		);
+		for (int x = -render_distance; x <= render_distance; ++x) {
+			for (int z = -render_distance; z <= render_distance; ++z) {
+				int i = ((x + render_distance) * chunks_world_width) + z + render_distance;
+				int newX = x - offsetX;
+				int newZ = z - offsetZ;
+				int new_i = ((newX + render_distance) * chunks_world_width) + newZ + render_distance;
+				if (newX >= -render_distance && newX <= render_distance &&
+					newZ >= -render_distance && newZ <= render_distance) {
+					tempChunks[new_i] = chunks[i];
+					tempChunks[new_i]->addPosition(-offsetX, -offsetZ);
+				}
+				else {
+					chunks[i]->finalization();
+					delete chunks[i];
+				}
+			}
+		}
+
+		for (int x = -render_distance; x <= render_distance; ++x) {
+			for (int z = -render_distance; z <= render_distance; ++z) {
+				int i = ((x + render_distance) * chunks_world_width) + z + render_distance;
+				if (tempChunks[i] == nullptr) {
+					tempChunks[i] = new Chunk(this, glm::ivec2(x, z), heroChunkPos + glm::ivec2(x, z));
+					tempChunks[i]->generate();
+				}
+			}
+		}
+		delete[] chunks;
+		chunks = tempChunks;
 	}
 }

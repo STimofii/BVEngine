@@ -27,7 +27,9 @@ namespace bulka {
 		};
 		World* world;
 		glm::ivec2 position;
+		glm::ivec2 globalPosition;
 		glm::ivec2 blockStartPosition;
+		glm::ivec2 blockStartGlobalPosition;
 		unsigned short updateMeshes = 0b0;
 		unsigned short* blocks = nullptr;
 		SubChunk sub_chunks[SUB_CHUNKS_IN_CHUNK]{};
@@ -35,7 +37,7 @@ namespace bulka {
 		bool generated = false;
 	protected:
 	public:
-		Chunk(World* world, glm::ivec2 position);
+		Chunk(World* world, glm::ivec2 position, glm::ivec2 globalPosition);
 		Chunk(const Chunk& other) = delete;
 		Chunk& operator=(const Chunk& other) = delete;
 		~Chunk();
@@ -46,6 +48,23 @@ namespace bulka {
 		void update();
 		void render();
 		void finalization();
+
+		glm::ivec2 getPosition();
+		glm::ivec2 getBlockStartPosition();
+		glm::ivec2 getGlobalPosition();
+		glm::ivec2 getBlockStartGlobalPosition();
+		void setPosition(int x, int z);
+		void setGlobalPosition(int x, int z);
+		void setPositionAndGlobalPosition(int x, int z);
+		void addPosition(int x, int z);
+		void addGlobalPosition(int x, int z);
+		void addPositionAndGlobalPosition(int x, int z);
+		void setPosition(glm::ivec2 pos);
+		void setGlobalPosition(glm::ivec2 pos);
+		void setPositionAndGlobalPosition(glm::ivec2 pos);
+		void addPosition(glm::ivec2 pos);
+		void addGlobalPosition(glm::ivec2 pos);
+		void addPositionAndGlobalPosition(glm::ivec2 pos);
 
 		unsigned short getBlock(int x, int y, int z);
 		Block* getBlockPrefab(int x, int y, int z);

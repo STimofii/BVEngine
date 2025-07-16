@@ -5,6 +5,9 @@
 #include <GLFW/glfw3.h>
 #include "input.h"
 #include "engine.h"
+#include "server/world/chunks/chunk.h"
+#include "server/world/world.h"
+#include "server/game.h"
 
 
 
@@ -69,10 +72,38 @@ namespace bulka {
 		camera.moveInDirection(moveSpeed * x, moveSpeed * y, moveSpeed * z);
 		//camera.moveInDirectionWithVertical(moveSpeed * x, moveSpeed * y, moveSpeed * z);
 		if (moved || rotated) {
+			globalPosition.y = camera.getPosition().y;
+			glm::ivec2 moveChunks(0, 0);
+			if (camera.getPosition().x >= CHUNK_SIZE_X) {
+				globalPosition.x += camera.getPosition().x;
+				moveChunks.x = camera.getPosition().x / CHUNK_SIZE_X;
+				camera.getPosition().x = std::fmod(camera.getPosition().x, CHUNK_SIZE_X);
+			} else if (camera.getPosition().x < 0) {
+				globalPosition.x += std::floor(camera.getPosition().x / CHUNK_SIZE_X) * CHUNK_SIZE_X;
+				moveChunks.x = std::floor(camera.getPosition().x / CHUNK_SIZE_X);
+				camera.getPosition().x = CHUNK_SIZE_X + std::fmod(camera.getPosition().x, CHUNK_SIZE_X);
+			}
+			if (camera.getPosition().z >= CHUNK_SIZE_Z) {
+				globalPosition.z += camera.getPosition().z;
+				moveChunks.y = camera.getPosition().z / CHUNK_SIZE_Z;
+				camera.getPosition().z = std::fmod(camera.getPosition().z, CHUNK_SIZE_Z);
+			} else if (camera.getPosition().z < 0) {
+				globalPosition.z += std::floor(camera.getPosition().z / CHUNK_SIZE_Z) * CHUNK_SIZE_Z;
+				moveChunks.y = std::floor(camera.getPosition().z / CHUNK_SIZE_Z);
+				camera.getPosition().z = CHUNK_SIZE_X + std::fmod(camera.getPosition().z, CHUNK_SIZE_Z);
+			}
+
+			Game::getWorld()->moveChunks(moveChunks.x, moveChunks.y);
+
 			camera.updateViewMatrix();
 			camera.updateProjViewMatrix();
 		}
 	}
+
+	glm::ivec3 Hero::getGlobalPosition() {
+		return globalPosition;
+	}
+
 	Camera& Hero::getCamera() {
 		return camera;
 	}

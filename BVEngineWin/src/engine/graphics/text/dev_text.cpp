@@ -45,6 +45,7 @@ namespace bulka {
 	void DevText::update() {
 		if (visible) {
 			glm::vec3 position = Engine::getHero().getCamera().getPosition();
+			glm::ivec3 globalPosition = Engine::getHero().getGlobalPosition();
 			glm::vec3 rotation = Engine::getHero().getCamera().getRotation();
 			glm::vec3 direction = Engine::getHero().getCamera().getDirection();
 
@@ -52,9 +53,10 @@ namespace bulka {
 			ss << std::fixed << std::setprecision(3);
 
 			ss << "FPS: " << Engine::getFPS() << "\n\n";
-			ss << "XYZ: " << position.x << "; " << position.y << "; " << position.z << "; " << "\n";
+			ss << "World XYZ: " << globalPosition.x << "; " << globalPosition.y << "; " << globalPosition.z << "; " << "\n";
+			ss << "Chunk XYZ: " << position.x << "; " << position.y << "; " << position.z << "; " << "\n";
 			ss << "PYR: " << rotation.x << "; " << rotation.y << "; " << rotation.z << "; " << "\n";
-			ss << "Direction PYR: " << direction.x << "; " << direction.y << "; " << direction.z << "; " << "\n\n";
+			ss << "Direction: " << -direction.z << "; " << -direction.y << "; " << -direction.x << "; " << "\n\n";
 			ss << "TPS: " << Game::getTPS() << "\n\n";
 			ss << "Render Distance: " << Game::getWorld()->getRenderDistance() << "\n\n";
 			left_top_text->setText(ss.str());

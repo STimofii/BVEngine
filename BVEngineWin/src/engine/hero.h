@@ -9,6 +9,7 @@ namespace bulka {
 		Camera camera;
 		float speed = 30.0f;
 		float sensitivity = 0.2f;
+		glm::ivec3 globalPosition = {0.0f, 0.0f, 0.0f};
 	protected:
 	public:
 		Hero();
@@ -23,6 +24,7 @@ namespace bulka {
 		void moveInDirection(float x, float y, float z);
 		void setRotation(float x, float y, float z);
 		void addRotation(float x, float y, float z);
+		glm::ivec3 getGlobalPosition();
 		float getSpeed();
 		float getSensitivity();
 		void setSpeed(float speed);
