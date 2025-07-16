@@ -58,7 +58,7 @@ namespace bulka {
 			ss << "In-Chunk XYZ: " << position.x << "; " << position.y << "; " << position.z << "; " << "\n";
 			ss << "Chunks XYZ: " << chunksPosition.x << "; " << chunksPosition.y << "; " << chunksPosition.z << "; " << "\n";
 			ss << "PYR: " << rotation.x << "; " << rotation.y << "; " << rotation.z << "; " << "\n";
-			ss << "Direction: " << -direction.z << "; " << -direction.y << "; " << -direction.x << "; " << "\n\n";
+			ss << "Direction: " << direction.z << "; " << -direction.y << "; " << -direction.x << "; " << "\n\n";
 			ss << "TPS: " << Game::getTPS() << "\n\n";
 			ss << "Render Distance: " << Game::getWorld()->getRenderDistance() << "\n\n";
 			left_top_text->setText(ss.str());

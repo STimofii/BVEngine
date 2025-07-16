@@ -28,10 +28,11 @@ namespace bulka {
 	}
 	Chunk::~Chunk()
 	{
-		
+
 	}
 
 	void Chunk::finalization() {
+		initialized = false;
 		delete[] blocks;
 		deleteMeshes();
 	}

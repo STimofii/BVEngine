@@ -138,6 +138,7 @@ namespace bulka {
 				}
 				else {
 					chunks[i]->setForDelete(true);
+					chunks[i]->finalization();
 				}
 			}
 			delete[] chunks;
@@ -176,6 +177,7 @@ namespace bulka {
 				}
 				else {
 					chunks[i]->setForDelete(true);
+					chunks[i]->finalization();
 				}
 			}
 		}
