@@ -96,8 +96,8 @@ namespace bulka {
 		int new_chunks_world_count = new_chunks_world_width * new_chunks_world_width;
 		if (chunks != nullptr) {
 			glm::ivec2 heroChunkPos = glm::ivec2(
-				std::floor(Engine::getHero().getGlobalPosition().x / 16.0f),
-				std::floor(Engine::getHero().getGlobalPosition().z / 16.0f)
+				std::floor(Engine::getHero().getChunksPosition().x),
+				std::floor(Engine::getHero().getChunksPosition().z)
 			);
 			Chunk** tempChunks = new Chunk*[new_chunks_world_count];
 			for (int x = -new_render_distance; x <= new_render_distance; ++x) {
@@ -142,8 +142,8 @@ namespace bulka {
 		}
 
 		glm::ivec2 heroChunkPos = glm::ivec2(
-			std::floor(Engine::getHero().getGlobalPosition().x / 16.0f),
-			std::floor(Engine::getHero().getGlobalPosition().z / 16.0f)
+			std::floor(Engine::getHero().getChunksPosition().x),
+			std::floor(Engine::getHero().getChunksPosition().z)
 		);
 		for (int x = -render_distance; x <= render_distance; ++x) {
 			for (int z = -render_distance; z <= render_distance; ++z) {

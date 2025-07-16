@@ -45,7 +45,8 @@ namespace bulka {
 	void DevText::update() {
 		if (visible) {
 			glm::vec3 position = Engine::getHero().getCamera().getPosition();
-			glm::ivec3 globalPosition = Engine::getHero().getGlobalPosition();
+			glm::ivec3 chunksPosition = Engine::getHero().getChunksPosition();
+			glm::ivec3 worldPosition = Engine::getHero().getWorldPosition();
 			glm::vec3 rotation = Engine::getHero().getCamera().getRotation();
 			glm::vec3 direction = Engine::getHero().getCamera().getDirection();
 
@@ -53,8 +54,9 @@ namespace bulka {
 			ss << std::fixed << std::setprecision(3);
 
 			ss << "FPS: " << Engine::getFPS() << "\n\n";
-			ss << "World XYZ: " << globalPosition.x << "; " << globalPosition.y << "; " << globalPosition.z << "; " << "\n";
-			ss << "Chunk XYZ: " << position.x << "; " << position.y << "; " << position.z << "; " << "\n";
+			ss << "World XYZ: " << worldPosition.x << "; " << worldPosition.y << "; " << worldPosition.z << "; " << "\n";
+			ss << "In-Chunk XYZ: " << position.x << "; " << position.y << "; " << position.z << "; " << "\n";
+			ss << "Chunks XYZ: " << chunksPosition.x << "; " << chunksPosition.y << "; " << chunksPosition.z << "; " << "\n";
 			ss << "PYR: " << rotation.x << "; " << rotation.y << "; " << rotation.z << "; " << "\n";
 			ss << "Direction: " << -direction.z << "; " << -direction.y << "; " << -direction.x << "; " << "\n\n";
 			ss << "TPS: " << Game::getTPS() << "\n\n";

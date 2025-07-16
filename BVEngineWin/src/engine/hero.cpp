@@ -35,6 +35,7 @@ namespace bulka {
 		float z = 0;
 		float addRotX = 0;
 		float addRotY = 0;
+		bool accelerated = false;
 		if (Input::isKeyPressed(GLFW_KEY_W)) {
 			z = -1;
 			moved = true;
@@ -59,6 +60,9 @@ namespace bulka {
 			y = -1;
 			moved = true;
 		}
+		if (Input::isKeyPressed(GLFW_KEY_F4)) {
+			accelerated = true;
+		}
 		if (Input::getMouseDeltaX != 0) {
 			addRotX = -sensitivity * Input::getMouseDeltaX();
 			rotated = true;
@@ -68,31 +72,32 @@ namespace bulka {
 			rotated = true;
 		}
 		float moveSpeed = Engine::getDeltaTime() * speed;
+		if (accelerated) {
+			moveSpeed *= 10;
+		}
 		camera.addRotation(addRotY, addRotX, 0);
 		camera.moveInDirection(moveSpeed * x, moveSpeed * y, moveSpeed * z);
 		//camera.moveInDirectionWithVertical(moveSpeed * x, moveSpeed * y, moveSpeed * z);
 		if (moved || rotated) {
-			globalPosition.y = camera.getPosition().y;
+			chunksPosition.y = std::floor(camera.getPosition().y / SUB_CHUNK_SIZE_Y);
 			glm::ivec2 moveChunks(0, 0);
 			if (camera.getPosition().x >= CHUNK_SIZE_X) {
-				globalPosition.x += camera.getPosition().x;
 				moveChunks.x = camera.getPosition().x / CHUNK_SIZE_X;
 				camera.getPosition().x = std::fmod(camera.getPosition().x, CHUNK_SIZE_X);
 			} else if (camera.getPosition().x < 0) {
-				globalPosition.x += std::floor(camera.getPosition().x / CHUNK_SIZE_X) * CHUNK_SIZE_X;
 				moveChunks.x = std::floor(camera.getPosition().x / CHUNK_SIZE_X);
 				camera.getPosition().x = CHUNK_SIZE_X + std::fmod(camera.getPosition().x, CHUNK_SIZE_X);
 			}
 			if (camera.getPosition().z >= CHUNK_SIZE_Z) {
-				globalPosition.z += camera.getPosition().z;
 				moveChunks.y = camera.getPosition().z / CHUNK_SIZE_Z;
 				camera.getPosition().z = std::fmod(camera.getPosition().z, CHUNK_SIZE_Z);
 			} else if (camera.getPosition().z < 0) {
-				globalPosition.z += std::floor(camera.getPosition().z / CHUNK_SIZE_Z) * CHUNK_SIZE_Z;
 				moveChunks.y = std::floor(camera.getPosition().z / CHUNK_SIZE_Z);
 				camera.getPosition().z = CHUNK_SIZE_X + std::fmod(camera.getPosition().z, CHUNK_SIZE_Z);
 			}
 
+			chunksPosition.x += moveChunks.x;
+			chunksPosition.z += moveChunks.y;
 			Game::getWorld()->moveChunks(moveChunks.x, moveChunks.y);
 
 			camera.updateViewMatrix();
@@ -100,8 +105,16 @@ namespace bulka {
 		}
 	}
 
-	glm::ivec3 Hero::getGlobalPosition() {
-		return globalPosition;
+	glm::ivec3 Hero::getChunksPosition() {
+		return chunksPosition;
+	}
+
+	glm::ivec3 Hero::getWorldPosition()
+	{
+		glm::ivec3 out(camera.getPosition());
+		out.x += chunksPosition.x * CHUNK_SIZE_X;
+		out.z += chunksPosition.z * CHUNK_SIZE_Z;
+		return out;
 	}
 
 	Camera& Hero::getCamera() {
