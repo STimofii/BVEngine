@@ -23,6 +23,7 @@ namespace bulka {
 	void Game::finalization() {
 		logger->info("Finalization game");
 		delete world;
+		world = nullptr;
 	}
 	void Game::loop()
 	{

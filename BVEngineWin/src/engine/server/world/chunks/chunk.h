@@ -25,7 +25,7 @@ namespace bulka {
 			unsigned int vertices_length;
 			unsigned int indices_length;
 		};
-		World* world;
+		World* world = nullptr;
 		glm::ivec2 position;
 		glm::ivec2 globalPosition;
 		glm::ivec2 blockStartPosition;
@@ -34,7 +34,10 @@ namespace bulka {
 		unsigned short* blocks = nullptr;
 		SubChunk sub_chunks[SUB_CHUNKS_IN_CHUNK]{};
 		bool moved = false;
+		bool generating= false;
 		bool generated = false;
+		bool initialized = false;
+		bool forDelete = false;
 	protected:
 	public:
 		Chunk(World* world, glm::ivec2 position, glm::ivec2 globalPosition);
@@ -42,6 +45,7 @@ namespace bulka {
 		Chunk& operator=(const Chunk& other) = delete;
 		~Chunk();
 		void generate();
+		int mandelbrot(float x, float y);
 		bool createMesh(unsigned int sub_chunk_i);
 		bool createMeshes();
 		void deleteMeshes();
@@ -99,7 +103,11 @@ namespace bulka {
 		void setNeedUpdate(unsigned short meshes);
 		bool isMoved();
 		bool isGenerated();
+		bool isGenerating();
 		void setMoved(bool val);
+
+		bool isForDelete();
+		void setForDelete(bool val);
 	};
 
 }

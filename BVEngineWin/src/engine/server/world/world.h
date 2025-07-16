@@ -15,6 +15,7 @@ namespace bulka {
 		int render_distance = 2;
 		int chunks_world_width = render_distance * 2 + 1;
 		int chunks_world_count = chunks_world_width * chunks_world_width;
+		int generateThreadsCount = 0;
 	protected:
 	public:
 		World();
@@ -33,6 +34,7 @@ namespace bulka {
 		void setRenderDistance(int val);
 
 		void moveChunks(int x, int z);
+		void decreaseGenerateThreadsCount();
 
 
 		inline Chunk** getChunks() {

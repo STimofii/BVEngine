@@ -14,6 +14,7 @@
 #include "../../../graphics/shader_manager.h"
 #include "../../blocks/blocks_manager.h"
 #include "../world.h"
+#include <complex>
 namespace bulka {
 	bcppul::Logger* Chunk::logger = bcppul::getLogger("Chunk");
 	Chunk::Chunk(World* world, glm::ivec2 position, glm::ivec2 globalPosition) : position(position), globalPosition(globalPosition), world(world)
@@ -23,6 +24,7 @@ namespace bulka {
 		blockStartGlobalPosition.x = globalPosition.x * CHUNK_SIZE_X;
 		blockStartGlobalPosition.y = globalPosition.y * CHUNK_SIZE_Z;
 		blocks = new unsigned short[CHUNK_VOLUME] {};
+		initialized = true;
 	}
 	Chunk::~Chunk()
 	{
@@ -35,6 +37,13 @@ namespace bulka {
 	}
 
 	void Chunk::generate() {
+		if (this == nullptr) {
+			return;
+		}
+		if (!initialized){
+			return;
+		}
+		generating = true;
 		for (unsigned int y = 0; y < CHUNK_SIZE_Y; y++)
 		{
 			for (unsigned int x = 0; x < CHUNK_SIZE_X; x++)
@@ -42,8 +51,10 @@ namespace bulka {
 				for (unsigned int z = 0; z < CHUNK_SIZE_Z; z++)
 				{
 					unsigned int i = ((y * CHUNK_SIZE_X * CHUNK_SIZE_Z) + x * CHUNK_SIZE_Z) + z;
-					unsigned int fun = std::abs(static_cast<int>(blockStartGlobalPosition.x + x));
-					//unsigned int fun = 10;
+					//unsigned int fun = std::abs(static_cast<int>(blockStartGlobalPosition.x + x));
+					unsigned int fun = mandelbrot(
+						(blockStartGlobalPosition.x + static_cast<float>(x)) / 100.0f,
+						(blockStartGlobalPosition.y + static_cast<float>(z)) / 100.0f);
 					if (y < 5) {
 						blocks[i] = 1;
 					} else if (y >= 5 && y <= fun) {
@@ -54,7 +65,7 @@ namespace bulka {
 				}
 			}
 		}
-		if (position.x != -world->getRenderDistance()) {
+		/*if (position.x != -world->getRenderDistance()) {
 			if (world->getChunk(position.x - 1, position.y) != nullptr) {
 				world->getChunk(position.x - 1, position.y)->setNeedUpdateFullChunk();
 			}
@@ -73,9 +84,27 @@ namespace bulka {
 			if (world->getChunk(position.x, position.y + 1) != nullptr) {
 				world->getChunk(position.x, position.y + 1)->setNeedUpdateFullChunk();
 			}
-		}
+		}*/
 		updateMeshes = 0xFFFF;
 		generated = true;
+		generating = false;
+		world->decreaseGenerateThreadsCount();
+	}
+	int Chunk::mandelbrot(float x, float y)
+	{
+		std::complex<float> c(x, y);
+		std::complex<float> z(0, 0);
+
+		int i = 0;
+		for (; i < 32; ++i) {
+			z = z * z + c;
+
+			if (std::abs(z) > 2.0) {
+				break;
+			}
+		}
+
+		return i;
 	}
 	bool Chunk::createMesh(unsigned int sub_chunk_i)
 	{
@@ -350,6 +379,9 @@ namespace bulka {
 
 	}
 	void Chunk::render() {
+		if (!generated || !initialized || forDelete) {
+			return;
+		}
 		ShaderManager::chunkShader.uniform2iv("chunkPosition", blockStartPosition);
 		for (unsigned int i = 0; i < SUB_CHUNKS_IN_CHUNK; i++)
 		{
@@ -661,9 +693,24 @@ namespace bulka {
 		return generated;
 	}
 
+	bool Chunk::isGenerating()
+	{
+		return generating;
+	}
+
 	void Chunk::setMoved(bool val)
 	{
 		moved = val;
+	}
+
+	bool Chunk::isForDelete()
+	{
+		return forDelete;
+	}
+
+	void Chunk::setForDelete(bool val)
+	{
+		forDelete = val;
 	}
 
 	glm::ivec2 Chunk::getPosition() {

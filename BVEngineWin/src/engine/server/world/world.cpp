@@ -7,6 +7,9 @@
 #include "../../engine.h"
 #include "../../hero.h"
 #include <iostream>
+#include <thread>
+
+
 
 namespace bulka {
 	bcppul::Logger* World::logger = bcppul::getLogger("World");
@@ -38,9 +41,7 @@ namespace bulka {
 
 	}
 	void World::generate() {
-		//for (int i = 0; i < chunks_world_count; ++i) {
-		//	chunks[i]->generate();
-		//}
+
 	}
 	void World::reload() {
 		unsigned int rendered_count = 0;
@@ -52,13 +53,30 @@ namespace bulka {
 		}
 	}
 	void World::update() {
-
+		for (int i = 0; i < chunks_world_count; ++i) {
+			if (chunks[i]->isForDelete() && chunks[i]->isGenerated()) {
+				chunks[i]->finalization();
+				delete chunks[i];
+				chunks[i] = nullptr;
+			}
+		}
 	}
 	void World::serverUpdate()
 	{
 		for (int i = 0; i < chunks_world_count; ++i) {
-			if (!chunks[i]->isGenerated()) {
-				chunks[i]->generate();
+			if (chunks[i] != nullptr && !chunks[i]->isGenerated() && !chunks[i]->isGenerating()) {
+				if (std::thread::hardware_concurrency() <= 2) {
+					chunks[i]->generate();
+				} else {
+					if (generateThreadsCount < std::thread::hardware_concurrency() - 2) {
+						std::thread th(&Chunk::generate, chunks[i]);
+						th.detach();
+						++generateThreadsCount;
+					}
+					else {
+						break;
+					}
+				}
 			}
 		}
 	}
@@ -118,8 +136,7 @@ namespace bulka {
 					chunks[i]->setMoved(false);
 				}
 				else {
-					chunks[i]->finalization();
-					delete chunks[i];
+					chunks[i]->setForDelete(true);
 				}
 			}
 			delete[] chunks;
@@ -157,8 +174,7 @@ namespace bulka {
 					tempChunks[new_i]->addPosition(-offsetX, -offsetZ);
 				}
 				else {
-					chunks[i]->finalization();
-					delete chunks[i];
+					chunks[i]->setForDelete(true);
 				}
 			}
 		}
@@ -173,5 +189,11 @@ namespace bulka {
 		}
 		delete[] chunks;
 		chunks = tempChunks;
+	}
+	void World::decreaseGenerateThreadsCount()
+	{
+		if(generateThreadsCount != 0){
+			--generateThreadsCount;
+		}
 	}
 }
