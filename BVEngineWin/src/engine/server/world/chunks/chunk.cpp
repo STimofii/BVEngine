@@ -33,14 +33,13 @@ namespace bulka {
 				for (unsigned int z = 0; z < CHUNK_SIZE_Z; z++)
 				{
 					unsigned int i = ((y * CHUNK_SIZE_X * CHUNK_SIZE_Z) + x * CHUNK_SIZE_Z) + z;
+					unsigned int fun = blockStartPosition.x + x;
 					if (y < 5) {
 						blocks[i] = 1;
-					}
-					if (y >= 5 && y <= 10) {
-						blocks[i] = 3;
-					}
-					if (y == 11) {
+					} else if (y >= 5 && y <= fun) {
 						blocks[i] = 2;
+					} else if (y == fun + 1) {
+						blocks[i] = 3;
 					}
 				}
 			}
@@ -80,7 +79,7 @@ namespace bulka {
 							neighbors = (RENDER_BLOCKS_ON_WORLD_EDGE ? neighbors | 0b00000001 : neighbors | 0b00000000);
 						}
 						else {
-							neighbors = neighbors | world->getChunk(position.x, position.y - 1)->getBlockPrefab(x, y, CHUNK_SIZE_Z - 1)->hasAlpha;
+							neighbors = neighbors | world->getChunk(position.x, position.y - 1)->isBlockPrefabHasAlpha(x, y, CHUNK_SIZE_Z - 1);
 						}
 					}
 
@@ -94,7 +93,7 @@ namespace bulka {
 							neighbors = (RENDER_BLOCKS_ON_WORLD_EDGE ? neighbors | 0b00000010 : neighbors | 0b00000000);
 						}
 						else {
-							neighbors = neighbors | (world->getChunk(position.x, position.y + 1)->getBlockPrefab(x, y, 0)->hasAlpha) << 1;
+							neighbors = neighbors | (world->getChunk(position.x, position.y + 1)->isBlockPrefabHasAlpha(x, y, 0)) << 1;
 						}
 					}
 					if (x != 0) {
@@ -107,7 +106,7 @@ namespace bulka {
 							neighbors = (RENDER_BLOCKS_ON_WORLD_EDGE ? neighbors | 0b00000100 : neighbors | 0b00000000);
 						}
 						else {
-							neighbors = neighbors | (world->getChunk(position.x - 1, position.y)->getBlockPrefab(CHUNK_SIZE_X - 1, y, z)->hasAlpha) << 2;
+							neighbors = neighbors | (world->getChunk(position.x - 1, position.y)->isBlockPrefabHasAlpha(CHUNK_SIZE_X - 1, y, z)) << 2;
 						}
 					}
 					if (x != CHUNK_SIZE_X - 1) {
@@ -120,7 +119,7 @@ namespace bulka {
 							neighbors = (RENDER_BLOCKS_ON_WORLD_EDGE ? neighbors | 0b00001000 : neighbors | 0b00000000);
 						}
 						else {
-							neighbors = neighbors | (world->getChunk(position.x + 1, position.y)->getBlockPrefab(0, y, z)->hasAlpha) << 3;
+							neighbors = neighbors | (world->getChunk(position.x + 1, position.y)->isBlockPrefabHasAlpha(0, y, z)) << 3;
 						}
 					}
 

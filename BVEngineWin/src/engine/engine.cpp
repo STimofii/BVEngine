@@ -47,7 +47,7 @@ namespace bulka {
 	FT_Library Engine::ft_library;
 	FT_Face Engine::main_font;
 	Hero Engine::hero;
-	TexturedMesh Engine::simpleMesh;
+	//TexturedMesh Engine::simpleMesh;
 	DevText Engine::dev_text;
 	Postprocessing Engine::postprocessing;
 	Crosshair Engine::crosshair;
@@ -76,22 +76,22 @@ namespace bulka {
 
 		setVSync(v_sync);
 
-		hero.setPosition(0, 0, 10);
+		hero.setPosition(0, 15, 0);
 
-		float z = 0.0f;
-		float size = 1.0f;
-		simpleMesh.update(
-			new float[20] {
-				-size, -size, z, 0, 1,
-				size, -size, z, 1, 1,
-				size, size, z, 1, 0,
-				-size, size, z, 0, 0,
-			}, 20, 
-			new GLuint[6]{
-			0, 1, 2,
-			2, 3, 0
-			}, 6);
-		simpleMesh.setTexture(TextureManager::getTexture("res/textures/bulka.png"));
+		//float z = 0.0f;
+		//float size = 1.0f;
+		//simpleMesh.update(
+		//	new float[20] {
+		//		-size, -size, z, 0, 1,
+		//		size, -size, z, 1, 1,
+		//		size, size, z, 1, 0,
+		//		-size, size, z, 0, 0,
+		//	}, 20, 
+		//	new GLuint[6]{
+		//	0, 1, 2,
+		//	2, 3, 0
+		//	}, 6);
+		//simpleMesh.setTexture(TextureManager::getTexture("res/textures/bulka.png"));
 
 		*logger << bcppul::INFO << "Initialized! Time for initializing - " << timer.getTimeSeconds();
 
@@ -278,7 +278,7 @@ namespace bulka {
 		}
 		if (Input::getScrollY() != 0) {
 			std::cout << Game::getWorld()->getRenderDistance() << std::endl;
-			Game::getWorld()->setRenderDistance(std::max(Game::getWorld()->getRenderDistance() + Input::getScrollY(), 0.0));
+			Game::getWorld()->setRenderDistance(std::max(Game::getWorld()->getRenderDistance() + Input::getScrollY(), 1.0));
 		}
 
 		hero.inputUpdate();
@@ -301,7 +301,7 @@ namespace bulka {
 	void Engine::render()
 	{
 		ShaderManager::mainShader.bind();
-		Renderer::render(simpleMesh);
+		//Renderer::render(simpleMesh);
 		ShaderManager::mainShader.unbind();
 		if(Game::isStarted()){
 			Game::getWorld()->render();

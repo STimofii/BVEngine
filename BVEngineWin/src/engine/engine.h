@@ -38,7 +38,7 @@ namespace bulka {
 		static FT_Library ft_library;
 		static FT_Face main_font;
 		static Hero hero;
-		static TexturedMesh simpleMesh;
+		//static TexturedMesh simpleMesh;
 		static DevText dev_text;
 		static Postprocessing postprocessing;
 		static Crosshair crosshair;
