@@ -44,18 +44,7 @@ namespace bulka {
 
 	}
 	void World::reload() {
-		unsigned int created_count = 0;
-		chunksForCreateMeshMutex.lock();
-		auto it = chunksForCreateMesh.begin();
-		while (it != chunksForCreateMesh.end()) {
-			if (Settings::RENDER_CHUNKS_BY_CYCLE_COUNT == 0 || created_count >= Settings::RENDER_CHUNKS_BY_CYCLE_COUNT) {
-				break;
-			}
-			Chunk* chunk = *it;
-			created_count += chunk->createMeshes();
-			it = chunksForCreateMesh.erase(it);
-		}
-		chunksForCreateMeshMutex.unlock();
+
 	}
 
 	void World::recreateAllMeshes()
@@ -69,9 +58,22 @@ namespace bulka {
 	}
 
 	void World::update() {
+		unsigned int created_count = 0;
+		chunksForCreateMeshMutex.lock();
+		auto it = chunksForCreateMesh.begin();
+		while (it != chunksForCreateMesh.end()) {
+			if (Settings::RENDER_CHUNKS_BY_CYCLE_COUNT == 0 || created_count >= Settings::RENDER_CHUNKS_BY_CYCLE_COUNT) {
+				break;
+			}
+			Chunk* chunk = *it;
+			created_count += chunk->createMeshes();
+			it = chunksForCreateMesh.erase(it);
+		}
+		chunksForCreateMeshMutex.unlock();
+
 		chunksForDestroyMutex.lock();
 		auto new_end = std::remove_if(chunksForDestroy.begin(), chunksForDestroy.end(), [](Chunk* chunk) {
-			if (chunk->isForDelete() && chunk->isGenerated() && !chunk->isGenerating()) {
+			if (chunk->isGenerated() && !chunk->isGenerating()) {
 				chunk->finalization();
 				delete chunk;
 				return true;
@@ -176,7 +178,6 @@ namespace bulka {
 					chunks[i]->setMoved(false);
 				}
 				else {
-					chunks[i]->setForDelete(true);
 					chunksForDestroyMutex.lock();
 					chunksForDestroy.push_back(chunks[i]);
 					chunksForDestroyMutex.unlock();
@@ -217,7 +218,6 @@ namespace bulka {
 					tempChunks[new_i]->addPosition(-offsetX, -offsetZ);
 				}
 				else {
-					chunks[i]->setForDelete(true);
 					chunksForDestroyMutex.lock();
 					chunksForDestroy.push_back(chunks[i]);
 					chunksForDestroyMutex.unlock();

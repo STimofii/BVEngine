@@ -113,9 +113,9 @@ namespace bulka {
 				exitCode = 0;
 				running = false;
 			}
-			if (Game::isStarted()) {
-				Game::getWorld()->reload();
-			}
+			//if (Game::isStarted()) {
+			//	Game::getWorld()->reload();
+			//}
 			loadingScreen.setVisible(!Game::isStarted());
 
 			inputUpdate();

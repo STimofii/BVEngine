@@ -25,6 +25,7 @@ namespace bulka {
 		blockStartGlobalPosition.y = globalPosition.y * CHUNK_SIZE_Z;
 		blocks = new unsigned short[CHUNK_VOLUME] {};
 		initialized = true;
+		destroyed = false;
 	}
 	Chunk::~Chunk()
 	{
@@ -33,6 +34,7 @@ namespace bulka {
 
 	void Chunk::finalization() {
 		//std::cout << "final " << generating << "/" << generated << "; " << initialized << " - " << position.x << " : " << position.y << std::endl;
+		destroyed = true;
 		initialized = false;
 		delete[] blocks;
 		blocks = nullptr;
@@ -96,7 +98,7 @@ namespace bulka {
 	}
 	int Chunk::mandelbrot(float x, float y)
 	{
-		return 10;
+		//return 10;
 		std::complex<float> c(x, y);
 		std::complex<float> z(0, 0);
 
@@ -113,6 +115,9 @@ namespace bulka {
 	}
 	bool Chunk::createMesh(unsigned int sub_chunk_i)
 	{
+		if (this == nullptr || destroyed || blocks == nullptr) {
+			return true;
+		}
 		if (!generated) {
 			return false;
 		}
@@ -389,7 +394,7 @@ namespace bulka {
 
 	}
 	void Chunk::render() {
-		if (!generated || !initialized || forDelete) {
+		if (!generated || !initialized) {
 			return;
 		}
 		ShaderManager::chunkShader.uniform2iv("chunkPosition", blockStartPosition);
@@ -711,16 +716,6 @@ namespace bulka {
 	void Chunk::setMoved(bool val)
 	{
 		moved = val;
-	}
-
-	bool Chunk::isForDelete()
-	{
-		return forDelete;
-	}
-
-	void Chunk::setForDelete(bool val)
-	{
-		forDelete = val;
 	}
 
 	glm::ivec2 Chunk::getPosition() {

@@ -37,7 +37,7 @@ namespace bulka {
 		bool generating= false;
 		bool generated = false;
 		bool initialized = false;
-		bool forDelete = false;
+		bool destroyed = false;
 	protected:
 	public:
 		Chunk(World* world, glm::ivec2 position, glm::ivec2 globalPosition);
@@ -105,9 +105,6 @@ namespace bulka {
 		bool isGenerated();
 		bool isGenerating();
 		void setMoved(bool val);
-
-		bool isForDelete();
-		void setForDelete(bool val);
 	};
 
 }
