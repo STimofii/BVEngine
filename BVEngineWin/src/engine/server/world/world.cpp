@@ -7,6 +7,7 @@
 #include "../../engine.h"
 #include "../../hero.h"
 #include <iostream>
+#include <algorithm>
 #include <thread>
 
 
@@ -26,11 +27,14 @@ namespace bulka {
 
 	void World::load() {
 		setRenderDistance(Settings::RENDER_DISTANCE);
-		chunks = new std::shared_ptr<Chunk>[chunks_world_count];
+		chunks = new Chunk*[chunks_world_count];
 		for (int x = -render_distance; x <= render_distance; ++x) {
 			for (int z = -render_distance; z <= render_distance; ++z) {
 				unsigned int i = ((x + render_distance) * chunks_world_width) + z + render_distance;
-				chunks[i] = std::make_shared<Chunk>(this, glm::ivec2(x, z), glm::ivec2(x, z));
+				chunks[i] = new Chunk(this, glm::ivec2(x, z), glm::ivec2(x, z));
+				chunksForGenerateMutex.lock();
+				chunksForGenerate.push_back(chunks[i]);
+				chunksForGenerateMutex.unlock();
 			}
 		}
 		generate();
@@ -40,35 +44,64 @@ namespace bulka {
 
 	}
 	void World::reload() {
-		unsigned int rendered_count = 0;
-		for (int i = 0; i < chunks_world_count; ++i) {
-			if (rendered_count != 0 && rendered_count == Settings::RENDER_CHUNKS_BY_CYCLE_COUNT) {
-				return;
+		unsigned int created_count = 0;
+		chunksForCreateMeshMutex.lock();
+		auto it = chunksForCreateMesh.begin();
+		while (it != chunksForCreateMesh.end()) {
+			if (Settings::RENDER_CHUNKS_BY_CYCLE_COUNT == 0 || created_count >= Settings::RENDER_CHUNKS_BY_CYCLE_COUNT) {
+				break;
 			}
-			rendered_count += chunks[i]->createMeshes();
+			Chunk* chunk = *it;
+			created_count += chunk->createMeshes();
+			it = chunksForCreateMesh.erase(it);
 		}
+		chunksForCreateMeshMutex.unlock();
 	}
+
+	void World::recreateAllMeshes()
+	{
+		chunksForCreateMeshMutex.lock();
+		for (unsigned int i = 0; i < chunks_world_count; ++i) {
+			chunks[i]->setNeedUpdateFullChunk();
+			chunksForCreateMesh.push_back(chunks[i]);
+		}
+		chunksForCreateMeshMutex.unlock();
+	}
+
 	void World::update() {
-		//for (int i = 0; i < chunks_world_count; ++i) {
-		//	if (chunks[i]->isForDelete() && chunks[i]->isGenerated()) {
-		//		chunks[i]->finalization();
-		//		delete chunks[i];
-		//		chunks[i] = nullptr;
-		//	}
-		//}
+		chunksForDestroyMutex.lock();
+		auto new_end = std::remove_if(chunksForDestroy.begin(), chunksForDestroy.end(), [](Chunk* chunk) {
+			if (chunk->isForDelete() && chunk->isGenerated() && !chunk->isGenerating()) {
+				chunk->finalization();
+				delete chunk;
+				return true;
+			}
+			return false;
+			});
+		chunksForDestroy.erase(new_end, chunksForDestroy.end());
+		chunksForDestroyMutex.unlock();
 	}
 	void World::serverUpdate()
 	{
-		for (int i = 0; i < chunks_world_count; ++i) {
-			if (chunks[i] != nullptr && !chunks[i]->isGenerated() && !chunks[i]->isGenerating()) {
+		chunksForGenerateMutex.lock();
+		auto it = chunksForGenerate.begin();
+		while (it != chunksForGenerate.end()) {
+			Chunk* chunk = *it;
+			if (chunk != nullptr && !chunk->isGenerated() && !chunk->isGenerating()) {
 				if (std::thread::hardware_concurrency() <= 2) {
-					chunks[i]->generate();
-				} else {
+					chunk->generate();
+					chunksForCreateMeshMutex.lock();
+					chunksForCreateMesh.push_back(chunk);
+					chunksForCreateMeshMutex.unlock();
+				}
+				else {
 					if (generateThreadsCount < std::thread::hardware_concurrency() - 2) {
-						std::shared_ptr<Chunk> chunkToGenerate = chunks[i];
-						std::thread th([chunkToGenerate]() {
-							if (chunkToGenerate) {
-								chunkToGenerate->generate();
+						std::thread th([chunk, this]() {
+							if (chunk != nullptr) {
+								chunk->generate();
+								chunksForCreateMeshMutex.lock();
+								chunksForCreateMesh.push_back(chunk);
+								chunksForCreateMeshMutex.unlock();
 							}
 							});
 						th.detach();
@@ -79,7 +112,10 @@ namespace bulka {
 					}
 				}
 			}
+			//std::cerr << (void*)(*it) << "/" << (void*)(*chunksForGenerate.end()) << std::endl;
+			it = chunksForGenerate.erase(it);
 		}
+		chunksForGenerateMutex.unlock();
 	}
 	void World::render() {
 		ShaderManager::chunkShader.bind();
@@ -118,7 +154,7 @@ namespace bulka {
 				std::floor(Engine::getHero().getChunksPosition().x),
 				std::floor(Engine::getHero().getChunksPosition().z)
 			);
-			std::shared_ptr<Chunk>* tempChunks = new std::shared_ptr<Chunk>[new_chunks_world_count];
+			Chunk** tempChunks = new Chunk* [new_chunks_world_count];
 			for (int x = -new_render_distance; x <= new_render_distance; ++x) {
 				for (int z = -new_render_distance; z <= new_render_distance; ++z) {
 					int i = ((x + new_render_distance) * new_chunks_world_width) + z + new_render_distance;
@@ -128,7 +164,10 @@ namespace bulka {
 						tempChunks[i]->setMoved(true);
 					}
 					else {
-						tempChunks[i] = std::make_shared<Chunk>(this, glm::ivec2(x, z), heroChunkPos + glm::ivec2(x, z));
+						tempChunks[i] = new Chunk(this, glm::ivec2(x, z), heroChunkPos + glm::ivec2(x, z));
+						chunksForGenerateMutex.lock();
+						chunksForGenerate.push_back(tempChunks[i]);
+						chunksForGenerateMutex.unlock();
 					}
 				}
 			}
@@ -138,7 +177,9 @@ namespace bulka {
 				}
 				else {
 					chunks[i]->setForDelete(true);
-					chunks[i]->finalization();
+					chunksForDestroyMutex.lock();
+					chunksForDestroy.push_back(chunks[i]);
+					chunksForDestroyMutex.unlock();
 				}
 			}
 			delete[] chunks;
@@ -155,7 +196,7 @@ namespace bulka {
 		//*logger << bcppul::TRACE << "Moving chunks with offset x: " << offsetX << "; z: " << offsetZ;
 		//offsetX = -offsetX;
 		//offsetZ = -offsetZ;
-		std::shared_ptr<Chunk>* tempChunks = new std::shared_ptr<Chunk>[chunks_world_count];
+		Chunk** tempChunks = new Chunk* [chunks_world_count];
 		for (unsigned int i = 0; i < chunks_world_count; ++i) {
 			tempChunks[i] = nullptr;
 		}
@@ -177,7 +218,9 @@ namespace bulka {
 				}
 				else {
 					chunks[i]->setForDelete(true);
-					chunks[i]->finalization();
+					chunksForDestroyMutex.lock();
+					chunksForDestroy.push_back(chunks[i]);
+					chunksForDestroyMutex.unlock();
 				}
 			}
 		}
@@ -186,7 +229,10 @@ namespace bulka {
 			for (int z = -render_distance; z <= render_distance; ++z) {
 				int i = ((x + render_distance) * chunks_world_width) + z + render_distance;
 				if (tempChunks[i] == nullptr) {
-					tempChunks[i] = std::make_shared<Chunk>(this, glm::ivec2(x, z), heroChunkPos + glm::ivec2(x, z));
+					tempChunks[i] = new Chunk(this, glm::ivec2(x, z), heroChunkPos + glm::ivec2(x, z));
+					chunksForGenerateMutex.lock();
+					chunksForGenerate.push_back(tempChunks[i]);
+					chunksForGenerateMutex.unlock();
 				}
 			}
 		}
@@ -195,8 +241,10 @@ namespace bulka {
 	}
 	void World::decreaseGenerateThreadsCount()
 	{
+		multiTChunkGeneratingMutex.lock();
 		if(generateThreadsCount != 0){
 			--generateThreadsCount;
 		}
+		multiTChunkGeneratingMutex.unlock();
 	}
 }

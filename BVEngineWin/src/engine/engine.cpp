@@ -287,6 +287,9 @@ namespace bulka {
 	{
 		Input::update();
 		Window::update();
+		if (Game::isStarted()) {
+			Game::getWorld()->update();
+		}
 	}
 	void Engine::postUpdate()
 	{

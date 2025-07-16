@@ -1,7 +1,9 @@
 #pragma once
 
 #include <vector>
+#include <list>
 #include <cmath>
+#include <mutex>
 #include <bcppul/logging.h>
 #include <memory> 
 
@@ -12,17 +14,26 @@ namespace bulka {
 	class World{
 	private:
 		static bcppul::Logger* logger;
-		std::shared_ptr<Chunk>* chunks = nullptr;
+		Chunk** chunks = nullptr;
+		std::vector<Chunk*> chunksForDestroy;
+		std::vector<Chunk*> chunksForCreateMesh;
+		std::vector<Chunk*> chunksForGenerate;
+		std::mutex chunksForCreateMeshMutex;
+		std::mutex chunksForGenerateMutex;
+		std::mutex chunksForDestroyMutex;
+		std::mutex multiTChunkGeneratingMutex;
 		int render_distance = 2;
 		int chunks_world_width = render_distance * 2 + 1;
 		int chunks_world_count = chunks_world_width * chunks_world_width;
 		int generateThreadsCount = 0;
+
 	protected:
 	public:
 		World();
 		~World();
 		void load();
 		void reload();
+		void recreateAllMeshes();
 		void generate();
 		void update();
 		void serverUpdate();
@@ -38,28 +49,28 @@ namespace bulka {
 		void decreaseGenerateThreadsCount();
 
 
-		inline std::shared_ptr<Chunk>* getChunks() {
+		inline Chunk** getChunks() {
 			return chunks;
 		}
-		inline std::shared_ptr<Chunk> getChunk(int x, int z) {
+		inline Chunk* getChunk(int x, int z) {
 			if (x > render_distance || x < -render_distance || z > render_distance || z < -render_distance) {
 				return nullptr;
 			}
 			return chunks[((x + render_distance) * chunks_world_width) + z + render_distance];
 		}
-		inline std::shared_ptr<Chunk> getChunk(int i) {
+		inline Chunk* getChunk(int i) {
 			if (i > chunks_world_count) {
 				return nullptr;
 			}
 			return chunks[i];
 		}
-		inline std::shared_ptr<Chunk> getChunk(glm::ivec2 position) {
+		inline Chunk* getChunk(glm::ivec2 position) {
 			if (position.x > render_distance || position.x < -render_distance || position.y > render_distance || position.y < -render_distance) {
 				return nullptr;
 			}
 			return chunks[((position.x + render_distance) * chunks_world_width) + position.y + render_distance];
 		}
-		inline std::shared_ptr<Chunk> getChunkInBlockCoords(int x, int z) {
+		inline Chunk* getChunkInBlockCoords(int x, int z) {
 			int chunkX = x / CHUNK_SIZE_X;
 			int chunkZ = z / CHUNK_SIZE_Z;
 			if (chunkX > render_distance || chunkX < -render_distance || chunkZ > render_distance || chunkZ < -render_distance) {
@@ -67,7 +78,7 @@ namespace bulka {
 			}
 			return chunks[((chunkX + render_distance) * chunks_world_width) + chunkZ + render_distance];
 		}
-		inline std::shared_ptr<Chunk> getChunkInBlockCoords(glm::ivec2 position) {
+		inline Chunk* getChunkInBlockCoords(glm::ivec2 position) {
 			int chunkX = position.x / CHUNK_SIZE_X;
 			int chunkZ = position.y / CHUNK_SIZE_Z;
 			if (position.x / CHUNK_SIZE_X > render_distance || position.y / CHUNK_SIZE_Z > render_distance) {

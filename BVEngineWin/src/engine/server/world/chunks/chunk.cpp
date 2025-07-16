@@ -28,12 +28,14 @@ namespace bulka {
 	}
 	Chunk::~Chunk()
 	{
-
+		//std::cout << "dctor" << position.x << ":" << position.y << std::endl;
 	}
 
 	void Chunk::finalization() {
+		//std::cout << "final " << generating << "/" << generated << "; " << initialized << " - " << position.x << " : " << position.y << std::endl;
 		initialized = false;
 		delete[] blocks;
+		blocks = nullptr;
 		deleteMeshes();
 	}
 
@@ -66,7 +68,7 @@ namespace bulka {
 				}
 			}
 		}
-		/*if (position.x != -world->getRenderDistance()) {
+		if (position.x != -world->getRenderDistance()) {
 			if (world->getChunk(position.x - 1, position.y) != nullptr) {
 				world->getChunk(position.x - 1, position.y)->setNeedUpdateFullChunk();
 			}
@@ -85,14 +87,16 @@ namespace bulka {
 			if (world->getChunk(position.x, position.y + 1) != nullptr) {
 				world->getChunk(position.x, position.y + 1)->setNeedUpdateFullChunk();
 			}
-		}*/
+		}
 		updateMeshes = 0xFFFF;
 		generated = true;
 		generating = false;
+		//std::cout << "generate " << generating << "/" << generated << " - " << position.x << " : " << position.y << std::endl;
 		world->decreaseGenerateThreadsCount();
 	}
 	int Chunk::mandelbrot(float x, float y)
 	{
+		return 10;
 		std::complex<float> c(x, y);
 		std::complex<float> z(0, 0);
 
@@ -356,7 +360,7 @@ namespace bulka {
 		if (updateMeshes == 0) {
 			return false;
 		}
-		//*logger << bcppul::TRACE << "Updating chunk mesh X:" << position.x << "; z:" << position.y;
+		//*logger << bcppul::TRACE << "Creating chunk mesh X:" << position.x << "; Z:" << position.y;
 		unsigned int created_count = 0;
 		for (unsigned int sub_chunk_i = 0; sub_chunk_i < SUB_CHUNKS_IN_CHUNK; ++sub_chunk_i)
 		{
@@ -374,6 +378,11 @@ namespace bulka {
 			glDeleteBuffers(1, &sub_chunks[i].VBO);
 			glDeleteBuffers(1, &sub_chunks[i].IBO);
 			glDeleteVertexArrays(1, &sub_chunks[i].VAO);
+			sub_chunks[i].VAO = 0;
+			sub_chunks[i].IBO = 0;
+			sub_chunks[i].VBO = 0;
+			sub_chunks[i].vertices_length = 0;
+			sub_chunks[i].indices_length = 0;
 		}
 	}
 	void Chunk::update() {
