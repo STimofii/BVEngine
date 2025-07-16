@@ -42,8 +42,8 @@ namespace bulka {
 		Chunk& operator=(const Chunk& other) = delete;
 		~Chunk();
 		void generate();
-		void createMesh(unsigned int sub_chunk_i);
-		void createMeshes();
+		bool createMesh(unsigned int sub_chunk_i);
+		bool createMeshes();
 		void deleteMeshes();
 		void update();
 		void render();

@@ -6,7 +6,7 @@ namespace bulka {
 	class World;
 	class Game {
 	private:
-		static long long tps;
+		static double tps;
 		static double deltaTime;
 		static const long long tpsLimit;
 		static const double tpsLimitDelta;
@@ -22,9 +22,9 @@ namespace bulka {
 		static void loop();
 		static void update();
 
-		static long long getTPS();
+		static double getTPS();
 		static double getDeltaTime();
-		static long long getTPSLimit();
+		static double getTPSLimit();
 		static double getLimitDelta();
 		static bool isStarted();
 		static World* getWorld();

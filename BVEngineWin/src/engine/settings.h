@@ -21,6 +21,7 @@ namespace bulka{
 		static bool V_SYNC;
 		static bool USE_POSTPROCESSING;
 		static long long RENDER_DISTANCE;
+		static long long RENDER_CHUNKS_BY_CYCLE_COUNT;
 
 		static void load();
 		static void reload();

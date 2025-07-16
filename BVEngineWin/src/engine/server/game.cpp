@@ -6,7 +6,7 @@ namespace bulka {
 	bcppul::Logger* Game::logger = bcppul::getLogger("Game");
 	const long long Game::tpsLimit = 20;
 	const double Game::tpsLimitDelta = 1.0 / tpsLimit;
-	long long Game::tps = 0;
+	double Game::tps = 0;
 	double Game::deltaTime = 0;
 	bool Game::started = false;
 	World* Game::world;
@@ -39,6 +39,8 @@ namespace bulka {
 		}
 		while (Engine::isRunning()) {
 			timeTickStart = Engine::unixTime();
+			world->serverUpdate();
+
 
 			do {
 				timeTickElapsed = Engine::unixTime() - timeTickStart;
@@ -54,13 +56,13 @@ namespace bulka {
 		}
 	}
 
-	long long Game::getTPS() {
+	double Game::getTPS() {
 		return tps;
 	}
 	double Game::getDeltaTime() {
 		return deltaTime;
 	}
-	long long Game::getTPSLimit() {
+	double Game::getTPSLimit() {
 		return tpsLimit;
 	}
 	double Game::getLimitDelta() {

@@ -26,6 +26,12 @@ namespace bulka {
 	}
 	Chunk::~Chunk()
 	{
+		
+	}
+
+	void Chunk::finalization() {
+		delete[] blocks;
+		deleteMeshes();
 	}
 
 	void Chunk::generate() {
@@ -71,10 +77,10 @@ namespace bulka {
 		updateMeshes = 0xFFFF;
 		generated = true;
 	}
-	void Chunk::createMesh(unsigned int sub_chunk_i)
+	bool Chunk::createMesh(unsigned int sub_chunk_i)
 	{
 		if (!generated) {
-			return;
+			return false;
 		}
 		updateMeshes = updateMeshes & ~(1 << sub_chunk_i);
 		SubChunk& subChunk = sub_chunks[sub_chunk_i];
@@ -284,7 +290,7 @@ namespace bulka {
 			subChunk.VBO = 0;
 			subChunk.vertices_length = 0;
 			subChunk.indices_length = 0;
-			return;
+			return false;
 		}
 		unsigned int VAO = 0;
 		unsigned int VBO = 0;
@@ -310,22 +316,26 @@ namespace bulka {
 		subChunk.VBO = VBO;
 		subChunk.vertices_length = vertices.size();
 		subChunk.indices_length = indices.size();
+		return true;
 	}
-	void Chunk::createMeshes() {
+
+	bool Chunk::createMeshes() {
 		if (!Engine::isRunning()) {
-			return;
+			return false;
 		}
 		if (updateMeshes == 0) {
-			return;
+			return false;
 		}
-		*logger << bcppul::TRACE << "Updating chunk mesh X:" << position.x << "; z:" << position.y;
+		//*logger << bcppul::TRACE << "Updating chunk mesh X:" << position.x << "; z:" << position.y;
+		unsigned int created_count = 0;
 		for (unsigned int sub_chunk_i = 0; sub_chunk_i < SUB_CHUNKS_IN_CHUNK; ++sub_chunk_i)
 		{
 			if (updateMeshes & 1 << sub_chunk_i) {
-				createMesh(sub_chunk_i);
+				created_count += createMesh(sub_chunk_i);
 			}
 		}
 		updateMeshes = 0;
+		return created_count != 0;
 	}
 	void Chunk::deleteMeshes()
 	{
@@ -654,11 +664,6 @@ namespace bulka {
 	void Chunk::setMoved(bool val)
 	{
 		moved = val;
-	}
-
-	void Chunk::finalization() {
-		delete[] blocks;
-		deleteMeshes();
 	}
 
 	glm::ivec2 Chunk::getPosition() {

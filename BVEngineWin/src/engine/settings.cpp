@@ -19,6 +19,7 @@ namespace bulka {
 	bool Settings::V_SYNC = false;
 	bool Settings::USE_POSTPROCESSING = true;
 	long long Settings::RENDER_DISTANCE = 2;
+	long long Settings::RENDER_CHUNKS_BY_CYCLE_COUNT = 1;
 
 	void Settings::load()
 	{
@@ -27,6 +28,7 @@ namespace bulka {
 	void Settings::reload()
 	{
 		RENDER_DISTANCE = getAndSetIfNotExists("game.graphics.render_distance", RENDER_DISTANCE);
+		RENDER_CHUNKS_BY_CYCLE_COUNT = getAndSetIfNotExists("game.graphics.render_chunks_by_cycle", RENDER_CHUNKS_BY_CYCLE_COUNT);
 		Game::getWorld()->setRenderDistance(RENDER_DISTANCE);
 		FONT = getAndSetIfNotExists("game.graphics.font", FONT);
 		FPS_LIMIT = getAndSetIfNotExists("game.graphics.fps_limit", FPS_LIMIT);

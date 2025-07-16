@@ -38,32 +38,35 @@ namespace bulka {
 
 	}
 	void World::generate() {
-		for (int x = -render_distance; x <= render_distance; ++x) {
-			for (int z = -render_distance; z <= render_distance; ++z) {
-				unsigned int i = ((x + render_distance) * chunks_world_width) + z + render_distance;
-				chunks[i]->generate();
-			}
-		}
+		//for (int i = 0; i < chunks_world_count; ++i) {
+		//	chunks[i]->generate();
+		//}
 	}
 	void World::reload() {
-		for (int x = -render_distance; x <= render_distance; ++x) {
-			for (int z = -render_distance; z <= render_distance; ++z) {
-				unsigned int i = ((x + render_distance) * chunks_world_width) + z + render_distance;
-				chunks[i]->createMeshes();
+		unsigned int rendered_count = 0;
+		for (int i = 0; i < chunks_world_count; ++i) {
+			if (rendered_count != 0 && rendered_count == Settings::RENDER_CHUNKS_BY_CYCLE_COUNT) {
+				return;
 			}
+			rendered_count += chunks[i]->createMeshes();
 		}
 	}
 	void World::update() {
 
 	}
+	void World::serverUpdate()
+	{
+		for (int i = 0; i < chunks_world_count; ++i) {
+			if (!chunks[i]->isGenerated()) {
+				chunks[i]->generate();
+			}
+		}
+	}
 	void World::render() {
 		ShaderManager::chunkShader.bind();
 		TextureManager::bindTexture("res/textures/blocks.png");
-		for (int x = -render_distance; x <= render_distance; ++x) {
-			for (int z = -render_distance; z <= render_distance; ++z) {
-				unsigned int i = ((x + render_distance) * chunks_world_width) + z + render_distance;
-				chunks[i]->render();
-			}
+		for (int i = 0; i < chunks_world_count; ++i) {
+			chunks[i]->render();
 		}
 		TextureManager::unbindTexture();
 		ShaderManager::chunkShader.unbind();
@@ -92,6 +95,10 @@ namespace bulka {
 		int new_chunks_world_width = new_render_distance * 2 + 1;
 		int new_chunks_world_count = new_chunks_world_width * new_chunks_world_width;
 		if (chunks != nullptr) {
+			glm::ivec2 heroChunkPos = glm::ivec2(
+				std::floor(Engine::getHero().getGlobalPosition().x / 16.0f),
+				std::floor(Engine::getHero().getGlobalPosition().z / 16.0f)
+			);
 			Chunk** tempChunks = new Chunk*[new_chunks_world_count];
 			for (int x = -new_render_distance; x <= new_render_distance; ++x) {
 				for (int z = -new_render_distance; z <= new_render_distance; ++z) {
@@ -102,8 +109,7 @@ namespace bulka {
 						tempChunks[i]->setMoved(true);
 					}
 					else {
-						tempChunks[i] = new Chunk(this, glm::ivec2(x, z), glm::ivec2(x, z));
-						tempChunks[i]->generate();
+						tempChunks[i] = new Chunk(this, glm::ivec2(x, z), heroChunkPos + glm::ivec2(x, z));
 					}
 				}
 			}
@@ -127,7 +133,7 @@ namespace bulka {
 		if (offsetX == 0 && offsetZ == 0) {
 			return;
 		}
-		*logger << bcppul::TRACE << "Moving chunks with offset x: " << offsetX << "; z: " << offsetZ;
+		//*logger << bcppul::TRACE << "Moving chunks with offset x: " << offsetX << "; z: " << offsetZ;
 		//offsetX = -offsetX;
 		//offsetZ = -offsetZ;
 		Chunk** tempChunks = new Chunk * [chunks_world_count]{};
@@ -162,7 +168,6 @@ namespace bulka {
 				int i = ((x + render_distance) * chunks_world_width) + z + render_distance;
 				if (tempChunks[i] == nullptr) {
 					tempChunks[i] = new Chunk(this, glm::ivec2(x, z), heroChunkPos + glm::ivec2(x, z));
-					tempChunks[i]->generate();
 				}
 			}
 		}

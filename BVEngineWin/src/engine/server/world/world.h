@@ -23,6 +23,7 @@ namespace bulka {
 		void reload();
 		void generate();
 		void update();
+		void serverUpdate();
 		void render();
 		void save();
 
