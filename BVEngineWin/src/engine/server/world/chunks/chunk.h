@@ -12,7 +12,7 @@ namespace bulka {
 #define SUB_CHUNKS_IN_CHUNK (CHUNK_SIZE_Y / SUB_CHUNK_SIZE_Y)
 #define CHUNK_VOLUME (CHUNK_SIZE_X * CHUNK_SIZE_Y * CHUNK_SIZE_Z)
 #define SUB_CHUNK_VOLUME (CHUNK_SIZE_X * SUB_CHUNK_SIZE_Y * CHUNK_SIZE_Z)
-#define RENDER_BLOCKS_ON_WORLD_EDGE true
+#define RENDER_BLOCKS_ON_WORLD_EDGE false
 	class World;
 	class Block;
 	class Chunk{
@@ -32,6 +32,7 @@ namespace bulka {
 		unsigned short* blocks = nullptr;
 		SubChunk sub_chunks[SUB_CHUNKS_IN_CHUNK]{};
 		bool moved = false;
+		bool generated = false;
 	protected:
 	public:
 		Chunk(World* world, glm::ivec2 position);
@@ -78,6 +79,7 @@ namespace bulka {
 		void setNeedUpdateFullChunk();
 		void setNeedUpdate(unsigned short meshes);
 		bool isMoved();
+		bool isGenerated();
 		void setMoved(bool val);
 	};
 

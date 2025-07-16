@@ -83,30 +83,31 @@ namespace bulka {
 	}
 	void World::setRenderDistance(int val)
 	{
-		int old_render_distance = render_distance;
-		int old_chunks_world_width = chunks_world_width;
-		int old_chunks_world_count = chunks_world_count;
-		render_distance = val;
-		chunks_world_width = render_distance * 2 + 1;
-		chunks_world_count = chunks_world_width * chunks_world_width;
+		if (this == nullptr) {
+			return;
+		}
+		int new_render_distance = val;
+		int new_chunks_world_width = new_render_distance * 2 + 1;
+		int new_chunks_world_count = new_chunks_world_width * new_chunks_world_width;
 		if (chunks != nullptr) {
-			Chunk** tempChunks = new Chunk*[chunks_world_count];
-			for (int x = -render_distance; x <= render_distance; ++x) {
-				for (int z = -render_distance; z <= render_distance; ++z) {
-					int i = ((x + render_distance) * chunks_world_width) + z + render_distance;
-
-					if (x >= -old_render_distance && x <= old_render_distance && z >= -old_render_distance && z <= old_render_distance) {
-						int old_i = ((x + old_render_distance) * old_chunks_world_width) + z + old_render_distance;
+			Chunk** tempChunks = new Chunk*[new_chunks_world_count];
+			for (int x = -new_render_distance; x <= new_render_distance; ++x) {
+				for (int z = -new_render_distance; z <= new_render_distance; ++z) {
+					int i = ((x + new_render_distance) * new_chunks_world_width) + z + new_render_distance;
+					if (i == -1) {
+						i = new_chunks_world_count;
+					}
+					if (x >= -render_distance && x <= render_distance && z >= -render_distance && z <= render_distance) {
+						int old_i = ((x + render_distance) * chunks_world_width) + z + render_distance;
 						tempChunks[i] = chunks[old_i];
 						tempChunks[i]->setMoved(true);
 					}
 					else {
 						tempChunks[i] = new Chunk(this, glm::ivec2(x, z));
-						tempChunks[i]->generate();
 					}
 				}
 			}
-			for (unsigned int i = 0; i < old_chunks_world_count; ++i) {
+			for (unsigned int i = 0; i < chunks_world_count; ++i) {
 				if(chunks[i]->isMoved()){
 					chunks[i]->setMoved(false);
 				}
@@ -115,8 +116,18 @@ namespace bulka {
 					delete chunks[i];
 				}
 			}
+			for (unsigned int i = 0; i < new_chunks_world_count; i++)
+			{
+				if (!tempChunks[i]->isGenerated())
+				{
+					tempChunks[i]->generate();
+				}
+			}
 			delete[] chunks;
 			chunks = tempChunks;
 		}
+		render_distance = new_render_distance;
+		chunks_world_width = new_chunks_world_width;
+		chunks_world_count = new_chunks_world_count;
 	}
 }

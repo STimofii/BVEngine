@@ -10,6 +10,7 @@
 
 #include "../../blocks/block.h"
 #include "../../../engine.h"
+#include "../../../hero.h"
 #include "../../../graphics/shader_manager.h"
 #include "../../blocks/blocks_manager.h"
 #include "../world.h"
@@ -44,7 +45,34 @@ namespace bulka {
 				}
 			}
 		}
+		//if (position.x == -1 && position.y == 3) {
+		//	std::cerr << position.x << ": " << position.y << std::endl;
+
+		//}
+		if (position.x != -world->getRenderDistance()) {
+			if (world->getChunk(position.x - 1, position.y) != nullptr) {
+				world->getChunk(position.x - 1, position.y)->setNeedUpdateFullChunk();
+			}
+		}
+		if (position.x != world->getRenderDistance()) {
+			if (world->getChunk(position.x + 1, position.y) != nullptr) {
+				world->getChunk(position.x + 1, position.y)->setNeedUpdateFullChunk();
+			}
+		}
+		if (position.y != -world->getRenderDistance()) {
+			if (world->getChunk(position.x, position.y - 1) != nullptr) {
+				world->getChunk(position.x, position.y - 1)->setNeedUpdateFullChunk();
+			}
+		}
+		if (position.y != world->getRenderDistance()) {
+			if (world->getChunk(position.x, position.y + 1) != nullptr) {
+				world->getChunk(position.x, position.y + 1)->setNeedUpdateFullChunk();
+			}
+		}
+		else {
+		}
 		updateMeshes = 0xFFFF;
+		generated = true;
 	}
 	void Chunk::createMesh(unsigned int sub_chunk_i)
 	{
@@ -122,7 +150,6 @@ namespace bulka {
 							neighbors = neighbors | (world->getChunk(position.x + 1, position.y)->isBlockPrefabHasAlpha(0, y, z)) << 3;
 						}
 					}
-
 
 					if (y != 0) {
 						if (isBlockPrefabHasAlpha(x, y - 1, z)) {
@@ -617,6 +644,11 @@ namespace bulka {
 	bool Chunk::isMoved()
 	{
 		return moved;
+	}
+
+	bool Chunk::isGenerated()
+	{
+		return generated;
 	}
 
 	void Chunk::setMoved(bool val)

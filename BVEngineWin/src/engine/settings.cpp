@@ -27,7 +27,7 @@ namespace bulka {
 	void Settings::reload()
 	{
 		RENDER_DISTANCE = getAndSetIfNotExists("game.graphics.render_distance", RENDER_DISTANCE);
-		//Game::getWorld()->setRenderDistance(RENDER_DISTANCE);
+		Game::getWorld()->setRenderDistance(RENDER_DISTANCE);
 		FONT = getAndSetIfNotExists("game.graphics.font", FONT);
 		FPS_LIMIT = getAndSetIfNotExists("game.graphics.fps_limit", FPS_LIMIT);
 		Engine::setFPSLimit(FPS_LIMIT);
