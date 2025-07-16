@@ -8,7 +8,33 @@ namespace bulka {
 		blocks.clear();
 		unsigned short id = 0;
 		blocks.push_back(nullptr);
-		blocks.push_back(new Block(++id, "stone", false));
+		Block* stone = new Block(++id, "stone", false,
+			*Block::Face(Block::defaultFaceBack).setTextureX(0)->setTextureY(0)->recalcVertices(),
+			*Block::Face(Block::defaultFaceFront).setTextureX(0)->setTextureY(0)->recalcVertices(),
+			*Block::Face(Block::defaultFaceLeft).setTextureX(0)->setTextureY(0)->recalcVertices(),
+			*Block::Face(Block::defaultFaceRight).setTextureX(0)->setTextureY(0)->recalcVertices(),
+			*Block::Face(Block::defaultFaceBottom).setTextureX(0)->setTextureY(0)->recalcVertices(),
+			*Block::Face(Block::defaultFaceTop).setTextureX(0)->setTextureY(0)->recalcVertices()
+		);
+		blocks.push_back(stone);
+		Block* dirt = new Block(++id, "grass", false, 
+			*Block::Face(Block::defaultFaceBack).setTextureX(1)->setTextureY(0)->recalcVertices(),
+			*Block::Face(Block::defaultFaceFront).setTextureX(1)->setTextureY(0)->recalcVertices(),
+			*Block::Face(Block::defaultFaceLeft).setTextureX(1)->setTextureY(0)->recalcVertices(),
+			*Block::Face(Block::defaultFaceRight).setTextureX(1)->setTextureY(0)->recalcVertices(),
+			*Block::Face(Block::defaultFaceBottom).setTextureX(3)->setTextureY(0)->recalcVertices(),
+			*Block::Face(Block::defaultFaceTop).setTextureX(2)->setTextureY(0)->recalcVertices()
+		);
+		blocks.push_back(dirt);
+		Block* grass = new Block(++id, "grass", false, 
+			*Block::Face(Block::defaultFaceBack).setTextureX(3)->setTextureY(0)->recalcVertices(),
+			*Block::Face(Block::defaultFaceFront).setTextureX(3)->setTextureY(0)->recalcVertices(),
+			*Block::Face(Block::defaultFaceLeft).setTextureX(3)->setTextureY(0)->recalcVertices(),
+			*Block::Face(Block::defaultFaceRight).setTextureX(3)->setTextureY(0)->recalcVertices(),
+			*Block::Face(Block::defaultFaceBottom).setTextureX(3)->setTextureY(0)->recalcVertices(),
+			*Block::Face(Block::defaultFaceTop).setTextureX(3)->setTextureY(0)->recalcVertices()
+		);
+		blocks.push_back(grass);
 	}
 	void BlocksManager::finalization() {
 		for (auto block : blocks) {

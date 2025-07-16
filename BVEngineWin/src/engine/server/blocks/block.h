@@ -48,16 +48,14 @@ namespace bulka {
 
 
 
-
-
 			float* vertices = nullptr;
 			unsigned int vertices_length = 0;
 			unsigned int* indices = nullptr;
 			unsigned int indices_length = 0;
 			float textureX = 0;
 			float textureY = 0;
-			float textureWidth = ONE_BLOCK_TEXTURE_PART_X;
-			float textureHeight = ONE_BLOCK_TEXTURE_PART_Y;
+			float textureWidth = 1;
+			float textureHeight = 1;
 			glm::vec3 normal;
 			Face(float* vertices = nullptr,
 				unsigned int vertices_length = 0,
@@ -69,53 +67,30 @@ namespace bulka {
 				float textureHeight = 1.0f,
 				glm::vec3 normal = glm::vec3()
 			);
+			Face(const Face& other);
 			virtual ~Face();
 
-			void recalcVertices();
+			Face* setVertices(float* vertices, unsigned int vertices_length);
+			Face* setIndices(unsigned int* indices, unsigned int indices_length);
+			Face* setTextureX(float val);
+			Face* setTextureY(float val);
+			Face* setTextureWidth(float val);
+			Face* setTextureHeight(float val);
+
+			Face* recalcVertices();
 		};
+		
+		static Face defaultFaceBack;
+		static Face defaultFaceFront;
+		static Face defaultFaceLeft;
+		static Face defaultFaceRight;
+		static Face defaultFaceBottom;
+		static Face defaultFaceTop;
 		Block(unsigned short id, std::string name, bool hasAlpha = false,
-			Face back = Face(
-							Face::defaultVerticesBack, Face::defaultVerticesBottomLength, 
-							Face::defaultIndicesBack, Face::defaultIndicesBackLength,
-							0.0f, 0.0f,
-							1.0f, 1.0f, 
-							glm::vec3{0, 0, -1}
-			),
-			Face front = Face(
-							Face::defaultVerticesFront, Face::defaultVerticesFrontLength,
-							Face::defaultIndicesFront, Face::defaultIndicesFrontLength,
-							0.0f, 0.0f,
-							1.0f, 1.0f,
-							glm::vec3{0, 0, 1}
-			), 
-			Face left = Face(
-							Face::defaultVerticesLeft, Face::defaultVerticesLeftLength,
-							Face::defaultIndicesLeft, Face::defaultIndicesLeftLength,
-							0.0f, 0.0f,
-							1.0f, 1.0f,
-							glm::vec3{-1, 0, 0}
-			), 
-			Face right = Face(
-							Face::defaultVerticesRight, Face::defaultVerticesRightLength,
-							Face::defaultIndicesRight, Face::defaultIndicesRightLength,
-							0.0f, 0.0f,
-							1.0f, 1.0f,
-							glm::vec3{1, 0, 0}
-			),
-			Face bottom = Face(
-							Face::defaultVerticesBottom, Face::defaultVerticesBottomLength,
-							Face::defaultIndicesBottom, Face::defaultIndicesBottomLength,
-							0.0f, 0.0f,
-							1.0f, 1.0f,
-							glm::vec3{0, -1, 0}
-			), 
-			Face top = Face(
-							Face::defaultVerticesTop, Face::defaultVerticesTopLength,
-							Face::defaultIndicesTop, Face::defaultIndicesTopLength,
-							0.0f, 0.0f,
-							1.0f, 1.0f,
-							glm::vec3{ 0, 1, 0 }
-			));
+			Face back = defaultFaceBack, Face front = defaultFaceFront,
+			Face left = defaultFaceLeft, Face right = defaultFaceRight,
+			Face bottom = defaultFaceBottom, Face top = defaultFaceTop
+			);
 		virtual ~Block();
 
 		unsigned short id;

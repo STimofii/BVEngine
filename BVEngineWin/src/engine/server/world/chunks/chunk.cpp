@@ -36,6 +36,12 @@ namespace bulka {
 					if (y < 5) {
 						blocks[i] = 1;
 					}
+					if (y >= 5 && y <= 10) {
+						blocks[i] = 3;
+					}
+					if (y == 11) {
+						blocks[i] = 2;
+					}
 				}
 			}
 		}
@@ -235,6 +241,16 @@ namespace bulka {
 				}
 			}
 		}
+
+		//for (unsigned int i = 0; i < vertices.size() / 5; i++)
+		//{
+		//	std::cout << "XYZ: " << vertices[i * 5] << "; " << vertices[i * 5 + 1] << "; " << vertices[i * 5 + 2] << "; UV: " << vertices[i * 5 + 3] << "; " << vertices[i * 5 + 4] << std::endl;
+		//}
+		//for (unsigned int i = 0; i < indices.size() / 6; i++)
+		//{
+		//	std::cout << indices[i * 6 + 0] << ", " << indices[i * 6 + 1] << ", " << indices[i * 6 + 2] << "\t" 
+		//		<< indices[i * 6 + 3] << ", " << indices[i * 6 + 4] << ", " << indices[i * 6 + 5] << std::endl;
+		//}
 
 		if (vertices.size() == 0 || indices.size() == 0) {
 			subChunk.VAO = 0;

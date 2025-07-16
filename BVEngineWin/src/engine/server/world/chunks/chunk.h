@@ -28,7 +28,7 @@ namespace bulka {
 		World* world;
 		glm::ivec2 position;
 		glm::ivec2 blockStartPosition;
-		unsigned short updateMeshes = 0b1111111111111111;
+		unsigned short updateMeshes = 0b0;
 		unsigned short* blocks = nullptr;
 		SubChunk sub_chunks[SUB_CHUNKS_IN_CHUNK]{};
 		bool moved = false;
