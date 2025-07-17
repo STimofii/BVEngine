@@ -17,11 +17,13 @@ namespace bulka {
 		static bcppul::Logger* logger;
 		Chunk** chunks = nullptr;
 		std::vector<Chunk*> chunksForDestroy;
-		std::vector<Chunk*> chunksForCreateMesh;
+		std::vector<Chunk*> chunksForPrepareMesh;
+		std::vector<Chunk*> chunksForUploadMesh;
 		std::vector<Chunk*> chunksForGenerate;
-		std::mutex chunksForCreateMeshMutex;
+		std::mutex chunksForUploadMeshMutex;
 		std::mutex chunksForGenerateMutex;
 		std::mutex chunksForDestroyMutex;
+		std::mutex chunksForPrepareMeshMutex;
 		std::mutex chunksForDestroyDeletingMutex;
 		int render_distance = 2;
 		int chunks_world_width = render_distance * 2 + 1;
@@ -43,18 +45,21 @@ namespace bulka {
 		void save();
 
 		void addChunkForGenerate(Chunk* chunk);
-		void addChunkForCreateMesh(Chunk* chunk);
+		void addChunkForUploadMesh(Chunk* chunk);
 		void addChunkForDestroy(Chunk* chunk);
-
+		void addChunkForPrepareMesh(Chunk* chunk);
 		std::vector<Chunk*>& getChunksForGenerate();
-		std::vector<Chunk*>& getChunksForCreateMesh();
+		std::vector<Chunk*>& getChunksForUploadMesh();
 		std::vector<Chunk*>& getChunksForDestroy();
+		std::vector<Chunk*>& getChunksForPrepareMesh();
 		void removeChunkFromChunksForGenerate(Chunk* chunk);
-		void removeChunkFromChunksForCreateMesh(Chunk* chunk);
+		void removeChunkFromChunksForUploadMesh(Chunk* chunk);
 		void removeChunkFromChunksForDestroy(Chunk* chunk);
+		void removeChunkFromChunksForPrepareMesh(Chunk* chunk);
 		unsigned int getChunksForGenerateSize();
-		unsigned int getChunksForCreateMeshSize();
+		unsigned int getChunksForUploadMeshSize();
 		unsigned int getChunksForDestroySize();
+		unsigned int getChunksForPrepareMeshSize();
 
 		int getLoadedChunksCount();
 		void increaseLoadedChunksCount();

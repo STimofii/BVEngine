@@ -66,7 +66,7 @@ namespace bulka {
 			ss.str("");
 			ss.clear();
 			
-			ss << "Chunks For Generate/Create/Destroy: " <<	world->getChunksForGenerateSize() << "/" << world->getChunksForCreateMeshSize() << "/" << world->getChunksForDestroySize() << "\n";
+			ss << "Chunks For - Generate PrepareCreate/Create; Destroy: " << world->getChunksForGenerateSize() << "; "<< world->getChunksForPrepareMeshSize() << "/" << world->getChunksForUploadMeshSize() << "; " << world->getChunksForDestroySize() << "\n";
 			ss << "GenerateChunks Threads count: " << world->getGenerateThreadsCount() << "\n";
 			ss << "Loaded chunks: " << world->getLoadedChunksCount() << "\n";
 			right_top_text->setText(ss.str());

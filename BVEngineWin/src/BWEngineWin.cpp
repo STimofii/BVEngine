@@ -10,6 +10,7 @@ int main()
 	bcppul::console_log_level = bcppul::TRACE;
 	bcppul::file_log_level = bcppul::NONE;
 	
+	//int code = bulka::Engine::run();
 	try {
 		bcppul::initLogging();
 		BWELogger->info("Starting!!!");

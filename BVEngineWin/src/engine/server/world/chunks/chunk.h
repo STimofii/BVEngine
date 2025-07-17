@@ -4,6 +4,9 @@
 #include <glm/ext.hpp>
 #include <bcppul/logging.h>
 
+#include <vector>
+#include <memory>
+
 namespace bulka {
 #define CHUNK_SIZE_X 16
 #define CHUNK_SIZE_Y 256
@@ -39,6 +42,11 @@ namespace bulka {
 		bool initialized = false;
 		bool destroyed = false;
 		bool forDeleting = false;
+		std::vector<float> v_vertices[SUB_CHUNKS_IN_CHUNK];
+		std::vector<unsigned int> v_indices[SUB_CHUNKS_IN_CHUNK];
+		std::atomic<unsigned short> prepared = 0;
+		unsigned short loaded = 0;
+		std::mutex chunkMutex;
 	protected:
 	public:
 		Chunk(World* world, glm::ivec2 position, glm::ivec2 globalPosition);
@@ -47,8 +55,10 @@ namespace bulka {
 		~Chunk();
 		void generate();
 		int mandelbrot(float x, float y);
-		bool createMesh(unsigned int sub_chunk_i);
-		bool createMeshes();
+		void prepareMesh(unsigned int sub_chunk_i);
+		void prepareMeshes();
+		bool loadMesh(unsigned int sub_chunk_i);
+		bool loadMeshes();
 		void deleteMeshes();
 		void update();
 		void render();
@@ -108,6 +118,7 @@ namespace bulka {
 		bool isGenerating();
 		void setMoved(bool val);
 		bool isForDeleting();
+		bool isDestroyed();
 		void setForDeleting(bool val);
 	};
 
