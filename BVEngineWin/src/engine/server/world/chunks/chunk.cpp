@@ -19,6 +19,7 @@ namespace bulka {
 	bcppul::Logger* Chunk::logger = bcppul::getLogger("Chunk");
 	Chunk::Chunk(World* world, glm::ivec2 position, glm::ivec2 globalPosition) : position(position), globalPosition(globalPosition), world(world)
 	{
+		world->increaseLoadedChunksCount();
 		blockStartPosition.x = position.x * CHUNK_SIZE_X;
 		blockStartPosition.y = position.y * CHUNK_SIZE_Z;
 		blockStartGlobalPosition.x = globalPosition.x * CHUNK_SIZE_X;
@@ -39,13 +40,14 @@ namespace bulka {
 		delete[] blocks;
 		blocks = nullptr;
 		deleteMeshes();
+		world->decreaseLoadedChunksCount();
 	}
 
 	void Chunk::generate() {
 		if (this == nullptr) {
 			return;
 		}
-		if (!initialized){
+		if (!initialized || destroyed){
 			return;
 		}
 		generating = true;
@@ -58,8 +60,8 @@ namespace bulka {
 					unsigned int i = ((y * CHUNK_SIZE_X * CHUNK_SIZE_Z) + x * CHUNK_SIZE_Z) + z;
 					//unsigned int fun = std::abs(static_cast<int>(blockStartGlobalPosition.x + x));
 					unsigned int fun = mandelbrot(
-						(blockStartGlobalPosition.x + static_cast<float>(x)) / 100.0f,
-						(blockStartGlobalPosition.y + static_cast<float>(z)) / 100.0f);
+						(blockStartGlobalPosition.x + static_cast<float>(x)) / 1000.0f,
+						(blockStartGlobalPosition.y + static_cast<float>(z)) / 1000.0f);
 					if (y < 5) {
 						blocks[i] = 1;
 					} else if (y >= 5 && y <= fun) {
@@ -71,23 +73,31 @@ namespace bulka {
 			}
 		}
 		if (position.x != -world->getRenderDistance()) {
-			if (world->getChunk(position.x - 1, position.y) != nullptr) {
-				world->getChunk(position.x - 1, position.y)->setNeedUpdateFullChunk();
+			Chunk* neighbor = world->getChunk(position.x - 1, position.y);
+			if (neighbor != nullptr) {
+				neighbor->setNeedUpdateFullChunk();
+				world->addChunkForCreateMesh(neighbor);
 			}
 		}
 		if (position.x != world->getRenderDistance()) {
-			if (world->getChunk(position.x + 1, position.y) != nullptr) {
-				world->getChunk(position.x + 1, position.y)->setNeedUpdateFullChunk();
+			Chunk* neighbor = world->getChunk(position.x + 1, position.y);
+			if (neighbor != nullptr) {
+				neighbor->setNeedUpdateFullChunk();
+				world->addChunkForCreateMesh(neighbor);
 			}
 		}
 		if (position.y != -world->getRenderDistance()) {
-			if (world->getChunk(position.x, position.y - 1) != nullptr) {
-				world->getChunk(position.x, position.y - 1)->setNeedUpdateFullChunk();
+			Chunk* neighbor = world->getChunk(position.x, position.y - 1);
+			if (neighbor != nullptr) {
+				neighbor->setNeedUpdateFullChunk();
+				world->addChunkForCreateMesh(neighbor);
 			}
 		}
 		if (position.y != world->getRenderDistance()) {
-			if (world->getChunk(position.x, position.y + 1) != nullptr) {
-				world->getChunk(position.x, position.y + 1)->setNeedUpdateFullChunk();
+			Chunk* neighbor = world->getChunk(position.x, position.y + 1);
+			if (neighbor != nullptr) {
+				neighbor->setNeedUpdateFullChunk();
+				world->addChunkForCreateMesh(neighbor);
 			}
 		}
 		updateMeshes = 0xFFFF;
@@ -118,7 +128,7 @@ namespace bulka {
 		if (this == nullptr || destroyed || blocks == nullptr) {
 			return true;
 		}
-		if (!generated) {
+		if (!generated || !initialized) {
 			return false;
 		}
 		updateMeshes = updateMeshes & ~(1 << sub_chunk_i);

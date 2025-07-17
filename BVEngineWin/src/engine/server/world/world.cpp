@@ -66,7 +66,9 @@ namespace bulka {
 				break;
 			}
 			Chunk* chunk = *it;
-			created_count += chunk->createMeshes();
+			if (std::find(chunksForDestroy.begin(), chunksForDestroy.end(), chunk) == chunksForDestroy.end()) {
+				created_count += chunk->createMeshes();
+			}
 			it = chunksForCreateMesh.erase(it);
 		}
 		chunksForCreateMeshMutex.unlock();
@@ -91,10 +93,12 @@ namespace bulka {
 			Chunk* chunk = *it;
 			if (chunk != nullptr && !chunk->isGenerated() && !chunk->isGenerating()) {
 				if (std::thread::hardware_concurrency() <= 2) {
-					chunk->generate();
-					chunksForCreateMeshMutex.lock();
-					chunksForCreateMesh.push_back(chunk);
-					chunksForCreateMeshMutex.unlock();
+					if (std::find(chunksForDestroy.begin(), chunksForDestroy.end(), chunk) == chunksForDestroy.end()) {
+						chunk->generate();
+						chunksForCreateMeshMutex.lock();
+						chunksForCreateMesh.push_back(chunk);
+						chunksForCreateMeshMutex.unlock();
+					}
 				}
 				else {
 					if (generateThreadsCount < std::thread::hardware_concurrency() - 2) {
@@ -114,7 +118,6 @@ namespace bulka {
 					}
 				}
 			}
-			//std::cerr << (void*)(*it) << "/" << (void*)(*chunksForGenerate.end()) << std::endl;
 			it = chunksForGenerate.erase(it);
 		}
 		chunksForGenerateMutex.unlock();
@@ -130,6 +133,60 @@ namespace bulka {
 	}
 	void World::save() {
 
+	}
+	void World::addChunkForGenerate(Chunk* chunk)
+	{
+		chunksForGenerateMutex.lock();
+		chunksForGenerate.push_back(chunk);
+		chunksForGenerateMutex.unlock();
+	}
+	void World::addChunkForCreateMesh(Chunk* chunk)
+	{
+		chunksForCreateMeshMutex.lock();
+		chunksForCreateMesh.push_back(chunk);
+		chunksForCreateMeshMutex.unlock();
+	}
+	void World::addChunkForDestroy(Chunk* chunk)
+	{
+		chunksForDestroyMutex.lock();
+		chunksForDestroy.push_back(chunk);
+		chunksForDestroyMutex.unlock();
+	}
+	std::vector<Chunk*> World::getChunksForGenerate()
+	{
+		return chunksForGenerate;
+	}
+	std::vector<Chunk*> World::getChunksForCreateMesh()
+	{
+		return chunksForCreateMesh;
+	}
+	std::vector<Chunk*> World::getChunksForDestroy()
+	{
+		return chunksForDestroy;
+	}
+	unsigned int World::getChunksForGenerateSize()
+	{
+		return chunksForGenerate.size();
+	}
+	unsigned int World::getChunksForCreateMeshSize()
+	{
+		return chunksForCreateMesh.size();
+	}
+	unsigned int World::getChunksForDestroySize()
+	{
+		return chunksForDestroy.size();
+	}
+	int World::getLoadedChunksCount()
+	{
+		return loadedChunksCount.load();
+	}
+	void World::increaseLoadedChunksCount()
+	{
+		++loadedChunksCount;
+	}
+	void World::decreaseLoadedChunksCount()
+	{
+		--loadedChunksCount;
 	}
 	int World::getRenderDistance()
 	{
@@ -173,16 +230,16 @@ namespace bulka {
 					}
 				}
 			}
+			chunksForDestroyMutex.lock();
 			for (unsigned int i = 0; i < chunks_world_count; ++i) {
 				if(chunks[i]->isMoved()){
 					chunks[i]->setMoved(false);
 				}
 				else {
-					chunksForDestroyMutex.lock();
 					chunksForDestroy.push_back(chunks[i]);
-					chunksForDestroyMutex.unlock();
 				}
 			}
+			chunksForDestroyMutex.unlock();
 			delete[] chunks;
 			chunks = tempChunks;
 		}

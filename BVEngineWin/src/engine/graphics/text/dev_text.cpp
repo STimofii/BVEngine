@@ -44,6 +44,7 @@ namespace bulka {
 	}
 	void DevText::update() {
 		if (visible) {
+			World* world = Game::getWorld();
 			glm::vec3 position = Engine::getHero().getCamera().getPosition();
 			glm::ivec3 chunksPosition = Engine::getHero().getChunksPosition();
 			glm::ivec3 worldPosition = Engine::getHero().getWorldPosition();
@@ -64,7 +65,9 @@ namespace bulka {
 			left_top_text->setText(ss.str());
 			ss.str("");
 			ss.clear();
-
+			
+			ss << "Chunks For Generate/Create/Destroy: " <<	world->getChunksForGenerateSize() << "/" << world->getChunksForCreateMeshSize() << "/" << world->getChunksForDestroySize() << "\n";
+			ss << "Loaded chunks: " << world->getLoadedChunksCount() << "\n";
 			right_top_text->setText(ss.str());
 			ss.str("");
 			ss.clear();

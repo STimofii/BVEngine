@@ -6,6 +6,7 @@
 #include <mutex>
 #include <bcppul/logging.h>
 #include <memory> 
+#include <atomic> 
 
 #include "chunks/chunk.h"
 
@@ -27,6 +28,8 @@ namespace bulka {
 		int chunks_world_count = chunks_world_width * chunks_world_width;
 		int generateThreadsCount = 0;
 
+		std::atomic<int> loadedChunksCount = 0;
+
 	protected:
 	public:
 		World();
@@ -39,6 +42,21 @@ namespace bulka {
 		void serverUpdate();
 		void render();
 		void save();
+
+		void addChunkForGenerate(Chunk* chunk);
+		void addChunkForCreateMesh(Chunk* chunk);
+		void addChunkForDestroy(Chunk* chunk);
+
+		std::vector<Chunk*> getChunksForGenerate();
+		std::vector<Chunk*> getChunksForCreateMesh();
+		std::vector<Chunk*> getChunksForDestroy();
+		unsigned int getChunksForGenerateSize();
+		unsigned int getChunksForCreateMeshSize();
+		unsigned int getChunksForDestroySize();
+
+		int getLoadedChunksCount();
+		void increaseLoadedChunksCount();
+		void decreaseLoadedChunksCount();
 
 		int getRenderDistance();
 		int getChunksWorldWidth();
