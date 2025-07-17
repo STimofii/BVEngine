@@ -50,7 +50,6 @@ namespace bulka {
 		if (!initialized || destroyed){
 			return;
 		}
-		generating = true;
 		for (unsigned int y = 0; y < CHUNK_SIZE_Y; y++)
 		{
 			for (unsigned int x = 0; x < CHUNK_SIZE_X; x++)
@@ -102,9 +101,8 @@ namespace bulka {
 		}
 		updateMeshes = 0xFFFF;
 		generated = true;
-		generating = false;
+		//world->decreaseGenerateThreadsCount();
 		//std::cout << "generate " << generating << "/" << generated << " - " << position.x << " : " << position.y << std::endl;
-		world->decreaseGenerateThreadsCount();
 	}
 	int Chunk::mandelbrot(float x, float y)
 	{
@@ -718,6 +716,11 @@ namespace bulka {
 		return generated;
 	}
 
+	void Chunk::setGenerating(bool val)
+	{
+		generating.store(val);
+	}
+
 	bool Chunk::isGenerating()
 	{
 		return generating;
@@ -726,6 +729,16 @@ namespace bulka {
 	void Chunk::setMoved(bool val)
 	{
 		moved = val;
+	}
+
+	bool Chunk::isForDeleting()
+	{
+		return forDeleting;
+	}
+
+	void Chunk::setForDeleting(bool val)
+	{
+		forDeleting = val;
 	}
 
 	glm::ivec2 Chunk::getPosition() {

@@ -34,10 +34,11 @@ namespace bulka {
 		unsigned short* blocks = nullptr;
 		SubChunk sub_chunks[SUB_CHUNKS_IN_CHUNK]{};
 		bool moved = false;
-		bool generating= false;
+		std::atomic<bool> generating= false;
 		bool generated = false;
 		bool initialized = false;
 		bool destroyed = false;
+		bool forDeleting = false;
 	protected:
 	public:
 		Chunk(World* world, glm::ivec2 position, glm::ivec2 globalPosition);
@@ -103,8 +104,11 @@ namespace bulka {
 		void setNeedUpdate(unsigned short meshes);
 		bool isMoved();
 		bool isGenerated();
+		void setGenerating(bool val);
 		bool isGenerating();
 		void setMoved(bool val);
+		bool isForDeleting();
+		void setForDeleting(bool val);
 	};
 
 }

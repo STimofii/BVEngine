@@ -22,14 +22,13 @@ namespace bulka {
 		std::mutex chunksForCreateMeshMutex;
 		std::mutex chunksForGenerateMutex;
 		std::mutex chunksForDestroyMutex;
-		std::mutex multiTChunkGeneratingMutex;
+		std::mutex chunksForDestroyDeletingMutex;
 		int render_distance = 2;
 		int chunks_world_width = render_distance * 2 + 1;
 		int chunks_world_count = chunks_world_width * chunks_world_width;
-		int generateThreadsCount = 0;
 
+		std::atomic<int> generateThreadsCount = 0;
 		std::atomic<int> loadedChunksCount = 0;
-
 	protected:
 	public:
 		World();
@@ -47,9 +46,12 @@ namespace bulka {
 		void addChunkForCreateMesh(Chunk* chunk);
 		void addChunkForDestroy(Chunk* chunk);
 
-		std::vector<Chunk*> getChunksForGenerate();
-		std::vector<Chunk*> getChunksForCreateMesh();
-		std::vector<Chunk*> getChunksForDestroy();
+		std::vector<Chunk*>& getChunksForGenerate();
+		std::vector<Chunk*>& getChunksForCreateMesh();
+		std::vector<Chunk*>& getChunksForDestroy();
+		void removeChunkFromChunksForGenerate(Chunk* chunk);
+		void removeChunkFromChunksForCreateMesh(Chunk* chunk);
+		void removeChunkFromChunksForDestroy(Chunk* chunk);
 		unsigned int getChunksForGenerateSize();
 		unsigned int getChunksForCreateMeshSize();
 		unsigned int getChunksForDestroySize();
@@ -65,6 +67,7 @@ namespace bulka {
 
 		void moveChunks(int x, int z);
 		void decreaseGenerateThreadsCount();
+		int getGenerateThreadsCount();
 
 
 		inline Chunk** getChunks() {

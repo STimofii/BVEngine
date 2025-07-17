@@ -137,7 +137,6 @@ namespace bulka {
 			Input::postPollEvents();
 
 			postRender();
-
 			checkGLErrors();
 			do {
 				timeFrameElapsed = unixTime() - timeFrameStart;
