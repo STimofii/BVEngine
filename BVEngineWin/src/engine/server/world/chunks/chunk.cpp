@@ -59,8 +59,8 @@ namespace bulka {
 					unsigned int i = ((y * CHUNK_SIZE_X * CHUNK_SIZE_Z) + x * CHUNK_SIZE_Z) + z;
 					//unsigned int fun = std::abs(static_cast<int>(blockStartGlobalPosition.x + x));
 					unsigned int fun = mandelbrot(
-						(blockStartGlobalPosition.x + static_cast<float>(x)) / 1000.0f,
-						(blockStartGlobalPosition.y + static_cast<float>(z)) / 1000.0f);
+						(blockStartGlobalPosition.x + static_cast<float>(x)) / 100.0f,
+						(blockStartGlobalPosition.y + static_cast<float>(z)) / 100.0f);
 					if (y < 5) {
 						blocks[i] = 1;
 					} else if (y >= 5 && y <= fun) {
@@ -121,13 +121,13 @@ namespace bulka {
 
 		return i;
 	}
-	bool Chunk::createMesh(unsigned int sub_chunk_i)
+	void Chunk::createMesh(unsigned int sub_chunk_i)
 	{
 		if (this == nullptr || destroyed || blocks == nullptr) {
-			return true;
+			return;
 		}
 		if (!generated || !initialized) {
-			return false;
+			return;
 		}
 		updateMeshes = updateMeshes & ~(1 << sub_chunk_i);
 		SubChunk& subChunk = sub_chunks[sub_chunk_i];
@@ -321,23 +321,13 @@ namespace bulka {
 			}
 		}
 
-		//for (unsigned int i = 0; i < vertices.size() / 5; i++)
-		//{
-		//	std::cout << "XYZ: " << vertices[i * 5] << "; " << vertices[i * 5 + 1] << "; " << vertices[i * 5 + 2] << "; UV: " << vertices[i * 5 + 3] << "; " << vertices[i * 5 + 4] << std::endl;
-		//}
-		//for (unsigned int i = 0; i < indices.size() / 6; i++)
-		//{
-		//	std::cout << indices[i * 6 + 0] << ", " << indices[i * 6 + 1] << ", " << indices[i * 6 + 2] << "\t" 
-		//		<< indices[i * 6 + 3] << ", " << indices[i * 6 + 4] << ", " << indices[i * 6 + 5] << std::endl;
-		//}
-
 		if (vertices.size() == 0 || indices.size() == 0) {
 			subChunk.VAO = 0;
 			subChunk.IBO = 0;
 			subChunk.VBO = 0;
 			subChunk.vertices_length = 0;
 			subChunk.indices_length = 0;
-			return false;
+			return;
 		}
 		unsigned int VAO = 0;
 		unsigned int VBO = 0;
@@ -363,7 +353,7 @@ namespace bulka {
 		subChunk.VBO = VBO;
 		subChunk.vertices_length = vertices.size();
 		subChunk.indices_length = indices.size();
-		return true;
+		return;
 	}
 
 	bool Chunk::createMeshes() {
@@ -371,18 +361,15 @@ namespace bulka {
 			return false;
 		}
 		if (updateMeshes == 0) {
-			return false;
+			return true;
 		}
-		//*logger << bcppul::TRACE << "Creating chunk mesh X:" << position.x << "; Z:" << position.y;
-		unsigned int created_count = 0;
 		for (unsigned int sub_chunk_i = 0; sub_chunk_i < SUB_CHUNKS_IN_CHUNK; ++sub_chunk_i)
 		{
 			if (updateMeshes & 1 << sub_chunk_i) {
-				created_count += createMesh(sub_chunk_i);
+				createMesh(sub_chunk_i);
 			}
 		}
-		updateMeshes = 0;
-		return created_count != 0;
+		return true;
 	}
 	void Chunk::deleteMeshes()
 	{

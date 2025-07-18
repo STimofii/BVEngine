@@ -47,7 +47,7 @@ namespace bulka {
 		~Chunk();
 		void generate();
 		int mandelbrot(float x, float y);
-		bool createMesh(unsigned int sub_chunk_i);
+		void createMesh(unsigned int sub_chunk_i);
 		bool createMeshes();
 		void deleteMeshes();
 		void update();

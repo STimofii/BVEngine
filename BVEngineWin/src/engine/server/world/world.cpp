@@ -59,23 +59,26 @@ namespace bulka {
 
 	void World::update() {
 		unsigned int created_count = 0;
-		chunksForCreateMeshMutex.lock();
-		auto it = chunksForCreateMesh.begin();
-		while (it != chunksForCreateMesh.end()) {
-			if (Settings::RENDER_CHUNKS_BY_CYCLE_COUNT == 0 || created_count >= Settings::RENDER_CHUNKS_BY_CYCLE_COUNT) {
-				break;
+		auto updateMeshes = [this, &created_count](Chunk* chunk) {
+			if (chunk == nullptr || chunk->isForDeleting()) {
+				return true;
 			}
-			Chunk* chunk = *it;
+			if (Settings::RENDER_CHUNKS_BY_CYCLE_COUNT == 0 || created_count >= Settings::RENDER_CHUNKS_BY_CYCLE_COUNT) {
+				return false;
+			}
 			if (!chunk->isForDeleting()) {
 				created_count += chunk->createMeshes();
 			}
-			it = chunksForCreateMesh.erase(it);
-		}
+			return true;
+			};
+		chunksForCreateMeshMutex.lock();
+		auto new_end = std::remove_if(chunksForCreateMesh.begin(), chunksForCreateMesh.end(), updateMeshes);
+		chunksForCreateMesh.erase(new_end, chunksForCreateMesh.end());
 		chunksForCreateMeshMutex.unlock();
 
 		chunksForDestroyMutex.lock();
 		chunksForDestroyDeletingMutex.lock();
-		auto new_end = std::remove_if(chunksForDestroy.begin(), chunksForDestroy.end(), [this](Chunk* chunk) {
+		new_end = std::remove_if(chunksForDestroy.begin(), chunksForDestroy.end(), [this](Chunk* chunk) {
 			if (chunk == nullptr) {
 				return true;
 			}
