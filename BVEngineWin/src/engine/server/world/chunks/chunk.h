@@ -51,6 +51,8 @@ namespace bulka {
 		int mandelbrot(float x, float y);
 		void prepareMesh(unsigned int sub_chunk_i);
 		void uploadMesh(unsigned int sub_chunk_i);
+		bool prepareMeshes();
+		bool uploadMeshes();
 		bool createMeshes();
 		void deleteMeshes();
 		void update();

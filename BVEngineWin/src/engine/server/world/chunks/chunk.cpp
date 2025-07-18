@@ -130,8 +130,10 @@ namespace bulka {
 			return;
 		}
 		updateMeshes = updateMeshes & ~(1 << sub_chunk_i);
-		std::vector<float> vertices;
-		std::vector<unsigned int> indices;
+		std::vector<float>& vertices = v_vertices[sub_chunk_i];
+		std::vector<unsigned int>& indices = v_indices[sub_chunk_i];
+		vertices.clear();
+		indices.clear();
 
 		unsigned int index = 0;
 
@@ -320,16 +322,13 @@ namespace bulka {
 			}
 		}
 
-		v_vertices[sub_chunk_i].swap(vertices);
-		v_indices[sub_chunk_i].swap(indices);
-
 	}
 
 	void Chunk::uploadMesh(unsigned int sub_chunk_i) {
 		std::vector<float>& vertices = v_vertices[sub_chunk_i];
 		std::vector<unsigned int>& indices = v_indices[sub_chunk_i];
 		SubChunk& subChunk = sub_chunks[sub_chunk_i];
-		if (vertices.size() == 0 || indices.size() == 0) {
+		if (vertices.empty() || indices.empty()) {
 			subChunk.VAO = 0;
 			subChunk.IBO = 0;
 			subChunk.VBO = 0;
@@ -361,10 +360,31 @@ namespace bulka {
 		subChunk.VBO = VBO;
 		subChunk.vertices_length = vertices.size();
 		subChunk.indices_length = indices.size();
-		vertices.clear();
-		indices.clear();
 	}
 	bool Chunk::createMeshes() {
+		//if (!Engine::isRunning()) {
+		//	return false;
+		//}
+		//if (updateMeshes == 0) {
+		//	return true;
+		//}
+		//for (unsigned int sub_chunk_i = 0; sub_chunk_i < SUB_CHUNKS_IN_CHUNK; ++sub_chunk_i)
+		//{
+		//	if (updateMeshes & 1 << sub_chunk_i) {
+		//		prepareMesh(sub_chunk_i);
+		//		uploadMesh(sub_chunk_i);
+		//	}
+		//}
+		//return true;
+		if (!prepareMeshes()) {
+			return false;
+		}
+		if (!uploadMeshes()) {
+			return false;
+		}
+		return true;
+	}
+	bool Chunk::prepareMeshes() {
 		if (!Engine::isRunning()) {
 			return false;
 		}
@@ -375,8 +395,17 @@ namespace bulka {
 		{
 			if (updateMeshes & 1 << sub_chunk_i) {
 				prepareMesh(sub_chunk_i);
-				uploadMesh(sub_chunk_i);
 			}
+		}
+		return true;
+	}
+	bool Chunk::uploadMeshes() {
+		if (!Engine::isRunning()) {
+			return false;
+		}
+		for (unsigned int sub_chunk_i = 0; sub_chunk_i < SUB_CHUNKS_IN_CHUNK; ++sub_chunk_i)
+		{
+			uploadMesh(sub_chunk_i);
 		}
 		return true;
 	}
