@@ -39,6 +39,8 @@ namespace bulka {
 		bool initialized = false;
 		bool destroyed = false;
 		bool forDeleting = false;
+		std::vector<float> v_vertices[SUB_CHUNKS_IN_CHUNK];
+		std::vector<unsigned int> v_indices[SUB_CHUNKS_IN_CHUNK];
 	protected:
 	public:
 		Chunk(World* world, glm::ivec2 position, glm::ivec2 globalPosition);
@@ -47,7 +49,8 @@ namespace bulka {
 		~Chunk();
 		void generate();
 		int mandelbrot(float x, float y);
-		void createMesh(unsigned int sub_chunk_i);
+		void prepareMesh(unsigned int sub_chunk_i);
+		void uploadMesh(unsigned int sub_chunk_i);
 		bool createMeshes();
 		void deleteMeshes();
 		void update();

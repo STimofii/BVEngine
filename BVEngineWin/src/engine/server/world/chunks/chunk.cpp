@@ -121,7 +121,7 @@ namespace bulka {
 
 		return i;
 	}
-	void Chunk::createMesh(unsigned int sub_chunk_i)
+	void Chunk::prepareMesh(unsigned int sub_chunk_i)
 	{
 		if (this == nullptr || destroyed || blocks == nullptr) {
 			return;
@@ -130,7 +130,6 @@ namespace bulka {
 			return;
 		}
 		updateMeshes = updateMeshes & ~(1 << sub_chunk_i);
-		SubChunk& subChunk = sub_chunks[sub_chunk_i];
 		std::vector<float> vertices;
 		std::vector<unsigned int> indices;
 
@@ -321,6 +320,15 @@ namespace bulka {
 			}
 		}
 
+		v_vertices[sub_chunk_i].swap(vertices);
+		v_indices[sub_chunk_i].swap(indices);
+
+	}
+
+	void Chunk::uploadMesh(unsigned int sub_chunk_i) {
+		std::vector<float>& vertices = v_vertices[sub_chunk_i];
+		std::vector<unsigned int>& indices = v_indices[sub_chunk_i];
+		SubChunk& subChunk = sub_chunks[sub_chunk_i];
 		if (vertices.size() == 0 || indices.size() == 0) {
 			subChunk.VAO = 0;
 			subChunk.IBO = 0;
@@ -353,9 +361,9 @@ namespace bulka {
 		subChunk.VBO = VBO;
 		subChunk.vertices_length = vertices.size();
 		subChunk.indices_length = indices.size();
-		return;
+		vertices.clear();
+		indices.clear();
 	}
-
 	bool Chunk::createMeshes() {
 		if (!Engine::isRunning()) {
 			return false;
@@ -366,7 +374,8 @@ namespace bulka {
 		for (unsigned int sub_chunk_i = 0; sub_chunk_i < SUB_CHUNKS_IN_CHUNK; ++sub_chunk_i)
 		{
 			if (updateMeshes & 1 << sub_chunk_i) {
-				createMesh(sub_chunk_i);
+				prepareMesh(sub_chunk_i);
+				uploadMesh(sub_chunk_i);
 			}
 		}
 		return true;
@@ -550,31 +559,74 @@ namespace bulka {
 	}
 	void Chunk::updateNeighbor(int x, int y, int z)
 	{
+		if (position.x != -world->getRenderDistance()) {
+
+		}
+		if (position.x != world->getRenderDistance()) {
+			Chunk* neighbor = world->getChunk(position.x + 1, position.y);
+			if (neighbor != nullptr) {
+				neighbor->setNeedUpdateFullChunk();
+				world->addChunkForCreateMesh(neighbor);
+			}
+		}
+		if (position.y != -world->getRenderDistance()) {
+			Chunk* neighbor = world->getChunk(position.x, position.y - 1);
+			if (neighbor != nullptr) {
+				neighbor->setNeedUpdateFullChunk();
+				world->addChunkForCreateMesh(neighbor);
+			}
+		}
+		if (position.y != world->getRenderDistance()) {
+			Chunk* neighbor = world->getChunk(position.x, position.y + 1);
+			if (neighbor != nullptr) {
+				neighbor->setNeedUpdateFullChunk();
+				world->addChunkForCreateMesh(neighbor);
+			}
+		}
+
 		if (z == 0) {
 			if (position.y != -world->getRenderDistance()) {
-				world->getChunk(position.x, position.y - 1)->createMesh(y / 16);
+				Chunk* neighbor = world->getChunk(position.x, position.y - 1);
+				if (neighbor != nullptr) {
+					neighbor->setNeedUpdate(y / SUB_CHUNK_SIZE_Y);
+					world->addChunkForCreateMesh(neighbor);
+				}
 			}
 		} else if (z == CHUNK_SIZE_Z - 1) {
 			if (position.y != -world->getRenderDistance()) {
-				world->getChunk(position.x, position.y + 1)->createMesh(y / 16);
+				Chunk* neighbor = world->getChunk(position.x, position.y + 1);
+				if (neighbor != nullptr) {
+					neighbor->setNeedUpdate(y / SUB_CHUNK_SIZE_Y);
+					world->addChunkForCreateMesh(neighbor);
+				}
 			}
 		}
 		if (x == 0) {
 			if (position.x != -world->getRenderDistance()) {
-				world->getChunk(position.x - 1, position.y)->createMesh(y / 16);
+				Chunk* neighbor = world->getChunk(position.x - 1, position.y);
+				if (neighbor != nullptr) {
+					neighbor->setNeedUpdate(y / SUB_CHUNK_SIZE_Y);
+					world->addChunkForCreateMesh(neighbor);
+				}
 			}
 		} else if (x == CHUNK_SIZE_X - 1) {
 			if (position.x != -world->getRenderDistance()) {
-				world->getChunk(position.x + 1, position.y)->createMesh(y / 16);
+				Chunk* neighbor = world->getChunk(position.x + 1, position.y);
+				if (neighbor != nullptr) {
+					neighbor->setNeedUpdate(y / SUB_CHUNK_SIZE_Y);
+					world->addChunkForCreateMesh(neighbor);
+				}
 			}
 		}
 		int suby = y % SUB_CHUNK_SIZE_Y;
 		if (suby == 0) {
 			if (y != 0) {
 				updateMeshes = updateMeshes | 1 << ((y / SUB_CHUNK_SIZE_Y) - 1);
+				world->addChunkForCreateMesh(this);
 			}
 			if (y != CHUNK_SIZE_Y - 1) {
 				updateMeshes = updateMeshes | 1 << ((y / SUB_CHUNK_SIZE_Y) + 1);
+				world->addChunkForCreateMesh(this);
 			}
 		}
 	}
